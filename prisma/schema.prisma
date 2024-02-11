@@ -109,7 +109,7 @@ model user_violations {
 model users {
   user_id       Int             @id @default(autoincrement())
   userdetail_fk Int?
-  username      String?         @db.VarChar(100)
+  username      String?         @unique @db.VarChar(100)
   password      String?         @db.VarChar(255)
   announcements announcements[]
   user_details  user_details?   @relation(fields: [userdetail_fk], references: [userdetail_id], onDelete: NoAction, onUpdate: NoAction)
