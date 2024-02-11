@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
-import prisma from '../../db/prisma';
+import { registerUser } from '../../db/prisma';
 
 const Signup: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSignup = () => {
-    prisma;
+  const handleSignup = async () => {
+    try {
+      const user = await registerUser(username, password);
+      console.log("Successful registration")
+    } catch(error) {
+      console.error("cannot register.")
+    }
   };
 
   return (
@@ -29,7 +34,7 @@ const Signup: React.FC = () => {
         <Container style={{ color: 'black', backgroundColor: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <div>
             <Typography variant= "h3" style={{ marginBottom: '15%', color: 'Black' }}>
-                Working Scholar Management System
+                Signup Page
             </Typography>
             
             <FormControl fullWidth>
