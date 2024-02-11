@@ -25,6 +25,7 @@ export async function validateUser(username: string, password: string): Promise<
 
 export async function registerUser(username: string, password: string) {
     try {
+        await prisma.$connect();
         const hashedPass = await hash(password, 12);
 
         const user = await prisma.users.create({
@@ -34,6 +35,7 @@ export async function registerUser(username: string, password: string) {
             }
         });
 
+        await prisma.$disconnect();
         return user;
     } catch(error) {
         console.error("Error registering user:", error);
