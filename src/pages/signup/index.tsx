@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
-import { registerUser } from '../../db/prisma';
 
 const Signup: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -9,13 +8,25 @@ const Signup: React.FC = () => {
   const [error, setError] = useState('');
 
   const handleSignup = async () => {
-    try {
-      const user = await registerUser(username, password);
-      console.log("Successful registration")
-    } catch(error) {
-      console.error("cannot register.")
-    }
+      try {
+          const response = await fetch('/signup', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ username, password })
+          });
+          if (!response.ok) {
+              throw new Error('Registration failed');
+          }
+          const user = await response.json();
+          console.log("Successful registration", user);
+      } catch (error) {
+          console.error("Error registering user:", error);
+          setError('Registration failed');
+      }
   };
+
 
   return (
     <Grid container>

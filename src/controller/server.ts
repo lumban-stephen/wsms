@@ -6,7 +6,7 @@ const port = 3000;
 
 app.use(express.json());
 
-app.post('/signup', async (req, res) => {
+app.post('/', async (req, res) => {
     const { username, password } = req.body;
     try {
         const user = await registerUser(username, password);
