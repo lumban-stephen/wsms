@@ -1,72 +1,8 @@
-import React from 'react';
-import LoginImage from '../../assets/uclm-banner.jpg';
-import { Stepper, Step, StepLabel, Button, Typography, Container, Paper, Box } from '@mui/material';
-
-function HorizontalLinearStepper() {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const steps = ['Basic Details', 'Profile Upload', 'Family Info'];
-
-    // Function to handle moving to the next step
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    // Function to handle moving back to the previous step
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    return (
-        <Box sx={{ width: '100%' }}>
-            {/* Stepper component */}
-            <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => (
-                    <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
-                    </Step>
-                ))}
-            </Stepper>
-
-            {/* Conditional rendering based on active step */}
-            {activeStep === steps.length ? (
-                <React.Fragment>
-                    {/* Completion message */}
-                    <Typography sx={{ mt: 2, mb: 1 }}>
-                        All steps completed - you&apos;re finished
-                    </Typography>
-
-                    {/* Reset button */}
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={() => setActiveStep(0)}>Reset</Button>
-                    </Box>
-                </React.Fragment>
-            ) : (
-                <React.Fragment>
-                    {/* Current step number
-                    <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography> */}
-                    {/* Navigation buttons */}
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        {/* Back button (disabled if on the first step) */}
-                        <Button
-                            color="inherit"
-                            disabled={activeStep === 0}
-                            onClick={handleBack}
-                            sx={{ mr: 1 }}
-                        >
-                            Back
-                        </Button>
-
-                        {/* Next button */}
-                        <Button onClick={handleNext}>
-                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                        </Button>
-                    </Box>
-                </React.Fragment>
-            )}
-        </Box>
-    );
-}
+import React, { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { Stepper, Step, StepLabel, Button, Typography, Container, Paper, Box, TextField, Grid } from '@mui/material';
+import './styles.css'; // Import custom CSS file for transitions
+import Drop from './dropzone'
 
 const Register: React.FC = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -74,21 +10,134 @@ const Register: React.FC = () => {
         // Handle form submission
     };
 
-    return (
-        <div style={{backgroundColor: 'white', minHeight: '100vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            {/* Form container */}
-            <Container maxWidth="sm">
-                <Paper elevation={3} sx={{ p: 2, borderRadius: '12px', backgroundColor: 'white'}}>
-                    {/* Stepper component */}
-                    <HorizontalLinearStepper />
+    const [activeStep, setActiveStep] = useState(0);
+    const steps = ['Basic Details', 'Profile Upload', 'Family Info'];
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit}>
-                        {/* Form fields */}
-                    </form>
-                </Paper>
-            </Container>
-        </div>
+    const handleNext = () => {
+        setActiveStep((prevActiveStep) => {
+            if (prevActiveStep < steps.length - 1) {
+                return prevActiveStep + 1;
+            } else {
+                return prevActiveStep;
+            }
+        });
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => {
+            if (prevActiveStep > 0) {
+                return prevActiveStep - 1;
+            } else {
+                return prevActiveStep;
+            }
+        });
+    };
+
+    const handleReset = () => {
+        setActiveStep(0);
+    };
+
+    return (
+        <div style={{ backgroundColor: '#dedede', minHeight: '100vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Container maxWidth="lg"> {/* Set maxWidth to "lg" for wider container */}
+                <Paper elevation={22} sx={{ p: 2, borderRadius: '20px', backgroundColor: 'White', display: 'flex', justifyContent: 'center'}}>
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 5}}> {/* Center the container */}
+                        <Container sx={{width:'0'}}> {/* Set maxWidth to "md" for a reasonable width */}
+                            <Stepper activeStep={activeStep}>
+                                {steps.map((label, index) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                                ))}
+                            </Stepper>
+                        </Container>
+                            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 10}}>           
+                                <Container sx={{width: '100%'}}>
+                                    {/* Separate sets of input fields for each step */}
+                                    <div className={`step ${activeStep === 0 ? 'active' : ''}`}>
+                                        <Grid container spacing={15} alignItems={'center'}>
+                                            {/* Left inputs */}
+                                            <Grid item xs={6}>
+                                                <TextField label="Complete Name*" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Address*" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Current Course*" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Contact Number*" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                {/* Add more left inputs here */}
+                                            </Grid>
+                                            {/* Right inputs */}
+                                            <Grid item xs={6}>
+                                                <TextField label="Gender" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Age" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Last School Attended" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Facebook Account/Link" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                {/* Add more right inputs here */}
+                                            </Grid>
+                                        </Grid>
+                                    </div>
+                                    <div className={`step ${activeStep === 1 ?'active' : ''}`}>
+                                        <Grid container spacing={6} alignItems={'center'}>
+                                            <Grid item xs={6}>
+                                                <Drop></Drop>
+                                                {/* <input type='file' name ='image' onChange={handleOnChange}/> */}
+                                                {/* <Paper
+                                                    sx={{
+                                                        cursor: 'pointer',
+                                                        background: '#fafafa',
+                                                        color: '#bdbdbd',
+                                                        border: '1px solid black',
+                                                        '&:hover':{border:'1px solid black'}
+                                                    }}>
+                                                        <div style={{padding:'16px'}}>
+                                                        <input />
+                                                        </div>                                        
+                                                </Paper> */}
+                                            </Grid>
+                                        </Grid>
+                                    </div>
+                                    <div className={`step ${activeStep === 2 ?'active' : ''}`}>
+                                        <Grid container spacing={6} alignItems={'center'}>
+                                            <Grid item xs={6}>
+                                                <TextField label="Mother's Name" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Occupation*" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Father's Name" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Occupation*" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <TextField label="Guardian's Name" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Contact Number" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                                <TextField label="Guardian's Facebook Account/Link" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
+                                            </Grid>
+                                        </Grid>
+                                    </div>
+                                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}> {/*back button*/}
+                                        <Button 
+                                            color="inherit"
+                                            disabled={activeStep === 0}
+                                            onClick={handleBack}
+                                            sx={{ mr: 1 }}>Back
+                                        </Button>
+                                        <Button 
+                                            color='inherit'
+                                            disabled={activeStep < 2}
+                                            onClick={handleReset}>Reset
+                                        </Button>
+                                            <Box sx={{ flex: '1 1 auto' }} />
+                                                <Button
+                                                    onClick={handleNext}
+                                                    sx={{ backgroundColor: '#0092dc', color: 'Black' }} // Set blue background color and white text color
+                                                    >
+                                                    {activeStep === steps.length - 1 ? 'Finish': 'Next'}
+                                                </Button>
+                                            </Box>
+                                        <Typography sx={{ mt: 2 }}>
+                                            Already have an account? <a href="login" color='#00c0fe'>Login here</a>
+                                        </Typography>
+                                    </Container>
+                                </Box>
+                            </Box>
+                        </Paper>
+                    </Container>
+                </div>
     );
 }
 
