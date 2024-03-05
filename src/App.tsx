@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import Login from './pages/login';
-import Register from './pages/register_contactform/cform1';
+import Register from './pages/register_contactform';
 import './App.css';
 
 function App() {

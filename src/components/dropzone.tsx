@@ -18,8 +18,9 @@ const AddImage = () => {
             cursor:'pointer',
             background:'#fafafa',
             color:'#bdbdbd',
-            border:'1px solid #ccc',
-            '&:hover':{border:'1px solid #ccc'}
+            border:'1px dashed #ccc',
+            '&:hover':{border:'1px solid #ccc'},
+            width:'100%'
         }}>
             <div style={{padding:'16px'}} {...getRootProps()}>
                 <input {...getInputProps()} />
