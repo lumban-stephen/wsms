@@ -67,8 +67,8 @@ const Register: React.FC = () => {
                                         {/* Add more right inputs here */}
                                     </Grid>
                                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, justifyContent:'space-between', width:'100%'}}> {/*back button*/}
-                                        <Typography sx={{ mt: 2, textAlign: 'center', paddingLeft:'10px'}}>
-                                            Already have an account? <a href="login" color='#00c0fe'>Login here</a>
+                                        <Typography sx={{ mt: 2, textAlign: 'center', paddingLeft:'120px'}}>
+                                            Already a Working Scholar? <a href="login" color='#00c0fe'>Login here</a>
                                         </Typography>
                                         <Button
                                             onClick={handleNext}
