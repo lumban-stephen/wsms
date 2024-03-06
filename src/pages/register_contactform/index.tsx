@@ -106,7 +106,7 @@ const Register: React.FC = () => {
                                         <Button
                                             onClick={handleNext}
                                             disabled={isNextDisabledStep1}
-                                            sx={{ backgroundColor: '#0092dc', color: 'Black', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)', paddingLeft: 5,
+                                            sx={{ backgroundColor: '#0092dc', color: 'white', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)', paddingLeft: 5,
                                             paddingRight: 5, paddingTop: -1}} // Set blue background color and white text color
                                             >
                                             {activeStep === steps.length - 1 ? 'Finish': 'Next'}
@@ -135,7 +135,7 @@ const Register: React.FC = () => {
                                         <Box sx={{ flex: '1 1 auto' }} />
                                         <Button
                                             onClick={handleNext}
-                                            sx={{ backgroundColor: '#0092dc', color: 'Black', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)', paddingLeft: 5,
+                                            sx={{ backgroundColor: '#0092dc', color: 'white', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)', paddingLeft: 5,
                                             paddingRight: 5}} // Set blue background color and white text color
                                             >
                                             {activeStep === steps.length - 1 ? 'Finish': 'Next'}
@@ -252,5 +252,4 @@ const Register: React.FC = () => {
         </div>
     );
 }
-
 export default Register;
