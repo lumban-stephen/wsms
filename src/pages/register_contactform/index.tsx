@@ -106,7 +106,8 @@ const Register: React.FC = () => {
                                         <Button
                                             onClick={handleNext}
                                             disabled={isNextDisabledStep1}
-                                            sx={{ backgroundColor: '#0092dc', color: 'Black' }} // Set blue background color and white text color
+                                            sx={{ backgroundColor: '#0092dc', color: 'Black', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)', paddingLeft: 5,
+                                            paddingRight: 5, paddingTop: -1}} // Set blue background color and white text color
                                             >
                                             {activeStep === steps.length - 1 ? 'Finish': 'Next'}
                                         </Button>
@@ -126,12 +127,16 @@ const Register: React.FC = () => {
                                             onClick={handleBack}
                                             sx={{ mr: 1, 
                                             backgroundColor: '#818181',
-                                            color: 'white'}}>Back
+                                            color: 'white',
+                                            boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)',
+                                            paddingLeft: 5,
+                                            paddingRight: 5,}}>Back
                                         </Button>
                                         <Box sx={{ flex: '1 1 auto' }} />
                                         <Button
                                             onClick={handleNext}
-                                            sx={{ backgroundColor: '#0092dc', color: 'Black' }} // Set blue background color and white text color
+                                            sx={{ backgroundColor: '#0092dc', color: 'Black', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)', paddingLeft: 5,
+                                            paddingRight: 5}} // Set blue background color and white text color
                                             >
                                             {activeStep === steps.length - 1 ? 'Finish': 'Next'}
                                         </Button>
@@ -180,15 +185,19 @@ const Register: React.FC = () => {
                                             onClick={handleBack}
                                             sx={{ mr: 1, 
                                             backgroundColor: '#818181',
-                                            color: 'white'}}>Back
+                                            color: 'white',
+                                            paddingLeft: 5,
+                                            paddingRight: 5,
+                                            boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)'}}>Back
                                         </Button>
                                         <Box sx={{ flex: '1 1 auto' }} />
                                         <Button
                                             onClick={handleNext}
                                             disabled={isNextDisabledStep3}
-                                            sx={{ backgroundColor: '#0092dc', color: 'Black' }} // Set blue background color and white text color
+                                            sx={{ backgroundColor: '#0092dc', color: 'white', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)', paddingLeft: 5,
+                                            paddingRight: 5}} // Set blue background color and white text color
                                             >
-                                            {activeStep === steps.length - 1 ? 'Finish': 'Next'}
+                                            {activeStep === steps.length - 1 ? 'Finish': 'Sumbit'}
                                         </Button>
                                     </Box>     
                             </div>
@@ -216,19 +225,21 @@ const Register: React.FC = () => {
                                         paddingLeft: 7,
                                         paddingRight: 7,
                                         paddingTop: 1.5,
-                                        paddingBottom: 1.5}}>
+                                        paddingBottom: 1.5,
+                                        boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)'}}>
                                         {activeStep == steps.length - 1? 'Decline': 'Back'}
                                     </Button>    
                                     <Button
                                         onClick={handleNext}
                                         sx={{
                                         backgroundColor: '#0092dc',
-                                        color: 'Black',
+                                        color: 'white',
                                         marginLeft: 5,
                                         paddingLeft: 7,
                                         paddingRight: 7,
                                         paddingTop: 1.5,
-                                        paddingBottom: 1.5
+                                        paddingBottom: 1.5,
+                                        boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.50)'
                                         }}>
                                         {activeStep === steps.length - 1 ? 'Agree': 'Next'}
                                     </Button>
