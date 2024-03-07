@@ -1,13 +1,13 @@
 import React from 'react';
 import logo from './logo.svg';
-import maintainWS from './pages/listofWorking/index'
-import MaintainWSEmpty from './pages/listofWorking/index';
+import maintainWS from './pages/maintainWS/index'
+import MaintainWS from './pages/maintainWS/index';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <MaintainWSEmpty></MaintainWSEmpty>
+        <MaintainWS></MaintainWS>
       </header>
     </div>
   );

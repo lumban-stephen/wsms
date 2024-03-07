@@ -1,10 +1,11 @@
 import { Paper, Typography, Box, Grid, Container, Button, Avatar, Divider, Menu } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import Logo from './uclmLogo'
+import Logo from '../../components/uclmLogo'
+import NavBarDept from '../../components/navbar-dept'
 import React, { useState } from 'react';
 import { deepPurple } from '@mui/material/colors';
 
-const MaintainWSEmpty: React.FC = () => {
+const MaintainWS: React.FC = () => {
     //Profile Menu Start
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -19,7 +20,7 @@ const MaintainWSEmpty: React.FC = () => {
     //Tab Swithing Start
     const [activeTab, setActiveTab] = useState('Home');
     const handleTabChange = (tab: string) => {
-        setActiveTab(tab);
+    setActiveTab(tab);
     //Tab Switching End
     };
     return(
@@ -29,42 +30,7 @@ const MaintainWSEmpty: React.FC = () => {
                     <Logo width={210} height={130}/>
                 </Box>
                 {/*Tabs*/}
-                <Grid container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{flex:1}}>
-
-                    <Button sx={{
-                        color: 'white'
-                        }}
-                        variant={activeTab === 'Home' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Home')}>Home</Button>
-
-                    <Button sx={{
-                        color: 'white'
-                        }}
-                        variant={activeTab === 'Applicants' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Applicants')}>Applicants</Button>
-
-                    <Button sx={{
-                        color: 'white'
-                        }}
-                        variant={activeTab === 'WorkingScholars' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('WorkingScholars')}>Working Scholars</Button>
-
-                    <Button sx={{
-                        color: 'white'
-                        }}
-                        variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Departments')}>Departments</Button>
-
-                    <Button sx={{
-                        color: 'white'
-                        }}
-                        variant={activeTab === 'Announcements' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Announcements')}>Announcements</Button>      
-                </Grid>
+                <NavBarDept activeTab={activeTab} handleTabChange={handleTabChange}/>
                 {/*Tabs End*/}
                 {/*Profile Section*/}
                     <Box sx={{ display: 'flex', alignItems: 'center'}}>
@@ -101,9 +67,10 @@ const MaintainWSEmpty: React.FC = () => {
                     </Box>
                     {/*Profile Section End*/}
             </Box>
-            {/*Content Per Page*/}                               
+            {/*Content Per*/}                               
             <Box style={{backgroundColor:'white', height:'87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>       
+                    {/*use navbar*/}
                     {activeTab === 'WorkingScholars' && (
                         <>
                             <Box sx={{display:'flex', justifyContent:'space-between', flexDirection:'row', width:'100%', borderBottom: '1px solid #818181', height:'10%'}}>
@@ -128,4 +95,4 @@ const MaintainWSEmpty: React.FC = () => {
     );
 }
 
-export default MaintainWSEmpty;
+export default MaintainWS;
