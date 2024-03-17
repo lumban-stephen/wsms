@@ -1,6 +1,5 @@
 import React from 'react';
 import logo from './logo.svg';
-import maintainWS from './pages/maintainWS/index'
 import MaintainWS from './pages/maintainWS/index';
 
 function App() {
