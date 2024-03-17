@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import Login from './pages/login';
 import './App.css';
 import NavBarDept from "./components/navbar-dept";
+import DeptAnnounce from './pages/dept-announce';
 
 function App() {
   const [activeTab, setActiveTab] = useState('Announcements');
@@ -16,6 +17,7 @@ function App() {
       <header className="App-header">
         <NavBarDept activeTab={activeTab} handleTabChange={handleTabChange} />
       </header>
+      <DeptAnnounce/>
     </div>
   );
 }
