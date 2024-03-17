@@ -1,9 +1,6 @@
 import { Paper, Typography, Box, Grid, Container, Button, Avatar, Divider, Menu } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import Logo from '../../components/uclmLogo'
-import NavBarDept from '../../components/navbar-dept'
+import NavBar from '../../components/navbar'
 import React, { useState } from 'react';
-import { deepPurple } from '@mui/material/colors';
 
 const MaintainWS: React.FC = () => {
     //Profile Menu Start
@@ -16,7 +13,6 @@ const MaintainWS: React.FC = () => {
         setAnchorEl(null);
     };
     //Profile Menu End
-
     //Tab Swithing Start
     const [activeTab, setActiveTab] = useState('Home');
     const handleTabChange = (tab: string) => {
@@ -25,48 +21,7 @@ const MaintainWS: React.FC = () => {
     };
     return(
         <Box style={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center', minHeight:'100vh', width:'100%'}}>
-            <Box style={{backgroundColor:'#0975bc', height:'13vh', width: '100%',  display: 'flex', alignContent: 'center'}}> 
-                <Box sx={{position: 'relative', paddingLeft:1}}>
-                    <Logo width={210} height={130}/>
-                </Box>
-                {/*Tabs*/}
-                <NavBarDept activeTab={activeTab} handleTabChange={handleTabChange}/>
-                {/*Tabs End*/}
-                {/*Profile Section*/}
-                    <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                    <Divider orientation="vertical" flexItem sx={{ bgcolor: 'white', height: '50px', margin: 'auto' }}/>
-                        <Avatar sx={{ 
-                            bgcolor: deepPurple[500], 
-                            width: 56, 
-                            height: 56,
-                            marginLeft: 1,
-                            marginRight:1
-                            }}>A</Avatar>
-
-                        <Button
-                        sx={{marginRight:8, color:'white'}}
-                        id="basic-button"
-                        aria-controls={open ? 'basic-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={handleClick}>
-                        Admin
-                        </Button>                     
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                            }}>
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
-                            <MenuItem onClick={handleClose}>Logout</MenuItem>    
-                        </Menu>    
-                    </Box>
-                    {/*Profile Section End*/}
-            </Box>
+            <NavBar activeTab={activeTab} handleTabChange={handleTabChange}></NavBar>
             {/*Content Per*/}                               
             <Box style={{backgroundColor:'white', height:'87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>       
