@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
-import MaintainWS from './pages/maintainWS/index';
+import MaintainWS from './pages/maintainWS/ApplicantsEx';
 import Navbartest from './components/navbar'
 
 function App() {
