@@ -23,7 +23,7 @@ const NavBarWS: React.FC<NavBarWSProps>= ({activeTab, handleTabChange}) =>{
     return(
         <Box style={{backgroundColor:'#0975bc', height:'13vh', width: '100%',  display: 'flex', alignContent: 'center'}}> 
                 <Box sx={{position: 'relative', paddingLeft:1}}>
-                
+                <Logo width={210} height={130}/>
                 </Box>
                 {/*Tabs*/}
                 {/*<NavBarDept activeTab={activeTab} handleTabChange={handleTabChange}/>*/}
