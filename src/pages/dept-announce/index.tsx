@@ -1,7 +1,8 @@
 import { Paper, Container } from '@mui/material';
 import React from 'react';
+import AnnounceBox from '../../components/announce-box';
 
-const AnnounceBox: React.FC = () => {
+const DeptAnnounce: React.FC = () => {
   return (
     <Container maxWidth="lg">
       <Paper
@@ -15,9 +16,11 @@ const AnnounceBox: React.FC = () => {
         <h1 style={{ textAlign: 'center', margin: 0, padding: 0 }}>Dept Announcement Page</h1>
         {/* Add your login page content here */}
       </Paper>
-      
+      <AnnounceBox>
+        <p>Announcement Sample Here</p>
+      </AnnounceBox>
     </Container>
   );
 };
 
-export default AnnounceBox;
+export default DeptAnnounce;
