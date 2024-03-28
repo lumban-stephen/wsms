@@ -1,14 +1,22 @@
 import * as React from 'react';
-import { AppBar } from '@mui/material';
-import UCLOGO from '../assets/uc-logo-bg-160x83 2.png'
+import { AppBar, Toolbar, Typography } from '@mui/material';
+import UCLOGO from './uclogo.png';
 
-const Header = () => {
+const lmaonavbar = () => {
     return (
         <React.Fragment>
             <AppBar>
-
+                <Toolbar>
+                    <Typography>
+                    {/* <img src={UCLOGO} alt="" className='uclogo'/> */}
+                    <UCLOGO></UCLOGO>
+                    
+                    </Typography>
+                </Toolbar>
             </AppBar>
         </React.Fragment>
     )
 }
+
+export default lmaonavbar
 
