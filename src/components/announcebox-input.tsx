@@ -35,7 +35,7 @@ const DeptAnnounceBoxInput: React.FC = () => {
       >
         <div style={{ borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
           {/* Your fake input box */}
-          Click to Open Modal
+          Write an announcement here
         </div>
       </Paper>
       <CreatePostModal open={isModalOpen} onClose={handleCloseModal}/>
