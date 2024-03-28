@@ -26,7 +26,7 @@ const Signup: React.FC = () => {
         } else {
           // Handle non-JSON responses (e.g., HTML)
           const errorText = await response.text();
-          setError(`Registration failed: ${errorText}`);
+          setError(`Registration failed non-JSON response: ${errorText}`);
         }
       } else {
         const user = await response.json();
