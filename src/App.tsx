@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import Login from './pages/login';
 import Dept from './pages/dept';
@@ -8,15 +8,15 @@ import AdminMWSEmpty from './pages/admin/mainWSEmpty';
 import './App.css';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('Home');
+  const [activeTab, setActiveTab] = useState<string | null>(null);
 
-  const handleTabChange = (tab: string) => { // Define the type for tab
+  const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
 
   return (
     <div>
-      <Navbar activeTab={activeTab} handleTabChange={handleTabChange} /> {/* Pass activeTab and handleTabChange */}
+      <Navbar activeTab={activeTab || ''} handleTabChange={handleTabChange} />
       <header className="App-header">
         <AdminMWSEmpty></AdminMWSEmpty>
       </header>

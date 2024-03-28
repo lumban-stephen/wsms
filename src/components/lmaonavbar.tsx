@@ -22,6 +22,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
 
     // User Menu Start
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+    
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
     };
@@ -42,6 +43,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
             alignItems="center" 
             sx={{ flex: 1 }}>
                 
+                <Tooltip title="Home">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Home' ? 'contained' : 'outlined'}
@@ -49,6 +51,9 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 >
                     Home
                 </Button>
+                </Tooltip>
+
+                <Tooltip title="Applicants">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Applicants' ? 'contained' : 'outlined'}
@@ -56,6 +61,9 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 >
                     Applicants
                 </Button>
+                </Tooltip>
+
+                <Tooltip title="Working Scholars">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Working Scholars' ? 'contained' : 'outlined'}
@@ -63,6 +71,9 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 >
                     Working Scholars
                 </Button>
+                </Tooltip>
+
+                <Tooltip title="Departments">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
@@ -70,6 +81,9 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 >
                     Departments
                 </Button>
+                </Tooltip>
+
+                <Tooltip title="Announcements">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Announcements' ? 'contained' : 'outlined'}
@@ -77,6 +91,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 >
                     Announcements
                 </Button>
+                </Tooltip>
             </Grid>
             {/* Tabs End */}
             {/* Profile Section */}
@@ -91,7 +106,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                         onClick={handleClick}>
 
                         <Avatar sx={{
-                                
+                                bgcolor: deepPurple[500], 
                                 width: 56,
                                 height: 56,
                                 marginLeft: 1,
