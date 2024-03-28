@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import Login from './pages/login';
 import Dept from './pages/dept';
 import Navbar from './components/lmaonavbar';
+import AdminDash from './pages/admin/admindash';
+import AdminMWSEmpty from './pages/admin/mainWSEmpty';
 import './App.css';
 
 function App() {
@@ -16,7 +18,7 @@ function App() {
     <div>
       <Navbar activeTab={activeTab} handleTabChange={handleTabChange} /> {/* Pass activeTab and handleTabChange */}
       <header className="App-header">
-        <Dept></Dept>
+        <AdminMWSEmpty></AdminMWSEmpty>
       </header>
     </div>
   );

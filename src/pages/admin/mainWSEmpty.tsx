@@ -1,13 +1,21 @@
 import React, {useState} from 'react';
-import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid, Tooltip, IconButton, Typography, Paper } from '@mui/material';
+import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid, Tooltip, IconButton, Typography, Paper, Modal, TextField } from '@mui/material';
+import Navbar from '../../components/lmaonavbar';
 
-const mainWSEmpty: React.FC = () => {
+
+const MainWSEmpty: React.FC = () => {
+
+    
     const [activeTab, setActiveTab] = useState('Working Scholars');
     const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     };
   return (
-    <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>       
+    <Box style={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center', minHeight:'100vh', width:'100%'}}>
+            
+            {/*Content Per*/}                               
+            <Box style={{backgroundColor:'white', height:'87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>       
                     {/*use navbar*/}
                     {activeTab === 'WorkingScholars' && (
                         <>
@@ -27,8 +35,10 @@ const mainWSEmpty: React.FC = () => {
                             </Box>
                         </>
                     )}
-    </Paper>
+                    </Paper>
+            </Box>
+            </Box>
   )
 }
 
-export default mainWSEmpty
+export default MainWSEmpty
