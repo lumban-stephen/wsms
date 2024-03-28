@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import Age from "../pages/Age";
-import Food from "../pages/Food";
+import Login from "../pages/login";
+import Dept from "../pages/dept";
+import Register from "../pages/signup";
+import Admin from "../pages/admin";
 import ProtectedRoute from "../utils/ProtectedRoute";
 
 export const router = createBrowserRouter([
@@ -12,16 +12,16 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             {path: "", element: <Login />},
-            {path: "/register", element: <Register />},
+            {path: "/register", element: <Dept />},
             {path: "/age", 
                 element:(
                     <ProtectedRoute>
-                        <Age />
+                        <Register />
                     </ProtectedRoute>) },
             {path: "/food", 
                 element: (
                     <ProtectedRoute>
-                        <Food />
+                        <Admin />
                     </ProtectedRoute>
                 )},
         ]

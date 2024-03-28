@@ -8,10 +8,6 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    prisma;
-  };
-
   return (
     <Grid container>
       {/* Image Section */}
@@ -51,7 +47,7 @@ const Login: React.FC = () => {
               />
             </FormControl>
             {error && <FormHelperText error>{error}</FormHelperText>}
-            <Button variant="contained" color="primary" onClick={handleLogin}>
+            <Button variant="contained" color="primary">
               Login
             </Button>
           </div>
