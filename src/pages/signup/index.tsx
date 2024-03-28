@@ -53,7 +53,7 @@ const Signup: React.FC = () => {
             </Typography>
             
             <FormControl fullWidth>
-              <InputLabel htmlFor="username">Username or Email</InputLabel>
+              <InputLabel htmlFor="username" shrink={!!username} focused={!!username}>Username or Email</InputLabel>
               <TextField
                 id="username"
                 type="text"
@@ -62,7 +62,7 @@ const Signup: React.FC = () => {
               />
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel htmlFor="password">Password</InputLabel>
+              <InputLabel htmlFor="password" shrink={!!password} focused={!!password}>Password</InputLabel>
               <TextField
                 id="password"
                 type="password"
