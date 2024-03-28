@@ -1,12 +1,12 @@
 import express from 'express';
-import pg from "pg";
-import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import * as pg from "pg";
+import * as dotenv from 'dotenv';
+import * as bcrypt from 'bcryptjs';
+import * as jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-const app = express();
+var app = express();
 const port = process.env.PORT || 3000;
 
 // Connect to PostgreSQL
@@ -21,28 +21,17 @@ client.connect((err) => {
   console.log('Connected to database!');
 });
 
-// User schema (assuming it's already created in PostgreSQL)
-interface User {
-  id: number;
-  email: string;
-  password: string;
-}
-
-// Middleware to parse incoming data as JSON
-app.use(express.json());
-
-// Registration endpoint
-app.post('/register', async (req, res) => {
-  const { uname, password } = req.body;
+app.post('/signup', async (req, res) => {
+  const { username, password } = req.body;
 
   // Basic input validation (add more as needed)
-  if (!uname || !password) {
+  if (!username || !password) {
     return res.status(400).json({ message: 'Please provide email and password' });
   }
 
   try {
     // Check for existing user
-    const existingUser = await client.query('SELECT * FROM users WHERE username = $1', [uname]);
+    const existingUser = await client.query('SELECT * FROM users WHERE username = $1', [username]);
     if (existingUser.rows.length > 0) {
       return res.status(409).json({ message: 'Username already exists' });
     }
@@ -52,7 +41,7 @@ app.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Insert user into database
-    await client.query('INSERT INTO users (username, password, user_type) VALUES ($1, $2, staff)', [uname, hashedPassword]);
+    await client.query('INSERT INTO users (username, password, user_type) VALUES ($1, $2, \'staff\')', [username, hashedPassword]);
 
     res.status(201).json({ message: 'Registration successful' });
   } catch (err) {
@@ -60,6 +49,17 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+
+// User schema (assuming it's already created in PostgreSQL)
+interface User {
+  id: number;
+  email: string;
+  password: string;
+}
+
+// Middleware to parse incoming data as JSON
+app.use(express.json());
 
 // Login endpoint
 app.post('/login', async (req, res) => {
@@ -91,3 +91,13 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Internal' })
   }
 })
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+
+// Catch-all route for unmatched routes
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});

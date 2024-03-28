@@ -18,8 +18,16 @@ const Signup: React.FC = () => {
       });
   
       if (!response.ok) {
-        const errorData = await response.json(); // Try parsing the error response
-        setError(errorData.message || 'Registration failed'); // Set specific error message or a generic one
+        // Check if the response is JSON
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          setError(errorData.message || 'Registration failed');
+        } else {
+          // Handle non-JSON responses (e.g., HTML)
+          const errorText = await response.text();
+          setError(`Registration failed: ${errorText}`);
+        }
       } else {
         const user = await response.json();
         console.log("Successful registration", user);
@@ -27,10 +35,9 @@ const Signup: React.FC = () => {
       }
     } catch (error) {
       console.error("Error registering user:", error);
-      setError('Registration failed'); // Consider a more informative error message
+      setError('Registration failed');
     }
   };
-
 
   return (
     <Grid container>
