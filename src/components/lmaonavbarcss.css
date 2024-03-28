@@ -1,0 +1,14 @@
+.uclogo {
+    img {
+        
+        height: 64px;
+        width: 117px;
+        padding: 20px;
+    }
+}
+
+.customNav {
+    height: 1362;
+    width: 500;
+    background-color: red;
+}
