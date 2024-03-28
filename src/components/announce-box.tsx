@@ -1,21 +1,26 @@
-import { Paper } from '@mui/material';
-import React, { ReactNode } from 'react';
+import { Paper, Typography } from '@mui/material';
+import React from 'react';
 
 interface AnnounceBoxProps {
-    children: ReactNode; // Define children prop as ReactNode type
+    title: string;
+    body: string;
 }
 
-const AnnounceBox: React.FC<AnnounceBoxProps> = ({ children }) => {
+const AnnounceBox: React.FC<AnnounceBoxProps> = ({ title, body }) => {
     return (
         <Paper
             sx={{
                 display: 'flex',
+                flexDirection: 'column', // Adjust to column layout to display title and body vertically
+                alignItems: 'center', // Center content horizontally
                 justifyContent: 'center',
-                minHeight: '800px',
+                minHeight: '200px',
                 marginTop: '20px', // Adjust this value to add the desired space
+                padding: '20px', // Add padding for spacing
             }}
         >
-            {children}
+            <Typography variant="h4">{title}</Typography>
+            <Typography>{body}</Typography>
         </Paper>
     );
 };

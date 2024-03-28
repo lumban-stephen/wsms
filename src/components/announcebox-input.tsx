@@ -2,7 +2,11 @@ import { Paper } from '@mui/material';
 import React, { useState } from 'react';
 import CreatePostModal from './create-post-modal';
 
-const DeptAnnounceBoxInput: React.FC = () => {
+interface DeptAnnounceBoxInputProps {
+  onAnnouncementCreate: (announcement: { title: string; body: string }) => void;
+}
+
+const DeptAnnounceBoxInput: React.FC<DeptAnnounceBoxInputProps> = ({ onAnnouncementCreate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -38,7 +42,7 @@ const DeptAnnounceBoxInput: React.FC = () => {
           Write an announcement here
         </div>
       </Paper>
-      <CreatePostModal open={isModalOpen} onClose={handleCloseModal}/>
+      <CreatePostModal open={isModalOpen} onClose={handleCloseModal} onAnnouncementCreate={onAnnouncementCreate} />
     </>
   );
 };
