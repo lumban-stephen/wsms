@@ -14,4 +14,6 @@ const LogoComponent: React.FC<LogoProps> = ({width, height}) => {
   );
 };
 
+
 export default LogoComponent;
+

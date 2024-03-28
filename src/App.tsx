@@ -7,6 +7,7 @@ import AdminDash from './pages/admin/admindash';
 import AdminMWSEmpty from './pages/admin/mainWSEmpty';
 import './App.css';
 
+
 function App() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
@@ -16,10 +17,6 @@ function App() {
 
   return (
     <div>
-      <Navbar activeTab={activeTab || ''} handleTabChange={handleTabChange} />
-      <header className="App-header">
-        <AdminMWSEmpty></AdminMWSEmpty>
-      </header>
     </div>
   );
 }
