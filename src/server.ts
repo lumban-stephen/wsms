@@ -33,18 +33,18 @@ app.use(express.json());
 
 // Registration endpoint
 app.post('/register', async (req, res) => {
-  const { email, password } = req.body;
+  const { uname, password } = req.body;
 
   // Basic input validation (add more as needed)
-  if (!email || !password) {
+  if (!uname || !password) {
     return res.status(400).json({ message: 'Please provide email and password' });
   }
 
   try {
     // Check for existing user
-    const existingUser = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    const existingUser = await client.query('SELECT * FROM users WHERE username = $1', [uname]);
     if (existingUser.rows.length > 0) {
-      return res.status(409).json({ message: 'Email already exists' });
+      return res.status(409).json({ message: 'Username already exists' });
     }
 
     // Hash password (use a strong hashing algorithm like bcrypt)
@@ -52,7 +52,7 @@ app.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Insert user into database
-    await client.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, hashedPassword]);
+    await client.query('INSERT INTO users (username, password, user_type) VALUES ($1, $2, staff)', [uname, hashedPassword]);
 
     res.status(201).json({ message: 'Registration successful' });
   } catch (err) {

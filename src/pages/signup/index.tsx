@@ -8,23 +8,27 @@ const Signup: React.FC = () => {
   const [error, setError] = useState('');
 
   const handleSignup = async () => {
-      try {
-          const response = await fetch('/signup', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ username, password })
-          });
-          if (!response.ok) {
-              throw new Error('Registration failed');
-          }
-          const user = await response.json();
-          console.log("Successful registration", user);
-      } catch (error) {
-          console.error("Error registering user:", error);
-          setError('Registration failed');
+    try {
+      const response = await fetch('/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json(); // Try parsing the error response
+        setError(errorData.message || 'Registration failed'); // Set specific error message or a generic one
+      } else {
+        const user = await response.json();
+        console.log("Successful registration", user);
+        // Handle successful registration (e.g., redirect to login page)
       }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      setError('Registration failed'); // Consider a more informative error message
+    }
   };
 
 
@@ -68,7 +72,7 @@ const Signup: React.FC = () => {
             </FormControl>
             {error && <FormHelperText error>{error}</FormHelperText>}
             <Button variant="contained" color="primary" onClick={handleSignup}>
-              Login
+              Sign up
             </Button>
           </div>
         </Container>
