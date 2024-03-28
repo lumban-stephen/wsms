@@ -12,13 +12,13 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             {path: "", element: <Login />},
-            {path: "/register", element: <Dept />},
-            {path: "/age", 
+            {path: "/register", element: <Register />},
+            {path: "/dept", 
                 element:(
                     <ProtectedRoute>
-                        <Register />
+                        <Dept />
                     </ProtectedRoute>) },
-            {path: "/food", 
+            {path: "/admin", 
                 element: (
                     <ProtectedRoute>
                         <Admin />
