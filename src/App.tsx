@@ -14,9 +14,6 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <NavBarDept activeTab={activeTab} handleTabChange={handleTabChange} />
-      </header>
       <DeptAnnounce/>
     </div>
   );
