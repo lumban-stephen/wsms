@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../assets/University-of-Cebu-Logo.png'; // Import your PNG logo
+import logo from '../assets/University-of-Cebu-Logo.png'
 
 interface LogoProps{
     width: number;
