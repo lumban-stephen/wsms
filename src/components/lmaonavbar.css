@@ -1,0 +1,7 @@
+.uclogo {
+    img {
+        flex: 1;
+        float: left;
+        padding: 15px;
+    }
+}

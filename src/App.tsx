@@ -1,13 +1,16 @@
 import React from 'react';
 import logo from './logo.svg';
 import Login from './pages/login';
+import Dept from './pages/dept';
+import Navbar from './components/lmaonavbar';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
+      <Navbar></Navbar>
       <header className="App-header">
-        <Login></Login>
+        <Dept></Dept>
       </header>
     </div>
   );
