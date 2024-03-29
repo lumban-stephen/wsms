@@ -1,12 +1,43 @@
 import React, { useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
-import prisma from '../../db/prisma';
 
-const Login: React.FC = () => {
+const Signup: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const handleSignup = async () => {
+    try {
+      const response = await fetch('/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+  
+      if (!response.ok) {
+        // Check if the response is JSON
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          setError(errorData.message || 'Registration failed');
+        } else {
+          // Handle non-JSON responses (e.g., HTML)
+          const errorText = await response.text();
+          setError(`Registration failed non-JSON response: ${errorText}`);
+        }
+      } else {
+        const user = await response.json();
+        console.log("Successful registration", user);
+        // Handle successful registration (e.g., redirect to login page)
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      setError('Registration failed');
+    }
+  };
 
   return (
     <Grid container>
@@ -25,13 +56,11 @@ const Login: React.FC = () => {
         <Container style={{ color: 'black', backgroundColor: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <div>
             <Typography variant= "h3" style={{ marginBottom: '15%', color: 'Black' }}>
-                Working Scholar Management System
+                Signup Page
             </Typography>
             
             <FormControl fullWidth>
-              <InputLabel htmlFor="username" shrink={!!username} focused={!!username}>
-                Username or Email
-              </InputLabel>
+              <InputLabel htmlFor="username" shrink={!!username} focused={!!username}>Username or Email</InputLabel>
               <TextField
                 id="username"
                 type="text"
@@ -49,8 +78,8 @@ const Login: React.FC = () => {
               />
             </FormControl>
             {error && <FormHelperText error>{error}</FormHelperText>}
-            <Button variant="contained" color="primary">
-              Login
+            <Button variant="contained" color="primary" onClick={handleSignup}>
+              Sign up
             </Button>
           </div>
         </Container>
@@ -59,4 +88,4 @@ const Login: React.FC = () => {
   );
 }
 
-export default Login;
+export default Signup;
