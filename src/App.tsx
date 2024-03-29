@@ -1,14 +1,13 @@
 import React from 'react';
 import logo from './logo.svg';
-import Login from './pages/login';
-import './App.css';
+import PendingRequestList from './components/pendingrequestlist';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <Login></Login>
-      </header>
+    <div >
+
+      <PendingRequestList></PendingRequestList>
+
     </div>
   );
 }
