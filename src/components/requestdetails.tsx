@@ -3,14 +3,12 @@ import { Box, Typography, Button } from '@mui/material';
 
 interface RequestDetailsProps {
   requestId: string;
-  requestName: string;
   requestType: string;
   quantity: number;
 }
 
 const RequestDetails: React.FC<RequestDetailsProps> = ({
   requestId,
-  requestName,
   requestType,
   quantity,
 }) => {
@@ -47,7 +45,6 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({
       </Box>
       <Box sx={{ mb: 2 }}>
         <Typography variant="body1">Request ID: {requestId}</Typography>
-        <Typography variant="body1">Request Name: {requestName}</Typography>
         <Typography variant="body1">Request Type: {requestType}</Typography>
         <Typography variant="body1">Quantity: {quantity}</Typography>
       </Box>

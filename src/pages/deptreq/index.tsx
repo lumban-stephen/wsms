@@ -2,31 +2,44 @@ import React, { useState } from 'react';
 import PendingRequestList from '../../components/pendingrequestlist';
 import RequestDetails from '../../components/requestdetails';
 import RequestWorkingScholar from '../../components/requestworkingscholar';
-import NavBar from '../../components/navbar';
+
+interface SelectedRequest {
+  requestId: string;
+  requestType: string;
+  quantity: number;
+}
 
 const DeptReq: React.FC = () => {
   const [showRequestDetails, setShowRequestDetails] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<SelectedRequest | null>(null);
+
+  const handleViewClick = (
+    requestId: string,
+    requestType: string,
+    quantity: number
+  ) => {
+    setShowRequestDetails(true);
+    setSelectedRequest({ requestId, requestType, quantity });
+  };
 
   return (
     <>
-    <NavBar activeTab={''} handleTabChange={function (tab: string): void {
-        throw new Error('Function not implemented.');
-      } }></NavBar>
-    <div style={{ display: 'flex' }}>
-      <PendingRequestList />
-      {showRequestDetails ? (
-        <RequestDetails
-          requestId="REQ001"
-          requestName="New Computers"
-          requestType="Replacement"
-          quantity={10}
-        />
-      ) : (
-        <RequestWorkingScholar />
-      )}
-    </div>
+      <div style={{ display: 'flex' }}>
+        <PendingRequestList onViewClick={handleViewClick} />
+        <div style={{ width: '75vw', padding: 2 }}>
+          {showRequestDetails && selectedRequest ? (
+            <RequestDetails
+              requestId={selectedRequest.requestId}
+              requestType={selectedRequest.requestType}
+              quantity={selectedRequest.quantity}
+            />
+          ) : (
+            <RequestWorkingScholar />
+          )}
+        </div>
+      </div>
     </>
   );
-}
+};
 
 export default DeptReq;

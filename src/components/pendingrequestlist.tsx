@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+// PendingRequestList.tsx
+import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import RequestDetails from './requestdetails';
 
 interface PendingRequestProps {
   title: string;
@@ -8,8 +8,12 @@ interface PendingRequestProps {
   requestType: string;
   status: string;
   requestId: string;
-  requestName: string;
   quantity: number;
+  onViewClick: (
+    requestId: string,
+    requestType: string,
+    quantity: number
+  ) => void;
 }
 
 const PendingRequest: React.FC<PendingRequestProps> = ({
@@ -18,13 +22,11 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
   requestType,
   status,
   requestId,
-  requestName,
   quantity,
+  onViewClick,
 }) => {
-  const [showDetails, setShowDetails] = useState(false);
-
   const handleViewClick = () => {
-    setShowDetails(true);
+    onViewClick(requestId, requestType, quantity);
   };
 
   return (
@@ -39,31 +41,28 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
         mb: 2,
       }}
     >
-      {showDetails ? (
-        <RequestDetails
-          requestId={requestId}
-          requestName={requestName}
-          requestType={requestType}
-          quantity={quantity}
-        />
-      ) : (
-        <>
-          <div>
-            <Typography variant="h6">{title}</Typography>
-            <Typography variant="body2">{date}</Typography>
-            <Typography variant="body2">Request Type: {requestType}</Typography>
-            <Typography variant="body2">Status: {status}</Typography>
-          </div>
-          <Button variant="contained" color="primary" onClick={handleViewClick}>
-            View
-          </Button>
-        </>
-      )}
+      <div>
+        <Typography variant="h6">{title}</Typography>
+        <Typography variant="body2">{date}</Typography>
+        <Typography variant="body2">Request Type: {requestType}</Typography>
+        <Typography variant="body2">Status: {status}</Typography>
+      </div>
+      <Button variant="contained" color="primary" onClick={handleViewClick}>
+        View
+      </Button>
     </Box>
   );
 };
 
-const PendingRequestList: React.FC = () => {
+interface PendingRequestListProps {
+  onViewClick: (
+    requestId: string,
+    requestType: string,
+    quantity: number
+  ) => void;
+}
+
+const PendingRequestList: React.FC<PendingRequestListProps> = ({ onViewClick }) => {
   const pendingRequests: any[] = [
     // Your pending request data
     {
@@ -72,16 +71,14 @@ const PendingRequestList: React.FC = () => {
       requestType: 'Replacement',
       status: 'Pending for approval',
       requestId: 'REQ001',
-      requestName: 'New Computers',
       quantity: 10,
     },
     {
-      title: 'School of Engineering',
+      title: 'College of Computer Studies',
       date: 'Mar 5, 2024',
       requestType: 'New Request',
       status: 'Under Review',
       requestId: 'REQ002',
-      requestName: 'Lab Equipment',
       quantity: 5,
     },
   ];
@@ -106,8 +103,8 @@ const PendingRequestList: React.FC = () => {
           requestType={request.requestType}
           status={request.status}
           requestId={request.requestId}
-          requestName={request.requestName}
           quantity={request.quantity}
+          onViewClick={onViewClick}
         />
       ))}
     </Box>
