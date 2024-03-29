@@ -20,7 +20,7 @@ body {
 }
 
 .App-header {
-  background-color: #282c34;
+ 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -32,6 +32,10 @@ body {
 
 .App-link {
   color: #61dafb;
+}
+
+.MuiInputBase-root.Mui-focused .MuiInputBase-input::placeholder {
+  opacity: 0;
 }
 
 @keyframes App-logo-spin {

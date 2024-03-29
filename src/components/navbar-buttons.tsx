@@ -48,27 +48,3 @@ const NavBarDept: React.FC<navbardeptProps> = ({activeTab, handleTabChange}) =>{
 }
 
 export default NavBarDept;
-
-
-//need in const
-
-
-//const [activeTab, setActiveTab] = useState('Home');
-//const handleTabChange = (tab: string) => {
-//setActiveTab(tab);
-//};
-
-//check git branch maintainWSListNew index.tsx
-
-//use navbar
-
-// <NavBarDept activeTab={activeTab} handleTabChange={handleTabChange}/>
-
-
-// show certain content on a tab
-// {activeTab === 'WorkingScholars' && (    
-// <>
-// content here
-// </>
-// )
-
