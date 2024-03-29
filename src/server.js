@@ -1,4 +1,8 @@
-require('dotenv').config(); // Load environment variables from .env file
+const express = require('express');
+const bodyParser = require('body-parser');
+const authRoutes = require('./routes/authRoutes'); // Import authRoutes
+const app = express();
+const port = 5000;
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -9,27 +13,11 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-// Fetch and log the list of tables from the database
-async function fetchTables() {
-  try {
-    const client = await pool.connect();
-    const result = await client.query(
-      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'"
-    );
-    const tables = result.rows.map(row => row.table_name);
-    console.log('List of tables:', tables);
-    client.release();
-  } catch (err) {
-    console.error('Error fetching tables', err);
-  }
-}
+module.exports = pool;
 
-fetchTables(); // Call the function to fetch and log tables
+app.use(bodyParser.json());
+app.use('/api', authRoutes); // Use authRoutes
 
-// Close the pool when the Node.js process is terminated
-process.on('SIGINT', () => {
-  pool.end(() => {
-    console.log('Pool has ended');
-    process.exit(0);
-  });
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
