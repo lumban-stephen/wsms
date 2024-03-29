@@ -66,6 +66,24 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
 const PendingRequestList: React.FC = () => {
   const pendingRequests: any[] = [
     // Your pending request data
+    {
+      title: 'College of Computer Studies',
+      date: 'Feb 12, 2024',
+      requestType: 'Replacement',
+      status: 'Pending for approval',
+      requestId: 'REQ001',
+      requestName: 'New Computers',
+      quantity: 10,
+    },
+    {
+      title: 'School of Engineering',
+      date: 'Mar 5, 2024',
+      requestType: 'New Request',
+      status: 'Under Review',
+      requestId: 'REQ002',
+      requestName: 'Lab Equipment',
+      quantity: 5,
+    },
   ];
 
   return (
