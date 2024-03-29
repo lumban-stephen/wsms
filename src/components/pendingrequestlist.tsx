@@ -1,11 +1,15 @@
-import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import RequestDetails from './requestdetails';
 
 interface PendingRequestProps {
   title: string;
   date: string;
   requestType: string;
   status: string;
+  requestId: string;
+  requestName: string;
+  quantity: number;
 }
 
 const PendingRequest: React.FC<PendingRequestProps> = ({
@@ -13,7 +17,16 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
   date,
   requestType,
   status,
+  requestId,
+  requestName,
+  quantity,
 }) => {
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleViewClick = () => {
+    setShowDetails(true);
+  };
+
   return (
     <Box
       sx={{
@@ -26,48 +39,45 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
         mb: 2,
       }}
     >
-      <div>
-        <Typography variant="h6">{title}</Typography>
-        <Typography variant="body2">{date}</Typography>
-        <Typography variant="body2">
-          Request Type: {requestType}
-        </Typography>
-        <Typography variant="body2">Status: {status}</Typography>
-      </div>
-      <Button variant="contained" color="primary">
-        View
-      </Button>
+      {showDetails ? (
+        <RequestDetails
+          requestId={requestId}
+          requestName={requestName}
+          requestType={requestType}
+          quantity={quantity}
+        />
+      ) : (
+        <>
+          <div>
+            <Typography variant="h6">{title}</Typography>
+            <Typography variant="body2">{date}</Typography>
+            <Typography variant="body2">Request Type: {requestType}</Typography>
+            <Typography variant="body2">Status: {status}</Typography>
+          </div>
+          <Button variant="contained" color="primary" onClick={handleViewClick}>
+            View
+          </Button>
+        </>
+      )}
     </Box>
   );
 };
 
 const PendingRequestList: React.FC = () => {
-  const pendingRequests = [
-    {
-      title: 'College of Computer Studies',
-      date: 'Feb 12, 2024',
-      requestType: 'Replacement',
-      status: 'Pending for approval',
-    },
-    {
-      title: 'School of Engineering',
-      date: 'Mar 5, 2024',
-      requestType: 'New Request',
-      status: 'Under Review',
-    },
-    // Add more pending requests as needed
+  const pendingRequests: any[] = [
+    // Your pending request data
   ];
 
   return (
     <Box
       sx={{
-        height: '100vh', // Set the height to 100% of the viewport height
+        height: '100vh',
         overflow: 'auto',
         width: '25vw',
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
         p: 2,
         display: 'flex',
-        flexDirection: 'column', // Add this line
+        flexDirection: 'column',
       }}
     >
       {pendingRequests.map((request, index) => (
@@ -77,6 +87,9 @@ const PendingRequestList: React.FC = () => {
           date={request.date}
           requestType={request.requestType}
           status={request.status}
+          requestId={request.requestId}
+          requestName={request.requestName}
+          quantity={request.quantity}
         />
       ))}
     </Box>
