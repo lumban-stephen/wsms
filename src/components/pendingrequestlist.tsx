@@ -23,7 +23,7 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        mb: 2, // Add margin bottom for spacing
+        mb: 2,
       }}
     >
       <div>
@@ -61,8 +61,11 @@ const PendingRequestList: React.FC = () => {
   return (
     <Box
       sx={{
-        maxHeight: 400, // Set a maximum height for the list
-        overflow: 'auto', // Enable scrolling when content exceeds max height
+        maxHeight: 400,
+        overflow: 'auto',
+        width: '25vw', // Set the width to 25% of the viewport width
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)', // Add a box shadow
+        p: 2, // Add some padding
       }}
     >
       {pendingRequests.map((request, index) => (

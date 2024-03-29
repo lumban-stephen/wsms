@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
-import './App.css';
-import { Outlet } from "react-router-dom";
-
+import PendingRequestList from './components/pendingrequestlist';
 
 function App() {
 
   return (
+    <div >
 
-    <div className="App">
-      <header className="App-header">
-        <Outlet />
-      </header>
+      <PendingRequestList></PendingRequestList>
+
     </div>
   );
 }
