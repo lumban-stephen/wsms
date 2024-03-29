@@ -4,7 +4,7 @@ import PendingRequestList from './components/pendingrequestlist';
 
 function App() {
   return (
-    <div >
+    <div style={{display: 'flex'}}>
 
       <PendingRequestList></PendingRequestList>
 

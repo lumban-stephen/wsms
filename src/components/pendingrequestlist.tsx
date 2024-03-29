@@ -61,11 +61,13 @@ const PendingRequestList: React.FC = () => {
   return (
     <Box
       sx={{
-        maxHeight: 400,
+        height: '100vh', // Set the height to 100% of the viewport height
         overflow: 'auto',
-        width: '25vw', // Set the width to 25% of the viewport width
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)', // Add a box shadow
-        p: 2, // Add some padding
+        width: '25vw',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+        p: 2,
+        display: 'flex',
+        flexDirection: 'column', // Add this line
       }}
     >
       {pendingRequests.map((request, index) => (
