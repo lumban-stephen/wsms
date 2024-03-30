@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
-import prisma from '../../db/prisma';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');

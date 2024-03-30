@@ -29,8 +29,14 @@ const Signup: React.FC = () => {
           setError(`Registration failed non-JSON response: ${errorText}`);
         }
       } else {
-        const user = await response.json();
-        console.log("Successful registration", user);
+        // Reset form fields and error state
+        setUsername('');
+        setPassword('');
+        setError('');
+
+        // Display success message (optional)
+        console.log("Successful registration");
+
         // Handle successful registration (e.g., redirect to login page)
       }
     } catch (error) {
@@ -51,7 +57,7 @@ const Signup: React.FC = () => {
           Lapu-Lapu and Mandaue
         </Typography>
       </Grid>
-      {/* Login Section */}
+      {/* Signup Section */}
       <Grid item xs={12} md={4}>
         <Container style={{ color: 'black', backgroundColor: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <div>
