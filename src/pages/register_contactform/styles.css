@@ -1,0 +1,9 @@
+.step {
+    display: none;
+    transition: opacity 0.5s ease-in-out; /* Define the transition effect */
+}
+
+.step.active {
+    display: block;
+    opacity: 1; /* Set opacity to 1 for the active step */
+}
