@@ -26,7 +26,7 @@ const Login: React.FC = () => {
           if (successfulLogin) {
             console.log('Login successful!');
             setIsAuthenticated(true);
-            navigate('/register');
+            navigate('/welcome');
           }
           setIsLoading(false); // Hide loading indicator
         }, 1500);
