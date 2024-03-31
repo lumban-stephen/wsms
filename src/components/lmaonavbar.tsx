@@ -89,7 +89,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
-                    onClick={() => {handleTabChange('Departments'); navigate('/dept')}}
+                    onClick={() => {handleTabChange('Departments'); navigate('/deptreq')}}
                 >
                     Departments
                 </Button>

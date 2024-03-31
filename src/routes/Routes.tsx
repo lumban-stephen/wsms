@@ -9,6 +9,7 @@ import Register from "../pages/register_contactform";
 import Welcome from "../pages/welcome";
 import MaintainWS from "../pages/maintainWS";
 import DeptAnnounce from "../pages/dept-announce";
+import DeptReq from "../pages/deptreq";
 
 export const router = createBrowserRouter([
     {
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
             {path: "/maintainWS", element: <MaintainWS />},
             {path: "/welcome", element: <Welcome />},
             {path: "/dept-announce", element: <DeptAnnounce />},
+            {path: "/deptreq", element: <DeptReq />},
         ]
     }
 ])

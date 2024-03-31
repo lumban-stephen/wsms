@@ -11,6 +11,7 @@ import DeptAnnounce from './pages/dept-announce';
 import MaintainWS from './pages/maintainWS';
 import Register from './pages/register_contactform';
 import Welcome from './pages/welcome';
+import DeptReq from './pages/deptreq';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,6 +34,7 @@ function App() {
           <Route path="/maintainWS" element={<MaintainWS />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/dept-announce" element={<DeptAnnounce />} />
+          <Route path="/deptreq" element={<DeptReq />} />
         </Routes>
         <Outlet />
       </div>
