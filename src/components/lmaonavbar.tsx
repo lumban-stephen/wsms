@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Logo from '../components/uclmLogo';
 import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid, Tooltip, IconButton } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../utils/AuthContext';
 
 interface NavBarProps {
     activeTab: string;
     handleTabChange: (tab: string) => void;
 }
 
+
+
+
+
 const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
     // Profile Menu Start
+    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -22,13 +29,18 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
 
     // User Menu Start
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-    
+    const navigate = useNavigate();
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
     };
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleLogout = () => {
+        navigate('/');
+        setIsAuthenticated(false);
+    }
     // User Menu End
 
     return (
@@ -47,7 +59,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Home' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Home')}
+                    onClick={() => {handleTabChange('Home'); navigate('/welcome')}}
                 >
                     Home
                 </Button>
@@ -57,7 +69,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Applicants' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Applicants')}
+                    onClick={() => {handleTabChange('Applicants'); navigate('/welcome')}}
                 >
                     Applicants
                 </Button>
@@ -67,7 +79,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Working Scholars' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Working Scholars')}
+                    onClick={() => {handleTabChange('Working Scholars'); navigate('/maintainWS')}}
                 >
                     Working Scholars
                 </Button>
@@ -77,7 +89,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Departments')}
+                    onClick={() => {handleTabChange('Departments'); navigate('/dept')}}
                 >
                     Departments
                 </Button>
@@ -87,7 +99,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
                     variant={activeTab === 'Announcements' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Announcements')}
+                    onClick={() => {handleTabChange('Announcements'); navigate('/dept-announce')}}
                 >
                     Announcements
                 </Button>
@@ -129,7 +141,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 >
                     <MenuItem onClick={handleClose}>Profile</MenuItem>
                     <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
                 
             </Box>
