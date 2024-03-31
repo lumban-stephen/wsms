@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
-import Login from './pages/login';
-import Register from './pages/register_contactform';
 import './App.css';
+import { Outlet } from "react-router-dom";
+
 
 function App() {
   return (
+
     <div className="App">
       <header className="App-header">
-        <Register></Register>
+        <Outlet />
       </header>
     </div>
   );
