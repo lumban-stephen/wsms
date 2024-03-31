@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Outlet } from "react-router-dom";
-
+import Navbar from './components/lmaonavbar';
+import { AuthContext } from './utils/AuthContext';
 
 function App() {
-  return (
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
 
-    <div className="App">
-      <header className="App-header">
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated}}>
+      <div className="App">
+        {isAuthenticated && <Navbar activeTab={activeTab || ''} handleTabChange={handleTabChange} />}
         <Outlet />
-      </header>
-    </div>
+      </div>
+    </AuthContext.Provider>
   );
 }
 

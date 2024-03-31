@@ -1,12 +1,45 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
-import prisma from '../../db/prisma';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../utils/AuthContext';
+import LoginSkeleton from '../../components/loginskeleton';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  localStorage.setItem('isLoggedIn', 'true');
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+  
+    try {
+      // Simulate backend validation (replace with actual backend call)
+      if (username === 'admin' && password === '123') {
+        setTimeout(() => {
+          const successfulLogin = Math.random() > 0.5; // Simulate success/failure
+          if (successfulLogin) {
+            console.log('Login successful!');
+            setIsAuthenticated(true);
+            navigate('/register');
+          }
+          setIsLoading(false); // Hide loading indicator
+        }, 1500);
+      } else {
+        setError('Invalid credentials');
+        setIsLoading(false); // Reset isLoading to false when login fails
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      setIsLoading(false); // Reset isLoading to false if an error occurs
+    }
+  };
+
 
   return (
     <Grid container>
@@ -27,7 +60,7 @@ const Login: React.FC = () => {
             <Typography variant= "h3" style={{ marginBottom: '15%', color: 'Black' }}>
                 Working Scholar Management System
             </Typography>
-            
+            <form onSubmit={handleLogin}>
             <FormControl fullWidth>
               <InputLabel htmlFor="username" shrink={!!username} focused={!!username}>
                 Username or Email
@@ -48,10 +81,15 @@ const Login: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
+            {isLoading ? (
+              <LoginSkeleton/>
+            ) : (
+              <Button type="submit" variant="contained" color="primary">
+                Login
+              </Button>
+            )}
             {error && <FormHelperText error>{error}</FormHelperText>}
-            <Button variant="contained" color="primary">
-              Login
-            </Button>
+            </form>
           </div>
         </Container>
       </Grid>

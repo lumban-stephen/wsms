@@ -1,3 +1,3 @@
 export interface UserType {
-    type: "admin" | "user" | "guest" // Add more types as needed
+    type: "admin" | "staff" | "ws" // Add more types as needed
   }
