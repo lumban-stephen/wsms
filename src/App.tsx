@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
-import './App.css';
-import { Outlet } from "react-router-dom";
-
+import PendingRequestList from './components/pendingrequestlist';
+import RequestDetails from './components/requestdetails';
+import RequestWorkingScholar from './components/requestworkingscholar';
+import DeptReq from './pages/deptreq';
 
 function App() {
   return (
-
-    <div className="App">
-      <header className="App-header">
-        <Outlet />
-      </header>
+    <div>
+      <DeptReq></DeptReq>
     </div>
   );
 }
