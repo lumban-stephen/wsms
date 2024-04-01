@@ -3,12 +3,12 @@ import Logo from '../components/uclmLogo';
 import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid, Tooltip, IconButton } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 
-interface NavBarProps {
-    activeTab: string;
-    handleTabChange: (tab: string) => void;
-}
+// interface NavBarProps {
+    
+//     handleTabChange: (tab: string) => void;
+// }
 
-const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
+const Lmaonavbar: React.FC = () => {
     // Profile Menu Start
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -46,8 +46,8 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Home">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Home' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Home')}
+                    // variant='contained'
+                    // onClick={() => handleTabChange('Home')}
                 >
                     Home
                 </Button>
@@ -56,8 +56,8 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Applicants">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Applicants' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Applicants')}
+                    // variant='contained'
+                    // onClick={() => handleTabChange('Applicants')}
                 >
                     Applicants
                 </Button>
@@ -66,8 +66,8 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Working Scholars">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Working Scholars' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Working Scholars')}
+                    // variant='contained'
+                    // onClick={() => handleTabChange('Working Scholars')}
                 >
                     Working Scholars
                 </Button>
@@ -76,8 +76,8 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Departments">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Departments')}
+                    // variant='contained'
+                    // onClick={() => handleTabChange('Departments')}
                 >
                     Departments
                 </Button>
@@ -86,8 +86,8 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Announcements">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Announcements' ? 'contained' : 'outlined'}
-                    onClick={() => handleTabChange('Announcements')}
+                    // variant='contained'
+                    // onClick={() => handleTabChange('Announcements')}
                 >
                     Announcements
                 </Button>

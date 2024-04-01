@@ -8,4 +8,4 @@ const AdminDash: React.FC = () => {
   );
 }
 
-export default AdminDash;
+export default AdminDash;   
