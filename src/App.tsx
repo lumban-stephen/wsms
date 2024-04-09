@@ -6,7 +6,9 @@ import Navbar from './components/lmaonavbar';
 import AdminDash from './pages/admin/admindash';
 import AdminMWSEmpty from './pages/adminMainWSEmpty/index';
 import AdminMWSLists from './pages/adminMainWSLists/index';
-// import Modal from './components/viewModalPending';
+import Modal from './components/viewModalPending';
+import WSList from './pages/adminNew/MainWSLists';
+import TableWSList from './components/TableWSList';
 import './App.css';
 
 function App() {
@@ -19,9 +21,9 @@ function App() {
   return (
     <div>
       <Navbar/>
-      <header className="App-header">
-        <AdminMWSLists></AdminMWSLists>
-      </header>
+      
+      <TableWSList></TableWSList>
+      
     </div>
   );
 }
