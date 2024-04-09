@@ -5,7 +5,7 @@ import Dept from './pages/dept';
 import Navbar from './components/lmaonavbar';
 import AdminDash from './pages/admin/admindash';
 import AdminMWSEmpty from './pages/adminMainWSEmpty/index';
-import AdminMWSLists from './pages/admin/mainWSLists';
+import AdminMWSLists from './pages/adminMainWSLists/index';
 import './App.css';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
     <div>
       <Navbar/>
       <header className="App-header">
-        <AdminMWSEmpty></AdminMWSEmpty>
+        <AdminMWSLists></AdminMWSLists>
       </header>
     </div>
   );
