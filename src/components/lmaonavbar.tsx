@@ -58,7 +58,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Home">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Home' ? 'contained' : 'outlined'}
+                    variant={activeTab === 'Home' ? 'contained' : 'text'}
                     onClick={() => {handleTabChange('Home'); navigate('/welcome')}}
                 >
                     Home
@@ -68,7 +68,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Applicants">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Applicants' ? 'contained' : 'outlined'}
+                    variant={activeTab === 'Applicants' ? 'contained' : 'text'}
                     onClick={() => {handleTabChange('Applicants'); navigate('/welcome')}}
                 >
                     Applicants
@@ -78,7 +78,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Working Scholars">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Working Scholars' ? 'contained' : 'outlined'}
+                    variant={activeTab === 'Working Scholars' ? 'contained' : 'text'}
                     onClick={() => {handleTabChange('Working Scholars'); navigate('/maintainWS')}}
                 >
                     Working Scholars
@@ -88,7 +88,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Departments">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
+                    variant={activeTab === 'Departments' ? 'contained' : 'text'}
                     onClick={() => {handleTabChange('Departments'); navigate('/deptreq')}}
                 >
                     Departments
@@ -98,7 +98,7 @@ const Lmaonavbar: React.FC<NavBarProps> = ({ activeTab, handleTabChange }) => {
                 <Tooltip title="Announcements">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    variant={activeTab === 'Announcements' ? 'contained' : 'outlined'}
+                    variant={activeTab === 'Announcements' ? 'contained' : 'text'}
                     onClick={() => {handleTabChange('Announcements'); navigate('/dept-announce')}}
                 >
                     Announcements

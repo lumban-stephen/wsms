@@ -7,7 +7,7 @@ import Admin from "../pages/admin";
 // import ProtectedRoute from "../utils/ProtectedRoute";
 import Register from "../pages/register_contactform";
 import Welcome from "../pages/welcome";
-import MaintainWS from "../pages/maintainWS";
+import MaintainWS from "../pages/maintainWS/OrigIndex";
 import DeptAnnounce from "../pages/dept-announce";
 import DeptReq from "../pages/deptreq";
 
