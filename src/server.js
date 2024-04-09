@@ -1,19 +1,23 @@
 require('dotenv').config({ path: __dirname + '/../.env' });
 const express = require('express');
-const bcrypt = require('bcryptjs'); // Import bcryptjs directly
+const cors = require('cors'); // Import CORS middleware
 const jwt = require('jsonwebtoken');
-const pool = require('./routes/authRoutes');
-const router = express.Router();
+const authRoutes = require('./routes/authRoutes');
 const app = express();
 
-app.use(express.json()); // Add JSON parsing middleware
+// Enable CORS for all origins
+app.use(cors());
 
-app.use('/auth', require('./routes/authRoutes')); // Mount authRoutes under /auth
+// Middleware for JSON parsing
+app.use(express.json());
 
-const port = process.env.PORT || 3000;
+// Mount authRoutes under /auth
+ app.use('/auth', authRoutes);
+
+const port = 5432;
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
-module.exports = router;
+module.exports = app;
