@@ -6,13 +6,13 @@ const router = express.Router();
 
 const pool = new Pool({
   user: "postgres",
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
+  host: "localhost",
+  database: "wsms",
   password: "10000max",
   port: 5432,
 });
 
-router.post('auth/signup', async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
     const client = await pool.connect();
     const { username, password } = req.body;
@@ -24,8 +24,8 @@ router.post('auth/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Consider using a prepared statement for better security
-    const query = 'INSERT INTO users (username, password) VALUES ($1, $2)';
-    const values = [username, hashedPassword];
+    const query = 'INSERT INTO users (username, password, user_type) VALUES ($1, $2, $3)';
+    const values = [username, hashedPassword, "staff"];
     await pool.query(query, values);
 
     res.status(201).json({ message: 'User created successfully' });

@@ -9,7 +9,7 @@ const Signup: React.FC = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch('/signup', {
+      const response = await fetch('http://localhost:3000/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -20,6 +20,8 @@ const Signup: React.FC = () => {
       if (!response.ok) {
         const errorData = await response.json(); // Attempt to parse JSON for detailed errors
         const errorMessage = errorData.message || response.statusText || 'Registration failed';
+        
+        console.log(errorMessage);
         setError(errorMessage);
         return; // Exit the function to prevent further execution
       }
@@ -29,6 +31,7 @@ const Signup: React.FC = () => {
   
     } catch (error) {
       console.error("Error registering user:", error);
+      console.log(error);
       setError('Registration failed. Please try again.');
     }
   };

@@ -14,7 +14,7 @@ app.use(express.json());
 // Mount authRoutes under /auth
  app.use('/auth', authRoutes);
 
-const port = 5432;
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
