@@ -43,4 +43,39 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  // 2. Input Validation (optional)
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required' });
+  }
+
+  // 3. Fetch user from database
+  try {
+    const user = await User.findOne({ username }); // Replace with your database query
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
+
+    // 4. Compare password hash (assuming password is hashed in your database)
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
+
+    // 5. Login successful (generate JWT, etc.)
+    // Implement your logic to generate a JWT token or handle successful login
+    // You can include user data in the response body or token payload
+    
+    res.json({ message: 'Login successful', user }); // Replace with your response
+
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 module.exports = router;
