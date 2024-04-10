@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
-
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const pool = new Pool({
@@ -25,7 +25,7 @@ router.post('/signup', async (req, res) => {
 
     // Consider using a prepared statement for better security
     const query = 'INSERT INTO users (username, password, user_type) VALUES ($1, $2, $3)';
-    const values = [username, hashedPassword, "staff"];
+    const values = [username, hashedPassword, "staff"]; // Replace "staff" with user type retrieval logic
     await pool.query(query, values);
 
     res.status(201).json({ message: 'User created successfully' });
@@ -46,35 +46,48 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  // 2. Input Validation (optional)
+  // 1. Input Validation (optional)
   if (!username || !password) {
     return res.status(400).json({ message: 'Username and password are required' });
   }
 
-  // 3. Fetch user from database
+  // 2. Fetch user from database
   try {
-    const user = await User.findOne({ username }); // Replace with your database query
+    const client = await pool.connect();
+    const query = 'SELECT * FROM users WHERE username = $1';
+    const values = [username];
+    const result = await pool.query(query, values);
+
+    const user = result.rows[0]; // Assuming you get a single user by username
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    // 4. Compare password hash (assuming password is hashed in your database)
+    // 3. Compare password hash (assuming password is hashed in your database)
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    // 5. Login successful (generate JWT, etc.)
-    // Implement your logic to generate a JWT token or handle successful login
-    // You can include user data in the response body or token payload
-    
-    res.json({ message: 'Login successful', user }); // Replace with your response
+    // 4. Login successful (generate JWT)
+    const payload = {
+      userId: user.id,
+      username: user.username,
+      userType: user.user_type, // Assuming 'user_type' is a field in your user table
+    };
+    const token = jwt.sign(payload, process.env.SECRET_KEY);
+
+    res.json({ message: 'Login successful', token });
 
   } catch (error) {
     console.error('Error logging in user:', error);
     res.status(500).json({ message: 'Internal server error' });
+  } finally {
+    if (client) {
+      await client.release();
+    }
   }
 });
 
