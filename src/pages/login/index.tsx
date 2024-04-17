@@ -4,6 +4,7 @@ import LoginImage from '../../assets/uclm-banner.jpg';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import LoginSkeleton from '../../components/loginskeleton';
+import { AuthContext } from '../../utils/AuthContext';
 
 type UserType = "admin" | "staff" | "ws";
 
@@ -18,7 +19,7 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
+  const { setIsAuthenticated } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User>();
   const navigate = useNavigate();
@@ -62,7 +63,8 @@ const Login: React.FC = () => {
   
         // Store user data in state or context for further use
         setUser(decodedToken);
-  
+        //authentication for navbar
+        setIsAuthenticated(true); // Update isAuthenticated state
         // Redirect to the profile page or another authenticated route
         navigate('/dept-announce');
       }
