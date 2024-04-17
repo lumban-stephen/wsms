@@ -3,6 +3,7 @@ import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextF
 import LoginImage from '../../assets/uclm-banner.jpg';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
+import LoginSkeleton from '../../components/loginskeleton';
 
 type UserType = "admin" | "staff" | "ws";
 
@@ -63,7 +64,7 @@ const Login: React.FC = () => {
         setUser(decodedToken);
   
         // Redirect to the profile page or another authenticated route
-        navigate('/dept');
+        navigate('/dept-announce');
       }
     } catch (error) {
       console.error('Error logging in user:', error);
@@ -112,17 +113,14 @@ const Login: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
-            {isLoading ? (
+            {loading ? (
               <LoginSkeleton/>
             ) : (
-              <Button type="submit" variant="contained" color="primary">
-                Login
-              </Button>
-            )}
-            {error && <FormHelperText error>{error}</FormHelperText>}
-            <Button variant="contained" color="primary" onClick={handleLogin}>
+              <Button variant="contained" color="primary" onClick={handleLogin}>
               Login
             </Button>
+            )}
+            {error && <FormHelperText error>{error}</FormHelperText>}
           </div>
         </Container>
       </Grid>

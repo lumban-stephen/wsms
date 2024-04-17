@@ -11,6 +11,7 @@ import Welcome from "../pages/welcome";
 import MaintainWS from "../pages/maintainWS/OrigIndex";
 import DeptAnnounce from "../pages/dept-announce";
 import DeptReq from "../pages/deptreq";
+import ProtectedRoute from '../utils/ProtectedRoute';
 
 export const router = createBrowserRouter([
     {
@@ -23,8 +24,8 @@ export const router = createBrowserRouter([
             {path: "/register", element: <Register />},
             {path: "/maintainWS", element: <MaintainWS />},
             {path: "/welcome", element: <Welcome />},
-            {path: "/dept-announce", element: <DeptAnnounce />},
-            {path: "/deptreq", element: <DeptReq />},
+            {path: "/dept-announce", element: <ProtectedRoute allowedRoles={['staff']}><DeptAnnounce /></ProtectedRoute> }, // Allow Staff role
+            {path: "/deptreq", element: <ProtectedRoute allowedRoles={['staff']}><DeptReq /></ProtectedRoute> }, // Allow Staff role
             {path: "/admin", element: <ProtectedRoute allowedRoles={['admin']}><Admin /></ProtectedRoute> }, // Allow Admin role
         ]
     }
