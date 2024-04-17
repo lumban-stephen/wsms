@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
 import { jwtDecode } from 'jwt-decode';
@@ -17,6 +17,7 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User>();
   const navigate = useNavigate();
@@ -91,7 +92,6 @@ const Login: React.FC = () => {
             <Typography variant= "h3" style={{ marginBottom: '15%', color: 'Black' }}>
                 Working Scholar Management System
             </Typography>
-            
             <FormControl fullWidth>
               <InputLabel htmlFor="username" shrink={!!username} focused={!!username}>
                 Username or Email
@@ -112,6 +112,13 @@ const Login: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
+            {isLoading ? (
+              <LoginSkeleton/>
+            ) : (
+              <Button type="submit" variant="contained" color="primary">
+                Login
+              </Button>
+            )}
             {error && <FormHelperText error>{error}</FormHelperText>}
             <Button variant="contained" color="primary" onClick={handleLogin}>
               Login
