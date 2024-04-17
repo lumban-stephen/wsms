@@ -8,7 +8,7 @@ const verifyJWT = (req, res, next) => {
   }
 
   try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedToken = jwt.verify(token, 'M23y?_+Sb[ynL`_WBpp2LOzbOct&rq');
     req.user = decodedToken; // Attach user data to request object for further use
     next();
   } catch (error) {

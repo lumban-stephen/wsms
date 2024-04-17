@@ -1,19 +1,37 @@
 import React, { useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+
+type UserType = "admin" | "staff" | "ws";
+
+interface User {
+  user_id: number;
+  username: string;
+  password: string;
+  user_type: UserType;
+}
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User>();
+  const navigate = useNavigate();
 
-  const handleLogin = async () => {  
+  const handleLogin = async () => {
     try {
-  
+      // Validate input fields
       if (!username || !password) {
         setError('Username and password are required');
-        return; // Exit the function if fields are empty
+        return;
       }
+  
+      // Show a loading state or spinner to indicate the login process
+      setLoading(true);
+      setError('');
   
       const response = await fetch('http://localhost:3000/auth/login', {
         method: 'POST',
@@ -25,21 +43,32 @@ const Login: React.FC = () => {
   
       if (!response.ok) {
         const errorData = await response.json();
-        const errorMessage = errorData.message || response.statusText;
+        const errorMessage = errorData.error || response.statusText;
         setError(errorMessage);
-        return; // Exit the function on failed login
+      } else {
+        const { token } = await response.json();
+  
+        // Store the JWT token in local storage or state management solution
+        localStorage.setItem('token', token);
+        console.log('token is: ' + token)
+  
+        // Decode the token to get the user information
+        const decodedToken = jwtDecode<User>(token);
+        const { user_id, username, password, user_type } = decodedToken;
+
+        console.log('decoded token is: ' + decodedToken)
+  
+        // Store user data in state or context for further use
+        setUser(decodedToken);
+  
+        // Redirect to the profile page or another authenticated route
+        navigate('/dept');
       }
-  
-      const user = await response.json();
-      console.log('Login successful:', user);
-  
-      // Handle successful login (e.g., store user data, navigate to profile page)
-      // Your implementation here (e.g., store JWT token, redirect to profile)
     } catch (error) {
       console.error('Error logging in user:', error);
-      setError('Login failed. Please try again.');
+      setError('An unexpected error occurred. Please try again.');
     } finally {
-      // Optionally, clear any loading state or error messages after login attempt
+      setLoading(false);
     }
   };
 
