@@ -3,12 +3,12 @@ import logo from './logo.svg';
 import PendingRequestList from './components/pendingrequestlist';
 import RequestDetails from './components/requestdetails';
 import RequestWorkingScholar from './components/requestworkingscholar';
-import DeptReq from './pages/deptreq';
+import DeptAnnounce from './pages/dept-announce';
 
 function App() {
   return (
     <div>
-      <DeptReq></DeptReq>
+      <DeptAnnounce></DeptAnnounce>
     </div>
   );
 }
