@@ -5,3 +5,4 @@ declare module 'jwt-decode' {
     }
     export { jwtDecode, InvalidTokenError };
   }
+  

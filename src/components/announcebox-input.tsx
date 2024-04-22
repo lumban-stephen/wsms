@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import CreatePostModal from './create-post-modal';
 
 interface DeptAnnounceBoxInputProps {
-  onAnnouncementCreate: (announcement: { title: string; body: string }) => void;
+  onAnnouncementCreate: (announcement: { title: string; message: string }) => void;
 }
 
 const DeptAnnounceBoxInput: React.FC<DeptAnnounceBoxInputProps> = ({ onAnnouncementCreate }) => {

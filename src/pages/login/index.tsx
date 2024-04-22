@@ -1,12 +1,80 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
-import prisma from '../../db/prisma';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import LoginSkeleton from '../../components/loginskeleton';
+import { AuthContext } from '../../utils/AuthContext';
+
+type UserType = "admin" | "staff" | "ws";
+
+interface User {
+  user_id: number;
+  username: string;
+  password: string;
+  user_type: UserType;
+}
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { setIsAuthenticated } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User>();
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      // Validate input fields
+      if (!username || !password) {
+        setError('Username and password are required');
+        return;
+      }
+  
+      // Show a loading state or spinner to indicate the login process
+      setLoading(true);
+      setError('');
+  
+      const response = await fetch('http://localhost:3000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || response.statusText;
+        setError(errorMessage);
+      } else {
+        const { token } = await response.json();
+  
+        // Store the JWT token in local storage or state management solution
+        localStorage.setItem('token', token);
+        console.log('token is: ' + token)
+  
+        // Decode the token to get the user information
+        const decodedToken = jwtDecode<User>(token);
+        const { user_id, username, password, user_type } = decodedToken;
+
+        console.log('decoded token is: ' + decodedToken)
+  
+        // Store user data in state or context for further use
+        setUser(decodedToken);
+        //authentication for navbar
+        setIsAuthenticated(true); // Update isAuthenticated state
+        // Redirect to the profile page or another authenticated route
+        navigate('/dept-announce');
+      }
+    } catch (error) {
+      console.error('Error logging in user:', error);
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Grid container>
@@ -27,7 +95,6 @@ const Login: React.FC = () => {
             <Typography variant= "h3" style={{ marginBottom: '15%', color: 'Black' }}>
                 Working Scholar Management System
             </Typography>
-            
             <FormControl fullWidth>
               <InputLabel htmlFor="username" shrink={!!username} focused={!!username}>
                 Username or Email
@@ -48,10 +115,14 @@ const Login: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
-            {error && <FormHelperText error>{error}</FormHelperText>}
-            <Button variant="contained" color="primary">
+            {loading ? (
+              <LoginSkeleton/>
+            ) : (
+              <Button variant="contained" color="primary" onClick={handleLogin}>
               Login
             </Button>
+            )}
+            {error && <FormHelperText error>{error}</FormHelperText>}
           </div>
         </Container>
       </Grid>
