@@ -5,19 +5,19 @@ import React, { useState } from 'react';
 interface CreatePostModalProps {
   open: boolean;
   onClose: () => void;
-  onAnnouncementCreate: (announcement: { title: string; body: string }) => void; // Function to handle created announcement
+  onAnnouncementCreate: (announcement: { title: string; message: string }) => void; // Function to handle created announcement
 }
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, onAnnouncementCreate }) => {
-  const [announcement, setAnnouncement] = useState({ title: '', body: '' });
+  const [announcement, setAnnouncement] = useState({ title: '', message: '' });
 
   const handleCreatePost = () => {
-    if (announcement.title.trim() !== '' && announcement.body.trim() !== '') {
+    if (announcement.title.trim() !== '' && announcement.message.trim() !== '') {
       // Call the function to handle the created announcement
       onAnnouncementCreate(announcement);
 
       // Reset the form and close the modal
-      setAnnouncement({ title: '', body: '' });
+      setAnnouncement({ title: '', message: '' });
       onClose();
     } else {
       console.error('Title and body must not be empty');
@@ -26,7 +26,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, onAnno
 
   const handleCancel = () => {
     // Reset the form when canceling
-    setAnnouncement({ title: '', body: '' });
+    setAnnouncement({ title: '', message: '' });
 
     // Close the modal
     onClose();
@@ -47,7 +47,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, onAnno
         <Paper sx={{ padding: '20px', borderRadius: '8px' }}>
           <h1>Create an announcement</h1>
           <TextField label="Title" fullWidth value={announcement.title} name="title" onChange={handleInputChange} />
-          <TextField label="Body" fullWidth multiline rows={10} value={announcement.body} name="body" onChange={handleInputChange} />
+          <TextField label="Message" fullWidth multiline rows={10} value={announcement.message} name="message" onChange={handleInputChange} />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
             <Button variant="contained" color="primary" onClick={handleCreatePost} sx={{ marginRight: '10px' }}>Submit</Button>
             <Button variant="outlined" onClick={handleCancel}>Cancel</Button>

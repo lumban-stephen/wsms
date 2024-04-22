@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const authRoutes = require('./routes/authRoutes');
+const announcement = require('./routes/announcements');
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // Mount authRoutes under /auth
 app.use('/auth', authRoutes);
+app.use('/api-announce', announcement);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

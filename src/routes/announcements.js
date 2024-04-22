@@ -12,7 +12,7 @@ const pool = new Pool({
 });
 
 // Get all announcements
-router.get('/api/announcements', async (req, res) => {
+router.get('/dept-announce', async (req, res) => {
     try {
       const allAnnouncements = await pool.query('SELECT * FROM announcements'); // Assuming your table is named 'announcements'
       res.json(allAnnouncements.rows);
@@ -22,13 +22,13 @@ router.get('/api/announcements', async (req, res) => {
     }
   });
 
-router.post('/api/announcements', async (req, res) => {
+router.post('/dept-announce', async (req, res) => {
    try {
-     const { title, body } = req.body; // Destructure title and body from request body
+     const { title, message } = req.body; // Destructure title and body from request body
   
      const newAnnouncement = await pool.query(
-       'INSERT INTO announcements (title, body) VALUES ($1, $2) RETURNING *',
-       [title, body]
+       'INSERT INTO announcements (announcement_title, message) VALUES ($1, $2) RETURNING *',
+       [title, message]
     );
   
      res.json(newAnnouncement.rows[0]); // Send the newly created announcement back to frontend

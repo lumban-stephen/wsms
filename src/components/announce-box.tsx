@@ -3,10 +3,10 @@ import React from 'react';
 
 interface AnnounceBoxProps {
     title: string;
-    body: string;
+    message: string;
 }
 
-const AnnounceBox: React.FC<AnnounceBoxProps> = ({ title, body }) => {
+const AnnounceBox: React.FC<AnnounceBoxProps> = ({ title, message }) => {
     return (
         <Paper
             sx={{
@@ -20,7 +20,7 @@ const AnnounceBox: React.FC<AnnounceBoxProps> = ({ title, body }) => {
             }}
         >
             <Typography variant="h4">{title}</Typography>
-            <Typography>{body}</Typography>
+            <Typography>{message}</Typography>
         </Paper>
     );
 };
