@@ -2,7 +2,7 @@ import { Paper, Typography, Box, Grid, Container, Button, Avatar, Divider, Menu 
 import NavBar from '../../components/navbar'
 import React, { useState } from 'react';
 
-const MaintainWS: React.FC = () => {
+const MaintainApplicants: React.FC = () => {
     //Profile Menu Start
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -104,4 +104,4 @@ const MaintainWS: React.FC = () => {
     );
 }
 
-export default MaintainWS;
+export default MaintainApplicants;

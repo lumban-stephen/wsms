@@ -9,7 +9,7 @@ import Signup from './pages/signup';
 import { Login } from '@mui/icons-material';
 import Dept from './pages/dept';
 import DeptAnnounce from './pages/dept-announce';
-import MaintainWS from './pages/maintainWS/OrigIndex';
+import MaintainWS from './pages/maintain-applicants/OrigIndex';
 import Register from './pages/register_contactform';
 import Welcome from './pages/welcome';
 import DeptReq from './pages/deptreq';
