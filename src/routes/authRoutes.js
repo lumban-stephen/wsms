@@ -100,51 +100,62 @@ router.post('/register', async (req, res) => {
   } = req.body;
 
   // 1. Extract First and Last Name from completeName
-  const nameParts = completeName.split(' ');
-  const firstName = nameParts[0];
-  const lastName = nameParts.slice(1).join(' ');
+  const [firstName, ...lastNameParts] = completeName.split(' ');
+  const lastName = lastNameParts.join(' ');
 
-  // 2. Create a transaction to ensure data integrity
   try {
+    // 2. Start a transaction
     await pool.query('BEGIN');
 
     // 3. Insert applicant data (names table first due to foreign key)
-    console.log("Die 1")
-    const insertNameResult = await pool.query('INSERT INTO names (fname, name_id) VALUES ($1, DEFAULT)', [firstName]);
-    const nameId = insertNameResult.rows[0].name_id;
-    console.log(nameId);
-
-    const insertApplicantResult = await pool.query(
-      'INSERT INTO applicant (name_fk, school_name, address, course, age, year, contact, parent_fk, status) VALUES ($1, $2, $3, $4, $5, $6, $7, null, $8)',
-      [nameId, school, address, currentCourse, age, null, currentNumber, null, 'Registered']
+    const nameResult = await pool.query(
+      'INSERT INTO names (fname, lname) VALUES ($1, $2) RETURNING name_id',
+      [firstName, lastName]
     );
+    const nameId = nameResult.rows[0].name_id;
 
-    const applicantId = insertApplicantResult.rows[0].applicant_id;
+    const applicantResult = await pool.query(
+      'INSERT INTO applicants (name_fk, school_name, address, course, age, year, contact, parent_fk, status) VALUES ($1, $2, $3, $4, $5, $6, $7, null, $8) RETURNING applicant_id',
+      [
+        nameId,
+        school,
+        address,
+        currentCourse,
+        age,
+        null,
+        currentNumber,
+        'pending',
+      ]
+    );
+    const applicantId = applicantResult.rows[0].applicant_id;
 
     // 4. Insert parent data (if provided)
     if (fatherName && fathersOccupation) {
-      const insertGuardianResult = await pool.query(
-        'INSERT INTO guardians (contact, name_fk, occupation) VALUES ($1, $2, $3)',
-        [null, applicantId, fathersOccupation] // Contact can be added later
+      const guardianResult = await pool.query(
+        'INSERT INTO guardians (contact, name_fk, occupation) VALUES ($1, $2, $3) RETURNING guardian_id',
+        [null, nameId, fathersOccupation]
       );
-      const guardianId = insertGuardianResult.rows[0].guardian_id;
-
-      await pool.query('INSERT INTO parents (mother_fk, father_fk) VALUES (null, $1)', [guardianId]);
+      const fatherId = guardianResult.rows[0].guardian_id;
+      await pool.query('INSERT INTO parents (mother_fk, father_fk) VALUES (null, $1)', [
+        fatherId,
+      ]);
     }
 
     if (motherName && mothersOccupation) {
-      const insertGuardianResult = await pool.query(
-        'INSERT INTO guardians (contact, name_fk, occupation) VALUES ($1, $2, $3)',
-        [null, applicantId, mothersOccupation] // Contact can be added later
+      const guardianResult = await pool.query(
+        'INSERT INTO guardians (contact, name_fk, occupation) VALUES ($1, $2, $3) RETURNING guardian_id',
+        [null, nameId, mothersOccupation]
       );
-      const guardianId = insertGuardianResult.rows[0].guardian_id;
-
-      await pool.query('INSERT INTO parents (mother_fk, father_fk) VALUES ($1, null)', [guardianId]);
+      const motherId = guardianResult.rows[0].guardian_id;
+      await pool.query('INSERT INTO parents (mother_fk, father_fk) VALUES ($1, null)', [
+        motherId,
+      ]);
     }
 
     // 5. Commit the transaction
     await pool.query('COMMIT');
-    res.json({ message: 'Working scholar registration successful!' });
+    res.json({ message: 'Working scholar registration successful!',
+              redirectURL: '/login' });
   } catch (error) {
     console.error('Error registering working scholar:', error);
     await pool.query('ROLLBACK');

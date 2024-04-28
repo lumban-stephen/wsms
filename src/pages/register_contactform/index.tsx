@@ -51,9 +51,13 @@ const Register: React.FC = () => {
             body: JSON.stringify(workingScholarData),
           });
     
+          const data = await response.json();
+
           if (response.ok) {
-            console.log('Working scholar registration successful!');
-            // Handle successful registration (e.g., clear form, show success message)
+            if (data.redirectUrl) {
+                // Redirect to the specified URL
+                window.location.href = data.redirectUrl;
+              }
           } else {
             console.error('Error registering working scholar:', await response.text());
             // Handle registration errors (e.g., display error message)
