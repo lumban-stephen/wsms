@@ -1,7 +1,7 @@
-import React from 'react';
+// PaperContainer.tsx
+import React, { ReactNode } from 'react';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/system';
-
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     margin: "40px 80px 10px",
@@ -15,13 +15,16 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     minHeight: '73vh'
 }));
 
-const PaperContainer: React.FC = () => {
+interface PaperContainerProps {
+    children: ReactNode;
+}
+
+const PaperContainer: React.FC<PaperContainerProps> = ({ children }) => {
     return (
-        <StyledPaper>
-            
+        <StyledPaper elevation={24}>
+            {children}
         </StyledPaper>
     );
-
 }
 
 export default PaperContainer;

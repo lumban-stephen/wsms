@@ -9,6 +9,8 @@ import AdminMWSLists from './pages/adminMainWSLists/index';
 import Modal from './components/viewModalPending';
 import WSList from './pages/adminNew/MainWSLists';
 import TableWSList from './components/TableWSList';
+import MainWS from './pages/adminNew/MainWS';
+import MainWSLists from './pages/adminNew/MainWSLists';
 import './App.css';
 
 function App() {
@@ -22,7 +24,8 @@ function App() {
     <div>
       <Navbar/>
       
-      <TableWSList></TableWSList>
+      <MainWS></MainWS>
+      {/* <MainWSLists></MainWSLists> */}
       
     </div>
   );

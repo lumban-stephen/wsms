@@ -46,7 +46,7 @@ const Lmaonavbar: React.FC = () => {
                 <Tooltip title="Home">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    // variant='contained'
+                    // variant={activeTab === 'Home' ? 'contained' : 'text'}
                     // onClick={() => handleTabChange('Home')}
                 >
                     Home
@@ -56,7 +56,7 @@ const Lmaonavbar: React.FC = () => {
                 <Tooltip title="Applicants">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    // variant='contained'
+                    // variant={activeTab === 'Home' ? 'contained' : 'text'}
                     // onClick={() => handleTabChange('Applicants')}
                 >
                     Applicants
@@ -66,7 +66,7 @@ const Lmaonavbar: React.FC = () => {
                 <Tooltip title="Working Scholars">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    // variant='contained'
+                    // variant={activeTab === 'Home' ? 'contained' : 'text'}
                     // onClick={() => handleTabChange('Working Scholars')}
                 >
                     Working Scholars
@@ -76,7 +76,7 @@ const Lmaonavbar: React.FC = () => {
                 <Tooltip title="Departments">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    // variant='contained'
+                    // variant={activeTab === 'Home' ? 'contained' : 'text'}
                     // onClick={() => handleTabChange('Departments')}
                 >
                     Departments
@@ -86,7 +86,7 @@ const Lmaonavbar: React.FC = () => {
                 <Tooltip title="Announcements">
                 <Button
                     sx={{ marginRight: 5, color: 'white' }}
-                    // variant='contained'
+                    // variant={activeTab === 'Home' ? 'contained' : 'text'}
                     // onClick={() => handleTabChange('Announcements')}
                 >
                     Announcements
