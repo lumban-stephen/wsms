@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
 import { jwtDecode } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginSkeleton from '../../components/loginskeleton';
 import { AuthContext } from '../../utils/AuthContext';
 
@@ -78,7 +78,6 @@ const Login: React.FC = () => {
 
   return (
     <Grid container>
-      {/* Image Section */}
       <Grid item xs={12} md={8} style={{ position: 'relative' }}>
         <img src={LoginImage} alt="Login banner" style={{ width: '100%', height: '100vh', objectFit: 'cover' }} />
         <Typography variant="h3" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white' }}>
@@ -88,7 +87,6 @@ const Login: React.FC = () => {
           Lapu-Lapu and Mandaue
         </Typography>
       </Grid>
-      {/* Login Section */}
       <Grid item xs={12} md={4}>
         <Container style={{ color: 'black', backgroundColor: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <div>
@@ -122,8 +120,12 @@ const Login: React.FC = () => {
               Login
             </Button>
             )}
+            <Typography variant="body1" style={{ position: 'absolute', bottom: '10%', left: '92%', transform: 'translate(-50%, -50%)', color: 'white' }}> 
+                <Link to={'/register'}> Apply for Working Scholarship </Link> 
+            </Typography>
             {error && <FormHelperText error>{error}</FormHelperText>}
           </div>
+          
         </Container>
       </Grid>
     </Grid>

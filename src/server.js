@@ -13,7 +13,6 @@ app.use(cors());
 // Middleware for JSON parsing
 app.use(express.json());
 
-// Mount authRoutes under /auth
 app.use('/auth', authRoutes);
 app.use('/api-announce', announcement);
 

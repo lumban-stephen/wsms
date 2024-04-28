@@ -19,6 +19,7 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             {path: "", element: <Login />},
+            {path: "/register", element: <Register />},
             {path: "/signup", element: <Signup />},
             {path: "/dept", element: <ProtectedRoute allowedRoles={['staff']}><Dept /></ProtectedRoute> }, // Allow Staff role
             {path: "/register", element: <Register />},
