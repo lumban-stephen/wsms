@@ -28,7 +28,7 @@ const getStatusColor = (status: string): string => {
         case 'Suspended':
             return 'red';
         default:
-            return 'black';
+            return 'gray';
     }
 };
 
@@ -41,12 +41,15 @@ const TableWSList: React.FC = () => {
     const [selectedRow, setSelectedRow] = useState<any>(null); // State to store the selected row data
 
     // Example data for the table
-    const rows = [
+    let rows = [
         { id: 1, name: 'Gregory House', course: 'BSCS', department: 'College of Computer Studies', contact: '09123456789', start: new Date(2024, 3, 28), end: new Date(2025, 3, 28), status: 'Renewed' },
         { id: 2, name: 'John Wick', course: 'BSA', department: 'College of Business and Accountancy', contact: '09876543210', start: new Date(2024, 2, 15), end: new Date(2025, 2, 15), status: 'Pending' },
         { id: 3, name: 'Bunta Fujiwara', course: 'BSMT', department: 'College of Marine Transportation', contact: '09121234567', start: new Date(2024, 1, 10), end: new Date(2025, 1, 10), status: 'Retired' },
         { id: 4, name: 'Ryo Saeba', course: 'BSIT', department: 'College of Computer Studies', contact: '09121234567', start: new Date(2024, 1, 10), end: new Date(2025, 1, 10), status: 'Suspended' },
     ];
+
+    // Sort rows by ID in descending order
+    rows.sort((a, b) => b.id - a.id);
 
     // Function to handle the "View" button click
     const handleView = (row: any) => {
