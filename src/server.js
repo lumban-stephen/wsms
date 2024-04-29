@@ -4,6 +4,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const authRoutes = require('./routes/authRoutes');
 const announcement = require('./routes/announcements');
+const applicants = require('./routes/applicants')
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/api-announce', announcement);
+app.use('/api/applicants', applicants);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

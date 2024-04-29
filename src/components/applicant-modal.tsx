@@ -1,10 +1,30 @@
 // Modal.jsx
-import React, { useState } from 'react';
-import styles from '../assets/styles.module.css'
+import React from 'react';
+import styles from '../assets/styles.module.css';
 
-const [isOpen, setIsOpen] = useState();
+enum Gender {
+  Male = "male",
+  Female = "female"
+}
 
-const ApplicantModal: React.FC<any> = ({ isOpen, onClose, user }) => {
+interface Applicant {
+  id: number;
+  name: string;
+  course: string;
+  age: number;
+  gender: Gender;
+  contact: number;
+  registrationDate: Date;
+  status: string;
+}
+
+interface ApplicantModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  applicant: Applicant;
+}
+
+const ApplicantModal: React.FC<ApplicantModalProps> = ({ isOpen, onClose, applicant }) => {
   if (!isOpen) return null;
 
   return (
@@ -15,8 +35,8 @@ const ApplicantModal: React.FC<any> = ({ isOpen, onClose, user }) => {
         </span>
         <div className={styles.userInfo}>
           <div className={styles.userAvatar} />
-          <h3>{user.name}</h3>
-          <p>{user.age}</p>
+          <h3>{applicant.name}</h3>
+          <p>{applicant.age}</p>
         </div>
         <div className={styles.formFields}>
           <div className={styles.formField}>
