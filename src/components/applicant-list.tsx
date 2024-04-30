@@ -1,25 +1,29 @@
 import { Box, Typography, Button, TableHead, TableRow, TableCell, TableContainer, Table, Paper, TableBody } from "@mui/material";
 import { useState } from "react";
-import ApplicantModal from "./applicant-modal";
+import ApplicantModal from "./applicant-modal"; // Import ApplicantModal component
 import { Applicant } from "../utils/interfaces";
+
+const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
+const [isModalOpen, setIsModalOpen] = useState(false);
 
 interface ApplicantListProps {
   applicants: Applicant[];
-  handleViewApplicant: (applicant: Applicant) => void; // Function to handle view applicant action
+  setApplicants: (applicants: Applicant[]) => void; // Function to update applicant state
+  handleViewApplicant: (applicant: Applicant) => void;
 }
 
-const ApplicantList: React.FC<ApplicantListProps> = ({ applicants }) => {
-  const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const handleViewApplicant = (applicant: Applicant) => {
+  setSelectedApplicant(applicant);
+  setIsModalOpen(true);
+};
 
-  const handleViewApplicant = (applicant: Applicant) => {
-    setSelectedApplicant(applicant);
-    setIsModalOpen(true);
-  };
-
+const ApplicantList: React.FC<ApplicantListProps> = ({ applicants, setApplicants, handleViewApplicant }) => {
   const handleCloseModal = () => {
     setSelectedApplicant(null);
     setIsModalOpen(false);
+  };
+
+  const handleApplicantUpdate = () => {
   };
 
   return (
@@ -74,7 +78,12 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ applicants }) => {
         </Table>
       </TableContainer>
       {selectedApplicant && (
-        <ApplicantModal isOpen={isModalOpen} onClose={handleCloseModal} applicant={selectedApplicant} />
+        <ApplicantModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          applicant={selectedApplicant}
+          onApplicantUpdate={handleApplicantUpdate} // Pass callback for applicant update
+        />
       )}
     </>
   );

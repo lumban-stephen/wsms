@@ -30,4 +30,26 @@ router.get('/maintain-applicants', async (req, res) => {
     }
   });
 
+  router.post('/maintain-applicants', async (req, res) => {
+    try {
+      const { applicant_fk } = req.body;
+  
+      // Database connection logic (replace with your actual database interaction)
+      const database = await connectToDatabase(); // Replace with your connection logic
+      const result = await database.query(
+        'INSERT INTO working_scholars (applicant_fk) VALUES ($1)',
+        [applicant_fk]
+      );
+  
+      if (result.rowCount === 1) {
+        res.status(201).json({ message: 'Applicant added to working scholars successfully!' });
+      } else {
+        res.status(500).json({ message: 'Error adding applicant to working scholars' });
+      }
+    } catch (error) {
+      console.error('Error adding working scholar:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
 module.exports = router;

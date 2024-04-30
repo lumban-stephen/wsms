@@ -17,7 +17,6 @@ const MaintainApplicants: React.FC = () => {
         const response = await fetch('http://localhost:3000/applicants/maintain-applicants');
         if (!response.ok) {
           throw new Error('Failed to fetch applicants');
-          console.error(error);
         }
         const data = await response.json();
         setApplicants(data);
@@ -27,23 +26,22 @@ const MaintainApplicants: React.FC = () => {
         setIsLoading(false);
       }
     };
-
     fetchApplicants();
   }, []);
 
   const handleViewApplicant = (applicant: Applicant) => {
-    setSelectedApplicant(applicant); // Set selected applicant
+    setSelectedApplicant(applicant);
   };
 
   const handleCloseModal = () => {
-    setSelectedApplicant(null); // Clear selected applicant
+    setSelectedApplicant(null);
   };
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  console.log(applicants)
+  console.log(applicants);
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', width: '100%' }}>
@@ -53,13 +51,17 @@ const MaintainApplicants: React.FC = () => {
           {/* Active Tab Content */}
           <>
             {/* Applicant List Component */}
-            <ApplicantList applicants={applicants} handleViewApplicant={handleViewApplicant} />
+            <ApplicantList applicants={applicants} setApplicants={setApplicants} handleViewApplicant={handleViewApplicant} />
           </>
           {/* Applicant Modal */}
           {selectedApplicant && (
-            <ApplicantModal isOpen={!!selectedApplicant} // Ensure truthy value for isOpen
+            <ApplicantModal
+              isOpen={!!selectedApplicant}
               onClose={handleCloseModal}
               applicant={selectedApplicant}
+              onApplicantUpdate={(updatedApplicant: Applicant) => {
+                throw new Error('Function not implemented.');
+              }}
             />
           )}
         </Paper>

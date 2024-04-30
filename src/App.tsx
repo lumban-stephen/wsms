@@ -9,7 +9,7 @@ import Signup from './pages/signup';
 import { Login } from '@mui/icons-material';
 import Dept from './pages/dept';
 import DeptAnnounce from './pages/dept-announce';
-import MaintainWS from './pages/maintain-applicants/OrigIndex';
+import MaintainWS from './pages/maintain-applicants';
 import Register from './pages/register_contactform';
 import Welcome from './pages/welcome';
 import DeptReq from './pages/deptreq';
@@ -26,17 +26,6 @@ function App() {
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
       <div className="App">
         {isAuthenticated && <Navbar activeTab={activeTab || ''} handleTabChange={handleTabChange} />}
-        <Routes>
-          {/* Optimized Route Definitions */}
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dept" element={<Dept />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/maintainWS" element={<MaintainWS />} />
-          <Route path="/welcome" element={<Welcome />} />
-          <Route path="/dept-announce" element={<DeptAnnounce />} />
-          <Route path="/deptreq" element={<DeptReq />} />
-        </Routes>
         <Outlet />
       </div>
     </AuthContext.Provider>
