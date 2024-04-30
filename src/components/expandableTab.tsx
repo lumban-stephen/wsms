@@ -86,8 +86,9 @@ export default function ExpandableTab() {
           textAlign: 'left'
         }}
       >
-        <h4>College of Computer Studies <br /> Preferences
-        </h4>
+        <p>
+          College 
+        </p>
       </Button>
 
       <StyledMenu
