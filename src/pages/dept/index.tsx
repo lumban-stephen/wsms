@@ -24,8 +24,7 @@ const Dept: React.FC = () => {
             <NavBar activeTab={activeTab} handleTabChange={handleTabChange}></NavBar>
             {/*Content Per*/}                               
             <Box style={{backgroundColor:'white', height:'87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>       
-                {/*use navbar*/}
-                  
+                {/*use navbar*/}         
                     {activeTab === 'WorkingScholars' && (
                         <>
                           <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>
@@ -45,8 +44,7 @@ const Dept: React.FC = () => {
                             </Box>
                             </Paper>
                         </>
-                    )}
-                
+                    )}     
             </Box>
         </Box>
     );

@@ -1,8 +1,10 @@
 import { Paper, Typography, Box, Grid, Container, Button, Avatar, Divider, Menu } from '@mui/material';
 import NavBar from '../../components/navbar'
+import ExpandableTab from '../../components/expandableTab';
 import React, { useState } from 'react';
 
 const MaintainWS: React.FC = () => {
+
     //Profile Menu Start
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -13,6 +15,7 @@ const MaintainWS: React.FC = () => {
         setAnchorEl(null);
     };
     //Profile Menu End
+
     //Tab Swithing Start
     const [activeTab, setActiveTab] = useState('Home');
     const handleTabChange = (tab: string) => {
@@ -103,20 +106,19 @@ const MaintainWS: React.FC = () => {
                     )}
                     {activeTab == 'Departments' && (
                         <>
-                        <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%', borderBottom: '1px solid #818181', height: '10%' }}>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Name</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Course</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Age</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Gender</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Contact</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Register Date</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Status</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Action</Typography>
-                            </Box>
+                        <Box sx={{ p: 3, borderRadius: '20px', display: 'flex', flexDirection: 'row', width:'100%', minHeight:'80vh', justifyContent: 'space-between'}}>
+                            <ExpandableTab></ExpandableTab>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '70%', borderBottom: '1px solid #818181', height: '10%' }}>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Name</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Gender</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Course</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Age</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>SKills</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Action</Typography>
+                                </Box>
                             {/* Content */}
-                            {}
-                        </Paper>
+                            
+                        </Box>
                         </>
                     )}
             </Box>
