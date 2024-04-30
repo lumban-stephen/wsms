@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
 import LoginSkeleton from '../../components/loginskeleton';
 import { AuthContext } from '../../utils/AuthContext';
+import { decode } from 'punycode';
 
 type UserType = "admin" | "staff" | "ws";
 
@@ -66,7 +67,15 @@ const Login: React.FC = () => {
         //authentication for navbar
         setIsAuthenticated(true); // Update isAuthenticated state
         // Redirect to the profile page or another authenticated route
-        navigate('/dept-announce');
+        if(decodedToken.user_type == "staff") {
+          navigate('/dept-announce');
+        }else if(decodedToken.user_type == "admin"){
+          navigate('/maintain-applicants');
+        }else {
+          navigate('/welcome');
+        }
+
+        
       }
     } catch (error) {
       console.error('Error logging in user:', error);

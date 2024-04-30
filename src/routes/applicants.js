@@ -1,5 +1,5 @@
 const express = require('express');
-const app = express();
+const router = express.Router();
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -12,22 +12,22 @@ const pool = new Pool({
   });
 
 // Middleware to parse JSON request bodies
-app.use(express.json());
+router.use(express.json());
 
 // Endpoint to get all applicants
-app.get('/api/applicants', async (req, res) => {
-  try {
-    const query = 'SELECT * FROM applicants';
-    const { rows } = await pool.query(query);
-    res.json(rows);
-  } catch (error) {
-    console.error('Error fetching applicants:', error);
-    res.status(500).json({ error: 'An error occurred while fetching applicants' });
-  }
-});
+router.get('/maintain-applicants', async (req, res) => {
+    try {
+      const query = `
+        SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name
+        FROM applicants a
+        INNER JOIN names n ON a.name_fk = n.name_id;
+      `;
+      const { rows } = await pool.query(query);
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching applicants:', error);
+      res.status(500).json({ error: 'An error occurred while fetching applicants' });
+    }
+  });
 
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = router;

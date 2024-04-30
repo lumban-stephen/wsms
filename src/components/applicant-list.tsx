@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, TableHead, TableRow, TableCell, TableContainer, Table, Paper, TableBody } from "@mui/material";
 import { useState } from "react";
 import ApplicantModal from "./applicant-modal";
 import { Applicant } from "../utils/interfaces";
@@ -22,41 +22,59 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ applicants }) => {
     setIsModalOpen(false);
   };
 
-  function getStatusColor(status: string): import("csstype").Property.Color | undefined {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%', borderBottom: '1px solid #818181', height: '10%' }}>
-        {/* Header row for applicant details */}
-        {/* ... */}
-      </Box>
-      {applicants.length > 0 ? (
-        <Box style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          {applicants.map(applicant => (
-            <Box key={applicant.id} sx={{ display: 'flex', width: '100%', flexDirection: 'row', borderBottom: '1px solid #818181', padding: '20px', alignItems: 'center' }}>
-              {/* Applicant details */}
-              {/* ... */}
-              <Button variant="outlined" style={{ flex: '0.8', textAlign: 'center', backgroundColor: '#0975bc', color: 'white' }} onClick={() => handleViewApplicant(applicant)}>
-                View
-              </Button>
-            </Box>
-          ))}
-        </Box>
-      ) : (
-        <Box style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography variant='h5' style={{ textAlign: 'center' }}>
-            No Applicants Found!
-          </Typography>
-        </Box>
-      )}
+      <TableContainer component={Paper} sx={{ width: '100%' }}>
+        <Table sx={{ width: '100%' }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Course</TableCell>
+              <TableCell>Age</TableCell>
+              <TableCell>Gender</TableCell>
+              <TableCell>Contact</TableCell>
+              <TableCell>Registration Date</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          {applicants.length > 0 ? (
+            <TableBody>
+              {applicants.map((applicant) => (
+                <TableRow key={applicant.applicant_id}>
+                  <TableCell>{applicant.full_name}</TableCell>
+                  <TableCell>{applicant.course}</TableCell>
+                  <TableCell>{applicant.age}</TableCell>
+                  <TableCell>{applicant.gender}</TableCell>
+                  <TableCell>{applicant.contact}</TableCell>
+                  <TableCell>{new Date().toLocaleDateString()}</TableCell>
+                  <TableCell>{applicant.status}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      style={{ backgroundColor: "#0975bc", color: "white" }}
+                      onClick={() => handleViewApplicant(applicant)}
+                    >
+                      View
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <TableRow>
+              <TableCell colSpan={8} align="center">
+                <Typography variant="h5" style={{ textAlign: 'center' }}>
+                  No Applicants Found!
+                </Typography>
+              </TableCell>
+            </TableRow>
+          )}
+        </Table>
+      </TableContainer>
       {selectedApplicant && (
-        <ApplicantModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          applicant={selectedApplicant}
-        />
+        <ApplicantModal isOpen={isModalOpen} onClose={handleCloseModal} applicant={selectedApplicant} />
       )}
     </>
   );

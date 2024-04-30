@@ -14,9 +14,10 @@ const MaintainApplicants: React.FC = () => {
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
-        const response = await fetch('/api/applicants');
+        const response = await fetch('http://localhost:3000/applicants/maintain-applicants');
         if (!response.ok) {
           throw new Error('Failed to fetch applicants');
+          console.error(error);
         }
         const data = await response.json();
         setApplicants(data);
@@ -41,6 +42,8 @@ const MaintainApplicants: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  console.log(applicants)
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', width: '100%' }}>

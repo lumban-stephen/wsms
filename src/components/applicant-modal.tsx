@@ -1,22 +1,7 @@
 // Modal.jsx
 import React from 'react';
 import styles from '../assets/styles.module.css';
-
-enum Gender {
-  Male = "male",
-  Female = "female"
-}
-
-interface Applicant {
-  id: number;
-  name: string;
-  course: string;
-  age: number;
-  gender: Gender;
-  contact: number;
-  registrationDate: Date;
-  status: string;
-}
+import { Applicant } from '../utils/interfaces';
 
 interface ApplicantModalProps {
   isOpen: boolean;
@@ -35,25 +20,25 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({ isOpen, onClose, applic
         </span>
         <div className={styles.userInfo}>
           <div className={styles.userAvatar} />
-          <h3>{applicant.name}</h3>
+          <h3>{applicant.full_name}</h3>
           <p>{applicant.age}</p>
         </div>
         <div className={styles.formFields}>
           <div className={styles.formField}>
             <label>Address</label>
-            <input type="text" placeholder="Enter address" />
+            <input type="text" placeholder="Enter address" value={applicant.address || ''} />
           </div>
           <div className={styles.formField}>
             <label>Last School Attended</label>
-            <input type="text" placeholder="Enter last school attended" />
+            <input type="text" placeholder="Enter last school attended" value={applicant.school_name || ''}/>
           </div>
           <div className={styles.formField}>
             <label>Facebook Account</label>
-            <input type="text" placeholder="Enter Facebook account" />
+            <input type="text" placeholder="Enter Facebook account" value={applicant.school_name || ''}/>
           </div>
           <div className={styles.formField}>
             <label>Contact Number</label>
-            <input type="text" placeholder="Enter contact number" />
+            <input type="text" placeholder="Enter contact number" value={applicant.contact || ''} />
           </div>
         </div>
         <div className={styles.modalActions}>

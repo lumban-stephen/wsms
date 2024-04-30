@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/api-announce', announcement);
-app.use('/api/applicants', applicants);
+app.use('/applicants', applicants);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
