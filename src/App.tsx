@@ -9,10 +9,11 @@ import Signup from './pages/signup';
 import { Login } from '@mui/icons-material';
 import Dept from './pages/dept';
 import DeptAnnounce from './pages/dept-announce';
-import MaintainWS from './pages/maintainWS/OrigIndex';
+import MaintainWS from './pages/maintainWS/index';
 import Register from './pages/register_contactform';
 import Welcome from './pages/welcome';
 import DeptReq from './pages/deptreq';
+import ApplicantEx from './pages/maintainWS/ApplicantsEx'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,23 +24,26 @@ function App() {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
-      <div className="App">
-        {isAuthenticated && <Navbar activeTab={activeTab || ''} handleTabChange={handleTabChange} />}
-        <Routes>
-          {/* Optimized Route Definitions */}
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dept" element={<Dept />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/maintainWS" element={<MaintainWS />} />
-          <Route path="/welcome" element={<Welcome />} />
-          <Route path="/dept-announce" element={<DeptAnnounce />} />
-          <Route path="/deptreq" element={<DeptReq />} />
-        </Routes>
-        <Outlet />
-      </div>
-    </AuthContext.Provider>
+    <div>
+      <MaintainWS></MaintainWS>
+    </div>
+    // <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    //   <div className="App">
+    //     {isAuthenticated && <Navbar activeTab={activeTab || ''} handleTabChange={handleTabChange} />}
+    //     <Routes>
+    //       {/* Optimized Route Definitions */}
+    //       <Route path="/" element={<Login />} />
+    //       <Route path="/signup" element={<Signup />} />
+    //       <Route path="/dept" element={<Dept />} />
+    //       <Route path="/register" element={<Register />} />
+    //       <Route path="/maintainWS" element={<MaintainWS />} />
+    //       <Route path="/welcome" element={<Welcome />} />
+    //       <Route path="/dept-announce" element={<DeptAnnounce />} />
+    //       <Route path="/deptreq" element={<DeptReq />} />
+    //     </Routes>
+    //     <Outlet />
+    //   </div>
+    // </AuthContext.Provider>
   );
 }
 
