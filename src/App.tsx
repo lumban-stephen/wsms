@@ -1,14 +1,17 @@
 import React from 'react';
 import logo from './logo.svg';
-import Login from './pages/login';
+import Navbar from './components/MWSNavbar'
+import PaperStyle from './components/MWSPaper'
+import TableStyle from './components/MWSTable'
+import MaintainWS from './pages/admin/MaintainWS'
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <Login></Login>
-      </header>
+    <div>
+      <Navbar/>
+      <MaintainWS></MaintainWS>
+      
     </div>
   );
 }
