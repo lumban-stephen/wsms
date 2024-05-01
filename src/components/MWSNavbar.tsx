@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Logo from '../components/uclmLogo';
-import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid, Tooltip, IconButton } from '@mui/material';
+import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid, Tooltip} from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 
 // interface NavBarProps {

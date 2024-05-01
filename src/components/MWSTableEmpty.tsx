@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Table, TableHead, TableRow, TableCell, TableBody, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Typography, Table, TableHead, TableRow, TableCell } from '@mui/material';
 import { styled } from '@mui/system';
 
 const TableHeadStyle = styled(TableHead)(({ theme }) => ({
@@ -9,12 +9,6 @@ const TableHeadStyle = styled(TableHead)(({ theme }) => ({
 
 const TableCellStyle = styled(TableCell)(({ theme }) => ({
     fontWeight: "bold",
-    flex: '1',
-    textAlign: 'center',
-    fontSize: "20px"
-}));
-
-const TableCellStyleRow = styled(TableCell)(({ theme }) => ({
     flex: '1',
     textAlign: 'center',
     fontSize: "20px"
@@ -40,12 +34,10 @@ const MWSTableEmpty: React.FC = () => {
                         <TableCellStyle>Action</TableCellStyle>
                     </TableRow>
                 </TableHeadStyle>
-                <TableBody>
-                <Box style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Typography variant='h6' fontWeight='bold'>Empty</Typography>
-                            </Box>
-                </TableBody>
             </Table>
+            <Box style={{ flex: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Typography variant='h6' fontWeight='bold'>Empty Record</Typography>
+            </Box>
         </>
     );
 }
