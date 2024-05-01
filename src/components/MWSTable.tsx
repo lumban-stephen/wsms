@@ -207,7 +207,7 @@ const MWSTable: React.FC = () => {
                                     <Button variant="contained" sx={{ marginRight: 3}} color="primary" onClick={() => console.log("Update Info")}>
                                         Update Info
                                     </Button>
-                                    <Button variant="contained" sx={{ marginRight: 3}} color="error" onClick={() => console.log("Suspend")}>
+                                    <Button variant="contained" sx={{ marginRight: 3}} color="error" onClick={() => handleSuspend()}>
                                         Suspend
                                     </Button>
                                 </div>
@@ -228,8 +228,8 @@ const MWSTable: React.FC = () => {
                                    </div>
                                 </>
                             )}
-                    <IconButton aria-label="close" color="primary" onClick={handleClose} sx={{ position: 'absolute', top: '8px', right: '8px' }}>
-                        <CloseIcon />
+                    <IconButton aria-label="close" color="primary" size="large" onClick={handleClose} sx={{ position: 'absolute', top: '8px', right: '8px' }}>
+                        <CloseIcon fontSize="inherit"/>
                     </IconButton>
                 </DialogActions>
             </Paper>
