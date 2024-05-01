@@ -11,7 +11,7 @@ function App() {
   return (
     <div>
       <Navbar/>
-      <MaintainWSEmpty></MaintainWSEmpty>
+      <MaintainWS></MaintainWS>
       
     </div>
   );
