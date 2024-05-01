@@ -14,4 +14,5 @@ export interface Applicant {
     status: string;
     address: string;
     school_name: string;
+    fbAccount: string;
 }

@@ -1,29 +1,25 @@
 import { Box, Typography, Button, TableHead, TableRow, TableCell, TableContainer, Table, Paper, TableBody } from "@mui/material";
 import { useState } from "react";
-import ApplicantModal from "./applicant-modal"; // Import ApplicantModal component
+import ApplicantModal from "./applicant-modal";
 import { Applicant } from "../utils/interfaces";
-
-const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
-const [isModalOpen, setIsModalOpen] = useState(false);
 
 interface ApplicantListProps {
   applicants: Applicant[];
-  setApplicants: (applicants: Applicant[]) => void; // Function to update applicant state
+  setApplicants: (applicants: Applicant[]) => void;
   handleViewApplicant: (applicant: Applicant) => void;
 }
 
-const handleViewApplicant = (applicant: Applicant) => {
-  setSelectedApplicant(applicant);
-  setIsModalOpen(true);
-};
-
 const ApplicantList: React.FC<ApplicantListProps> = ({ applicants, setApplicants, handleViewApplicant }) => {
+  const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleCloseModal = () => {
     setSelectedApplicant(null);
     setIsModalOpen(false);
   };
 
   const handleApplicantUpdate = () => {
+    // Implement applicant update logic here
   };
 
   return (
@@ -82,7 +78,7 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ applicants, setApplicants
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           applicant={selectedApplicant}
-          onApplicantUpdate={handleApplicantUpdate} // Pass callback for applicant update
+          onApplicantUpdate={handleApplicantUpdate}
         />
       )}
     </>

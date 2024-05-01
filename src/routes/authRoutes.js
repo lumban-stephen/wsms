@@ -18,13 +18,28 @@ router.post('/signup', async (req, res) => {
   try {
     const client = await pool.connect();
     const { username, password } = req.body;
+    console.log(req.body)
+
     if (!username || !password) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const query = 'INSERT INTO users (username, password, user_type) VALUES ($1, $2, $3)';
-    const values = [username, hashedPassword, 'admin'];
-    await client.query(query, values); // Use await when executing queries
+
+    // Retrieve the most recently added ws_id from the working_scholars table
+    const getLatestWsIdQuery = 'SELECT ws_id FROM working_scholars ORDER BY ws_id DESC LIMIT 1';
+    const latestWsIdResult = await client.query(getLatestWsIdQuery);
+
+    if (latestWsIdResult.rows.length === 0) {
+      return res.status(400).json({ error: 'No working scholars found' });
+    }
+
+    const ws_id = latestWsIdResult.rows[0].id;
+
+    const query = 'INSERT INTO users (username, password, user_type, userdetail_fk) VALUES ($1, $2, $3, $4)';
+    const values = [username, hashedPassword, 'ws', ws_id];
+    await client.query(query, values);
+
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
     console.error('Error signing up user:', error);

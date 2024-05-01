@@ -16,6 +16,7 @@ const ApproveApplicantBox: React.FC<ApproveApplicantBoxProps> = ({ onApprove, on
         padding: 2,
         borderRadius: 1,
         boxShadow: 2,
+        zIndex: 50
       }}
     >
       <Typography variant="body1" gutterBottom>

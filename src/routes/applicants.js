@@ -34,9 +34,7 @@ router.get('/maintain-applicants', async (req, res) => {
     try {
       const { applicant_fk } = req.body;
   
-      // Database connection logic (replace with your actual database interaction)
-      const database = await connectToDatabase(); // Replace with your connection logic
-      const result = await database.query(
+      const result = await pool.query(
         'INSERT INTO working_scholars (applicant_fk) VALUES ($1)',
         [applicant_fk]
       );
