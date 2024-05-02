@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 
 const MaintainWS: React.FC = () => {
 
+    ///////////////////////////////////////////////////////////////////////////// NavBar Start
     //Profile Menu Start
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -23,6 +24,10 @@ const MaintainWS: React.FC = () => {
     //Tab Switching End
     };
 
+    ///////////////////////////////////////////////////////////////////////////// NavBar End
+
+    
+    ///////////////////////////////////////////////////////////////////////////// Applicants Tab Start
     // Define applicants array
     const [applicants, setApplicants] = useState([
         { id: 1, name: 'John Doe', course: 'Computer Science', age: 25, gender: 'Male', contact: '1234567890', registerDate: '2024-03-05', status: 'Pending' },
@@ -48,7 +53,16 @@ const MaintainWS: React.FC = () => {
             default:
                 return 'black'; // Default color
         }
-    };
+    }
+    //////////////////////////////////////////////////////////////////////////////Applicants Tab End
+
+    ///////////////////////////////////////////////////////////////////////////// Departments Tab Start
+    const [departments, setDepartments] = useState<string[]>([]);
+    const handleAddDepartment = (departmentName: string) => {
+        setDepartments([...departments, departmentName]);
+      };  
+    ///////////////////////////////////////////////////////////////////////////// Departments Tab End
+
     return(
         <Box style={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center', minHeight:'100vh', width:'100%'}}>
             <NavBar activeTab={activeTab} handleTabChange={handleTabChange}></NavBar>
@@ -104,22 +118,19 @@ const MaintainWS: React.FC = () => {
                         </Paper>
                         </>
                     )}
-                    {activeTab == 'Departments' && (
-                        <>
-                        <Box sx={{ p: 3, borderRadius: '20px', display: 'flex', flexDirection: 'row', width:'100%', minHeight:'80vh', justifyContent: 'space-between'}}>
-                            <ExpandableTab></ExpandableTab>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '70%', borderBottom: '1px solid #818181', height: '10%' }}>
-                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Name</Typography>
-                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Gender</Typography>
-                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Course</Typography>
-                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Age</Typography>
-                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>SKills</Typography>
-                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Action</Typography>
-                                </Box>
-                            {/* Content */}
-                            
+                    {activeTab === 'Departments' && (
+                    <>
+                        <Box sx={{ p: 3, borderRadius: '20px', display: 'flex', flexDirection: 'column', width:'100%', minHeight:'80vh', justifyContent: 'space-between'}}>
+                            <div style={{ position: 'absolute', alignItems: 'flex-start', justifyContent: 'center' }}>
+                               
+                            </div>
+                            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                                <Grid spacing={2}>
+                                    
+                                </Grid>
+                            </Box>
                         </Box>
-                        </>
+                    </>
                     )}
             </Box>
         </Box>
