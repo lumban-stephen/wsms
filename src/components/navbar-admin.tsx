@@ -103,27 +103,3 @@ const NavBarAdmin: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
 }
 
 export default NavBarAdmin;
-
-//declare this
-
-//Tab Swithing Start
-// const [activeTab, setActiveTab] = useState('Home');
-// const handleTabChange = (tab: string) => {
-// setActiveTab(tab);
-//Tab Switching End
-
-
-// to use
-
-// <NavBar activeTab={activeTab} handleTabChange={handleTabChange} />
-
-
-/* Per Tab, use if needed
-
-{activeTab === 'WorkingScholars' && (
-<>
-content here
-</>
-)}
-
-*/

@@ -42,12 +42,6 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
                     <Button sx={{
                         color: 'white'
                         }}
-                        variant={activeTab === 'Applicants' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Applicants')}>Applicants</Button>
-
-                    <Button sx={{
-                        color: 'white'
-                        }}
                         variant={activeTab === 'WorkingScholars' ? 'contained' : 'outlined'}
                         onClick={() => handleTabChange('WorkingScholars')}>Working Scholars</Button>
 
@@ -55,7 +49,7 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
                         color: 'white'
                         }}
                         variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Departments')}>Departments</Button>
+                        onClick={() => handleTabChange('Departments')}>Request Working</Button>
 
                     <Button sx={{
                         color: 'white'
@@ -103,27 +97,3 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
 }
 
 export default NavBarStaff;
-
-//declare this
-
-//Tab Swithing Start
-// const [activeTab, setActiveTab] = useState('Home');
-// const handleTabChange = (tab: string) => {
-// setActiveTab(tab);
-//Tab Switching End
-
-
-// to use
-
-// <NavBar activeTab={activeTab} handleTabChange={handleTabChange} />
-
-
-/* Per Tab, use if needed
-
-{activeTab === 'WorkingScholars' && (
-<>
-content here
-</>
-)}
-
-*/

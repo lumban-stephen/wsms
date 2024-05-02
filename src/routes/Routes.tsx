@@ -12,6 +12,7 @@ import MaintainApplicants from "../pages/maintain-applicants";
 import DeptAnnounce from "../pages/dept-announce";
 import DeptReq from "../pages/deptreq";
 import ProtectedRoute from '../utils/ProtectedRoute';
+import WsAnnounce from '../pages/ws-announce';
 
 export const router = createBrowserRouter([
     {
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
             {path: "/maintain-applicants", element: <ProtectedRoute allowedRoles={['admin']}><MaintainApplicants /></ProtectedRoute>}, //Admin
             {path: "/welcome", element: <Welcome />},
             {path: "/dept-announce", element: <ProtectedRoute allowedRoles={['staff']}><DeptAnnounce /></ProtectedRoute> }, // Allow Staff role
+            {path: "/ws-announce", element: <ProtectedRoute allowedRoles={['ws']}><WsAnnounce /></ProtectedRoute> }, // Allow Staff role
             {path: "/deptreq", element: <ProtectedRoute allowedRoles={['staff']}><DeptReq /></ProtectedRoute> }, // Allow Staff role
             {path: "/admin", element: <ProtectedRoute allowedRoles={['admin']}><Admin /></ProtectedRoute> }, // Allow Admin role
         ]

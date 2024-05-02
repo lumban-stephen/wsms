@@ -42,18 +42,6 @@ const NavBarWS: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
                     <Button sx={{
                         color: 'white'
                         }}
-                        variant={activeTab === 'Applicants' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Applicants')}>Applicants</Button>
-
-                    <Button sx={{
-                        color: 'white'
-                        }}
-                        variant={activeTab === 'WorkingScholars' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('WorkingScholars')}>Working Scholars</Button>
-
-                    <Button sx={{
-                        color: 'white'
-                        }}
                         variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
                         onClick={() => handleTabChange('Departments')}>Departments</Button>
 
@@ -82,7 +70,7 @@ const NavBarWS: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                         onClick={handleClick}>
-                        Admin
+                        WS
                         </Button>                     
                         <Menu
                             id="basic-menu"
@@ -93,7 +81,6 @@ const NavBarWS: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
                             'aria-labelledby': 'basic-button',
                             }}>
                             <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
                             <MenuItem onClick={handleClose}>Logout</MenuItem>    
                         </Menu>    
                     </Box>
@@ -103,27 +90,3 @@ const NavBarWS: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
 }
 
 export default NavBarWS;
-
-//declare this
-
-//Tab Swithing Start
-// const [activeTab, setActiveTab] = useState('Home');
-// const handleTabChange = (tab: string) => {
-// setActiveTab(tab);
-//Tab Switching End
-
-
-// to use
-
-// <NavBar activeTab={activeTab} handleTabChange={handleTabChange} />
-
-
-/* Per Tab, use if needed
-
-{activeTab === 'WorkingScholars' && (
-<>
-content here
-</>
-)}
-
-*/
