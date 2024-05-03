@@ -22,8 +22,8 @@ const requestData = {
     currentStep: 2, // Index of the current step
   };
 
-  
-const RequestApprovalModal = ({ open, onClose, requestData, onApprove, onReject }) => {
+
+const RequestApprovalModal: React.FC<any> = ({ open, onClose, requestData, onApprove, onReject }) => {
   const steps = [
     'Admin Approval',
     'HR Approval',
@@ -32,7 +32,7 @@ const RequestApprovalModal = ({ open, onClose, requestData, onApprove, onReject 
     'Clinic Approval',
   ];
 
-  const getStepStatus = (index) => {
+  const getStepStatus = (index: number) => {
     const approvedSteps = requestData.approvedSteps;
     const currentStep = requestData.currentStep;
 
