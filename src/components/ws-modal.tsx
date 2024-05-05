@@ -27,16 +27,44 @@ const WsModal: React.FC<WsModalProps> = ({
   onWsUpdate,
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [updatedWorkingScholar, setUpdatedWorkingScholar] = useState<Applicant>(workingScholar);
 
   const handleUpdateInfo = () => {
     setIsEditMode(true);
     // Add logic to enable editing of fields
   };
 
+  const handleSaveChanges = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/applicants/maintain-ws', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedWorkingScholar),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Response:', data);
+        alert(data.message);
+        onWsUpdate(updatedWorkingScholar); // Update the working scholar with the new data
+        setIsEditMode(false); // Disable edit mode after saving changes
+      } else {
+        const errorData = await response.json();
+        console.log('Error:', errorData);
+        alert(errorData.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while processing the request.');
+    }
+  };
+
+
   const handleSuspend = async () => {
     try {
       const updatedWs = { ...workingScholar, status: 'Suspended' };
-      const response = await fetch('http://localhost:3000/applicants/maintain-applicants', {
+      const response = await fetch('http://localhost:3000/applicants/maintain-ws', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +116,7 @@ const WsModal: React.FC<WsModalProps> = ({
                 label="Address"
                 fullWidth
                 value={workingScholar.address}
-                disabled={!isEditMode}
+                disabled={!isEditMode || workingScholar.status === 'Suspended'}
               />
             </Grid>
             <Grid item xs={12}>
@@ -96,7 +124,7 @@ const WsModal: React.FC<WsModalProps> = ({
                 label="Last School Attended"
                 fullWidth
                 value={workingScholar.school_name}
-                disabled={!isEditMode}
+                disabled={!isEditMode || workingScholar.status === 'Suspended'}
               />
             </Grid>
             <Grid item xs={12}>
@@ -104,7 +132,7 @@ const WsModal: React.FC<WsModalProps> = ({
                 label="Facebook Account"
                 fullWidth
                 value={workingScholar.fbAccount}
-                disabled={!isEditMode}
+                disabled={!isEditMode || workingScholar.status === 'Suspended'}
               />
             </Grid>
             <Grid item xs={12}>
@@ -112,17 +140,27 @@ const WsModal: React.FC<WsModalProps> = ({
                 label="Contact Number"
                 fullWidth
                 value={workingScholar.contact}
-                disabled={!isEditMode}
+                disabled={!isEditMode || workingScholar.status === 'Suspended'}
               />
             </Grid>
             {/* Add additional detail fields here */}
           </Grid>
           <Box sx={{ mt: 'auto', display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant="contained" color="primary" onClick={handleUpdateInfo}>
-              Update Info
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleUpdateInfo}
+              disabled={workingScholar.status === 'Suspended'}
+            >
+              {workingScholar.status === 'Suspended' ? 'Suspended' : 'Update Info'}
             </Button>
-            <Button variant="outlined" color="error" onClick={handleSuspend}>
-              Suspend
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={handleSuspend}
+              disabled={workingScholar.status === 'Suspended'}
+            >
+              {workingScholar.status === 'Suspended' ? 'Suspended' : 'Suspend'}
             </Button>
           </Box>
         </Box>
