@@ -15,4 +15,5 @@ export interface Applicant {
     address: string;
     school_name: string;
     fbAccount: string;
+    dept?: string;
 }

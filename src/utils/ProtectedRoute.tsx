@@ -1,13 +1,21 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useState, useEffect, useContext } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { AuthContext } from './AuthContext';
 
 interface ProtectedRouteProps {
   allowedRoles: string[];
   children: ReactNode;
+  userdetailFk?: number; // Optional property
+  token?: string; // Optional property
 }
 
-const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
+const ProtectedRoute = ({
+  allowedRoles,
+  children,
+  userdetailFk,
+  token,
+}: ProtectedRouteProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -58,7 +66,10 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     return <div>You are not authorized to access this page.</div>; // Or display an error message
   }
 
-  return <>{children}</>;
+  return React.cloneElement(children as React.ReactElement, {
+    userdetailFk,
+    token,
+  });
 };
 
 export default ProtectedRoute;
