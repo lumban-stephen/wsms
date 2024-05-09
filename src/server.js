@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken');
 const authRoutes = require('./routes/authRoutes');
 const announcement = require('./routes/announcements');
 const applicants = require('./routes/applicants')
+const wsreq = require('./routes/wsreq')
+const wsreq = require('./routes/ws')
+const wsreq = require('./routes/users')
 
 const app = express();
 
@@ -17,6 +20,9 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/api-announce', announcement);
 app.use('/applicants', applicants);
+app.use('/wsreq', wsreq);
+app.use('/users', users);
+app.use('/ws', ws);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
