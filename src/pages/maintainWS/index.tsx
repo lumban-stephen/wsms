@@ -1,7 +1,9 @@
 import { Paper, Typography, Box, Grid, Container, Button, Avatar, Divider, Menu } from '@mui/material';
 import NavBar from '../../components/navbar'
 import ExpandableTab from '../../components/expandableTab';
+
 import React, { useState } from 'react';
+import { Margin } from '@mui/icons-material';
 
 const MaintainWS: React.FC = () => {
 
@@ -56,21 +58,40 @@ const MaintainWS: React.FC = () => {
     }
     //////////////////////////////////////////////////////////////////////////////Applicants Tab End
 
-    ///////////////////////////////////////////////////////////////////////////// Departments Tab Start
-    const [departments, setDepartments] = useState<string[]>([]);
-    const handleAddDepartment = (departmentName: string) => {
-        setDepartments([...departments, departmentName]);
-      };  
+    ///////////////////////////////////////////////////////////////////////////// Departments Tab Start / to be unused, stephen already created.
+    const [buttons, setButtons] = useState<string[]>([]);
+
+    // const handleAddDepartment = () => {
+    //     const name = prompt("Enter department name:");
+    //     if (name) {
+    //         setButtons([...buttons, name]);
+    //     }
+    // }
+
+    const handleDeleteDepartment = (index: number) => {
+        const updatedButtons = [...buttons];
+        updatedButtons.splice(index, 1);
+        setButtons(updatedButtons);
+    }
+
+    const handleRenameDepartment = (index: number) => {
+        const newName = prompt("Enter new department name:");
+        if (newName) {
+            const updatedButtons = [...buttons];
+            updatedButtons[index] = newName;
+            setButtons(updatedButtons);
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////// Departments Tab End
 
     return(
-        <Box style={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center', minHeight:'100vh', width:'100%'}}>
+        <Box style={{display:'flex', flexDirection:'column', minHeight:'100vh', width:'100%'}}>
             <NavBar activeTab={activeTab} handleTabChange={handleTabChange}></NavBar>
-            {/*Content Per*/}                               
-            <Box style={{backgroundColor:'white', height:'87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>       
+            {/*Content Per*/}                                        
                     {/*use navbar*/}
                     {activeTab === 'WorkingScholars' && (
                         <>
+                        <Box style={{backgroundColor:'white', height:'87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                         <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>
                             <Box sx={{display:'flex', justifyContent:'space-between', flexDirection:'row', width:'100%', borderBottom: '1px solid #818181', height:'10%'}}>
                                 <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Name</Typography>
@@ -87,52 +108,60 @@ const MaintainWS: React.FC = () => {
                                 <Typography variant='h6' fontWeight='bold'>Empty</Typography>
                             </Box>
                         </Paper>
+                        </Box>
                         </>
                     )}
                     {activeTab === 'Applicants' && (
                         <>
-                        <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%', borderBottom: '1px solid #818181', height: '10%' }}>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Name</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Course</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Age</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Gender</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Contact</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Register Date</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Status</Typography>
-                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Action</Typography>
-                            </Box>
-                            {/* Content */}
-                            {applicants.map(applicant => (
-                                <Box key={applicant.id} sx={{ display: 'flex', width: '100%', flexDirection: 'row', borderBottom: '1px solid #818181', padding: '20px', alignItems: 'center' }}>
-                                    <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.name}</Typography>
-                                    <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.course}</Typography>
-                                    <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.age}</Typography>
-                                    <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.gender}</Typography>
-                                    <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.contact}</Typography>
-                                    <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.registerDate}</Typography>
-                                    <Typography variant='h5' style={{ flex: '1', textAlign: 'center', color: getStatusColor(applicant.status)}}>{applicant.status}</Typography>
-                                    <Button variant="outlined" style={{ flex: '0.8', textAlign: 'center', backgroundColor:'#0975bc', color:'white' }} onClick={() => handleViewApplicant(applicant)}>View</Button>
+                        <Box style={{backgroundColor:'white', height:'87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <Paper elevation={22} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', display: 'flex', flexDirection: 'column', alignItems: 'center', width:'90%', minHeight:'73vh'}}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%', borderBottom: '1px solid #818181', height: '10%' }}>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Name</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Course</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Age</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Gender</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Contact</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Register Date</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Status</Typography>
+                                    <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Action</Typography>
                                 </Box>
-                            ))}
-                        </Paper>
+                                {/* Content */}
+                                {applicants.map(applicant => (
+                                    <Box key={applicant.id} sx={{ display: 'flex', width: '100%', flexDirection: 'row', borderBottom: '1px solid #818181', padding: '20px', alignItems: 'center' }}>
+                                        <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.name}</Typography>
+                                        <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.course}</Typography>
+                                        <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.age}</Typography>
+                                        <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.gender}</Typography>
+                                        <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.contact}</Typography>
+                                        <Typography variant='h5' style={{ flex: '1', textAlign: 'center' }}>{applicant.registerDate}</Typography>
+                                        <Typography variant='h5' style={{ flex: '1', textAlign: 'center', color: getStatusColor(applicant.status)}}>{applicant.status}</Typography>
+                                        <Button variant="outlined" style={{ flex: '0.8', textAlign: 'center', backgroundColor:'#0975bc', color:'white' }} onClick={() => handleViewApplicant(applicant)}>View</Button>
+                                    </Box>
+                                ))}
+                            </Paper>
+                        </Box>
                         </>
                     )}
                     {activeTab === 'Departments' && (
                     <>
-                        <Box sx={{ p: 3, borderRadius: '20px', display: 'flex', flexDirection: 'column', width:'100%', minHeight:'80vh', justifyContent: 'space-between'}}>
-                            <div style={{ position: 'absolute', alignItems: 'flex-start', justifyContent: 'center' }}>
-                               
-                            </div>
-                            <Box sx={{display: 'flex', flexDirection: 'column'}}>
-                                <Grid spacing={2}>
-                                    
-                                </Grid>
+                        <div>
+                            <ExpandableTab name="Department Name" />
+                        </div>
+                        <div style={{backgroundColor:'white', width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', flexDirection: 'column'}}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', borderBottom: '1px solid #818181', width: '75%', height: '10%', margin: 5}}>
+                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Name</Typography>
+                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Gender</Typography>
+                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Course</Typography>
+                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Age</Typography>                                                      
+                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Skills</Typography>
+                                <Typography variant='h6' gutterBottom fontWeight='bold' style={{ flex: '1', textAlign: 'center' }}>Action</Typography>
                             </Box>
-                        </Box>
+                            <Box sx={{ display: 'flex', width: '75%', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}>
+                                
+                            </Box>
+                        </div>                          
                     </>
                     )}
-            </Box>
         </Box>
     );
 }

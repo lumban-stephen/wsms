@@ -1,123 +1,104 @@
-import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import EditIcon from '@mui/icons-material/Edit';
-import Divider from '@mui/material/Divider';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Paper, Typography, Box, Button, Collapse, MenuItem, Select } from '@mui/material';
+import React, { useState } from 'react';
 
-const StyledMenu = styled((props: MenuProps) => (
-  <Menu
-    elevation={0}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'right',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
-    }}
-    {...props}
-  />
-))(({ theme }) => ({
-  '& .MuiPaper-root': {
-    borderRadius: 6,
-    marginTop: theme.spacing(1),
-    minWidth: 180,
-    color:
-      theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
-    boxShadow: 
-      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-    '& .MuiMenu-list': {
-      padding: '4px 0',
-    },
-    '& .MuiMenuItem-root': {
-      '& .MuiSvgIcon-root': {
-        fontSize: 18,
-        color: theme.palette.text.secondary,
-        marginRight: theme.spacing(1.5),
-      },
-      '&:active': {
-        backgroundColor: alpha(
-          theme.palette.primary.main,
-          theme.palette.action.selectedOpacity,
-        ),
-      },
-    },
-  },
-}));
+const ExpandableTab: React.FC<{ name: string }> = ({ name }) => {
+    const [expanded, setExpanded] = useState(false);
+    const [selectedPreferences, setSelectedPreferences] = useState<{ [key: string]: string }>({
+        'Request Type': '',
+        'Quantity': '',
+        'Status': '',
+        'Gender': '',
+        'Course': ''
+    });
 
-export default function ExpandableTab() {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+    const toggleExpanded = () => {
+        setExpanded(!expanded);
+    };
 
-  return (
-    <div>
-      <Button
-        id="demo-customized-button"
-        aria-controls={open ? 'demo-customized-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        variant="contained"
-        disableElevation
-        onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
-        sx={{
-          color:'#0975bc',
-          backgroundColor: 'white',
-          width:'350px',
-          height:'100px',
-          boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23)', // Elevation effect
-          borderRadius: '4px', // Optional: adjust border radius to match Paper component
-          '&:hover': {
-            boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.2), 0px 5px 10px rgba(0, 0, 0, 0.3)', // Elevation effect on hover
-          },
-          textAlign: 'left'
-        }}
-      >
-        <p>
-          College 
-        </p>
-      </Button>
+    const handlePreferenceChange = (preference: string, value: string) => {
+        setSelectedPreferences({
+            ...selectedPreferences,
+            [preference]: value
+        });
+    };
 
-      <StyledMenu
-        id="demo-customized-menu"
-        MenuListProps={{
-          'aria-labelledby': 'demo-customized-button',
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={handleClose} disableRipple>
-          {/* <EditIcon /> */}
-          Edit
-        </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
-          {/* <FileCopyIcon /> */}
-          Duplicate
-        </MenuItem>
-        {/* <Divider sx={{ my: 0.5 }} /> */}
-        <MenuItem onClick={handleClose} disableRipple>
-          {/* <ArchiveIcon /> */}
-          Archive
-        </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
-          {/* <MoreHorizIcon /> */}
-          More
-        </MenuItem>
-      </StyledMenu>
-    </div>
-  );
-}
+    return (
+
+        <Paper elevation={3} sx={{ p: 3, borderRadius: '20px', backgroundColor: 'White', width: '280px', minHeight: '3vh', position: 'absolute'}}>
+            <Typography variant="h5" gutterBottom fontWeight='bold' style={{ textAlign: 'left'}}>{name}</Typography>
+            <Button variant="outlined" onClick={toggleExpanded} style={{ marginBottom: '10px' }}>
+                {expanded ? 'Hide Preferences' : 'Show Preferences'}
+            </Button>
+            <Collapse in={expanded}>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                        <Typography variant="body1" style={{ marginRight: '10px', width: '120px' }}>Request Type:</Typography>
+                        <Select
+                            value={selectedPreferences['Request Type']}
+                            onChange={(event) => handlePreferenceChange('Request Type', event.target.value as string)}
+                            variant="outlined"
+                            sx={{ width: '100%' }}
+                        >
+                            <MenuItem value="">Select Request Type</MenuItem>
+                            <MenuItem value="additional">Additional</MenuItem>
+                            <MenuItem value="replacement">Replacement</MenuItem>
+                            <MenuItem value="others">Others</MenuItem>
+                        </Select>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                        <Typography variant="body1" style={{ marginRight: '10px', width: '120px' }}>Quantity:</Typography>
+                        <input
+                            type="number"
+                            value={selectedPreferences['Quantity']}
+                            onChange={(event) => handlePreferenceChange('Quantity', event.target.value)}
+                            style={{ width: '100%', padding: '5px' }}
+                        />
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                        <Typography variant="body1" style={{ marginRight: '10px', width: '120px' }}>Status:</Typography>
+                        <Select
+                            value={selectedPreferences['Status']}
+                            onChange={(event) => handlePreferenceChange('Status', event.target.value as string)}
+                            variant="outlined"
+                            sx={{ width: '100%' }}
+                        >
+                            <MenuItem value="">Select Status</MenuItem>
+                            <MenuItem value="pending">Pending</MenuItem>
+                            <MenuItem value="accepted">Accepted</MenuItem>
+                            <MenuItem value="suspended">Suspended</MenuItem>
+                        </Select>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                        <Typography variant="body1" style={{ marginRight: '10px', width: '120px' }}>Gender:</Typography>
+                        <Select
+                            value={selectedPreferences['Gender']}
+                            onChange={(event) => handlePreferenceChange('Gender', event.target.value as string)}
+                            variant="outlined"
+                            sx={{ width: '100%' }}
+                        >
+                            <MenuItem value="">Select Gender</MenuItem>
+                            <MenuItem value="Male">Male</MenuItem>
+                            <MenuItem value="Female">Female</MenuItem>
+                        </Select>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                        <Typography variant="body1" style={{ marginRight: '10px', width: '120px' }}>Course:</Typography>
+                        <Select
+                            value={selectedPreferences['Course']}
+                            onChange={(event) => handlePreferenceChange('Course', event.target.value as string)}
+                            variant="outlined"
+                            sx={{ width: '100%' }}
+                        >
+                            <MenuItem value="">Select Course</MenuItem>
+                            <MenuItem value="BSCS">BSCS</MenuItem>
+                            <MenuItem value="BSIT">BSIT</MenuItem>
+                            <MenuItem value="BSCrim">BSCrim</MenuItem>
+                        </Select>
+                    </Box>
+                </Box>
+            </Collapse>
+        </Paper>
+    );
+};
+
+export default ExpandableTab;
