@@ -15,6 +15,8 @@ import WsAnnounce from '../pages/ws-announce';
 import UserProfile from '../pages/user-profile';
 import RequestWorkingScholar from '../components/requestworkingscholar';
 import MaintainWS from '../pages/maintain-ws';
+import DeptDashboard from '../pages/maintain-dept';
+import DeptProfile from '../pages/dept-profile';
 
 interface UserProfileWrapperProps {
     userdetailFk: number;
@@ -116,6 +118,22 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['admin']}>
             <MaintainWS />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/maintain-dept',
+        element: (
+          <ProtectedRoute allowedRoles={['admin']}>
+            <DeptDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/dept-profile',
+        element: (
+          <ProtectedRoute allowedRoles={['admin']}>
+            <DeptProfile />
           </ProtectedRoute>
         ),
       },
