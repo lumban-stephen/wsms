@@ -1,60 +1,72 @@
-import React from 'react';
-import { Grid, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Grid, Box, Link, Typography } from '@mui/material';
 import DeptCard from '../../components/dept-card';
 import DeptReqCard from '../../components/deptreq-card';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+
+interface Department {
+  imageUrl: string;
+  departmentName: string;
+}
 
 const DeptDashboard = () => {
-  // Sample data for department cards and request cards
-  const deptCards = [
-    { imageUrl: 'dept1.jpg', departmentName: 'Department 1' },
-    { imageUrl: 'dept2.jpg', departmentName: 'Department 2' },
-    // Add more department card data
-  ];
+  const [departments, setDepartments] = useState<Department[]>([]); // State for department data
+  const [selectedDept, setSelectedDept] = useState<Department | null>(null); // State for selected department
+  const navigate = useNavigate(); // Hook for navigation
 
-  const reqCards = [
-    {
-      collegeName: 'College of Computer Studies',
-      requestType: 'Replacement',
-      quantity: 2,
-      status: 'Waiting for Approval',
-    },
-    {
-      collegeName: 'Merton Transportation Office',
-      requestType: 'Replacement',
-      quantity: 5,
-      status: 'Approved',
-    },
-    // Add more request card data
-  ];
+  // Fetch department data (replace with your actual API call)
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await fetch('/api/departments'); // Replace with your API endpoint
+        const data = await response.json();
+        if (response.ok) {
+          setDepartments(data);
+        } else {
+          console.error('Error fetching departments:', data);
+          // Handle errors appropriately (e.g., display an error message)
+        }
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+        // Handle errors appropriately (e.g., display an error message)
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
+  const handleDeptClick = (department: Department) => {
+    setSelectedDept(department);
+    navigate(`/dept-profile/${department.departmentName}`); // Navigate to dept-profile page with department name
+  };
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="flex-start"
-          alignItems="center"
-        >
-          {deptCards.map((card, index) => (
+        <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
+          {departments.map((department, index) => (
             <Box key={index} m={1}>
-              <DeptCard imageUrl={card.imageUrl} departmentName={card.departmentName} />
+              <Link
+                component="button"
+                underline="none" // Remove link underline for a button-like appearance
+                onClick={() => handleDeptClick(department)}
+              >
+                <DeptCard imageUrl={department.imageUrl} departmentName={department.departmentName} />
+              </Link>
             </Box>
           ))}
         </Box>
       </Grid>
       <Grid item xs={12} md={4}>
         <Box display="flex" flexDirection="column">
-          {reqCards.map((card, index) => (
-            <Box key={index} mb={2}>
-              <DeptReqCard
-                collegeName={card.collegeName}
-                requestType={card.requestType}
-                quantity={card.quantity}
-                status={card.status}
-              />
-            </Box>
-          ))}
+          {selectedDept ? (
+            <Typography variant="h6" gutterBottom>
+              Selected Department: {selectedDept.departmentName}
+            </Typography>
+          ) : (
+            <Typography variant="body1">Please select a department.</Typography>
+          )}
+          {/* Add your DeptReqCard logic or other content here */}
         </Box>
       </Grid>
     </Grid>
