@@ -17,3 +17,17 @@ export interface Applicant {
     fbAccount: string;
     dept?: string;
 }
+
+export interface WorkingScholar {
+    id: number;
+    name: string;
+    gender: string;
+    course: string;
+    age: number;
+    applicantFk: number;
+  }
+  
+export interface Department {
+    id: number;
+    name: string;
+}
