@@ -2,9 +2,11 @@ import React from 'react';
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 
 interface WsCardProps {
-  imageUrl: string;
+  imageUrl?: string; // Optional if using blue background
   name: string;
   department: string;
+  onClick?: () => void;
+  style?: React.CSSProperties; // Add style prop
 }
 
 const WsCard: React.FC<WsCardProps> = ({ imageUrl, name, department }) => {

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import DeptDetails from '../../components/dept-details';
-import WsCard from '../../components/ws-card';
+import WsCard from '../../components/ws-card'; // Import WsCard component
+import WsCardModal from '../../components/wscard-modal'; // Import WsCardModal component
 import { useParams } from 'react-router-dom'; // Import useParams for accessing URL parameters
 
 interface DepartmentDetails {
@@ -17,9 +18,16 @@ interface DeptRequest {
 }
 
 interface WorkingScholar {
-  imageUrl: string;
   name: string;
-  role: string;
+  department: string;
+  address: string;
+  lastSchoolAttended: string;
+  facebookAccount: string;
+  contactNo: string;
+  guardianName: string;
+  guardianContact: string;
+  contractStart: string;
+  contractEnd: string;
 }
 
 const DeptProfile = () => {
@@ -27,6 +35,9 @@ const DeptProfile = () => {
   const [departmentRequests, setDepartmentRequests] = useState<DeptRequest[]>([]);
   const [workingScholars, setWorkingScholars] = useState<WorkingScholar[]>([]);
   const { departmentId } = useParams(); // Get department ID from URL parameter
+
+  const [wsCardModalOpen, setWsCardModalOpen] = useState(false);
+  const [selectedWsData, setSelectedWsData] = useState<WorkingScholar | null>(null);
 
   useEffect(() => {
     const fetchDepartmentData = async () => {
@@ -54,6 +65,15 @@ const DeptProfile = () => {
     fetchDepartmentData();
   }, [departmentId]);
 
+  const handleWsCardClick = (scholarData: WorkingScholar) => {
+    setSelectedWsData(scholarData);
+    setWsCardModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setWsCardModalOpen(false);
+  };
+
   return (
     <Grid container spacing={2}>
       {departmentDetails ? (
@@ -75,18 +95,30 @@ const DeptProfile = () => {
               <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
                 {workingScholars.map((card, index) => (
                   <Box key={index} m={1}>
-                    <WsCard imageUrl={card.imageUrl} name={card.name} department={card.role} />
+                    <WsCard
+                      name={card.name}
+                      department={departmentDetails.name}
+                      onClick={() => handleWsCardClick(card)} // Pass scholar data on click
+                      style={{ backgroundColor: 'blue', padding: '16px' }} // Set blue background and padding
+                    />
                   </Box>
                 ))}
               </Box>
             </Box>
           </Grid>
+          {wsCardModalOpen && selectedWsData && (
+            <WsCardModal
+              open={wsCardModalOpen}
+              onClose={handleModalClose}
+              wsData={selectedWsData} // Pass selected scholar data to modal
+            />
+          )}
         </>
       ) : (
         <Typography variant="body1">Loading department details...</Typography>
       )}
     </Grid>
   );
-};
+}
 
 export default DeptProfile;
