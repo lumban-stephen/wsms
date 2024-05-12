@@ -6,6 +6,7 @@ interface DeptReqCardProps {
     requestType: string;
     quantity: number;
     status: string;
+    onClick?: () => void;
   }
   
 

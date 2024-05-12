@@ -3,6 +3,7 @@ import { Grid, Box, Link, Typography } from '@mui/material';
 import DeptCard from '../../components/dept-card';
 import DeptReqCard from '../../components/deptreq-card';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import ApproveReq from '../../components/approve-req'; // Assuming ApproveReq is in the same directory
 
 interface Department {
   imageUrl: string;
@@ -10,7 +11,6 @@ interface Department {
 }
 
 interface DeptRequest {
-  // Replace with the actual properties of your department request data
   requestId: number;
   requestType: string;
   quantity: number;
@@ -22,6 +22,13 @@ const DeptDashboard = () => {
   const [departments, setDepartments] = useState<Department[]>([]); // State for department data
   const [deptRequests, setDeptRequests] = useState<DeptRequest[] | null>(null); // State for department requests (with type)
   const [selectedDept, setSelectedDept] = useState<Department | null>(null); // State for selected department
+  const [isDeptReqModalOpen, setIsDeptReqModalOpen] = useState(false); // State for modal visibility
+  const [selectedDeptRequest, setSelectedDeptRequest] = useState<DeptRequest | null>(null); // State for selected request data
+
+  const handleCloseDeptReqModal = () => {
+    setIsDeptReqModalOpen(false);
+    setSelectedDeptRequest(null); // Clear selected request on close (optional)
+  };
   const navigate = useNavigate(); // Hook for navigation
 
   // Fetch department data (replace with your actual API call)
@@ -67,6 +74,58 @@ const DeptDashboard = () => {
     navigate(`/dept-profile/${department.departmentName}`); // Navigate to dept-profile page with department name
   };
 
+  const handleOpenDeptReqModal = (request: DeptRequest) => {
+    setSelectedDeptRequest(request);
+    setIsDeptReqModalOpen(true);
+  };
+
+  const handleApprove = async () => {
+    // Implement API call to update request status
+    try {
+      const response = await fetch(`/api/dept-requests/${selectedDeptRequest?.requestId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ws_req_stat: 'approved' }), // Update request status
+      });
+  
+      if (response.ok) {
+        console.log('Request approved successfully');
+        navigate('/maintain-dept');
+        // Update local state (optional) to reflect changes
+      } else {
+        console.error('Error approving request:', await response.text());
+        // Handle errors appropriately (e.g., display an error message)
+      }
+    } catch (error) {
+      console.error('Error approving request:', error);
+      // Handle errors appropriately (e.g., display an error message)
+    }
+  };
+
+  const handleReject = async () => {
+    // Implement API call to update request status
+    try {
+      const response = await fetch(`/api/dept-requests/${selectedDeptRequest?.requestId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ws_req_stat: 'rejected' }), // Update request status
+      });
+  
+      if (response.ok) {
+        console.log('Request rejected successfully');
+        navigate('/maintain-dept');
+        // Update local state (optional) to reflect changes
+      } else {
+        console.error('Error rejecting request:', await response.text());
+        // Handle errors appropriately (e.g., display an error message)
+      }
+    } catch (error) {
+      console.error('Error rejecting request:', error);
+      // Handle errors appropriately (e.g., display an error message)
+    }
+  };
+
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
@@ -99,7 +158,7 @@ const DeptDashboard = () => {
           ) : (
             <Typography variant="body1">Please select a department.</Typography>
           )}
-          {deptRequests === null ? ( // Handle initial loading state
+          {deptRequests === null ? (
             <Typography variant="body1" gutterBottom>
               Loading department requests...
             </Typography>
@@ -116,6 +175,7 @@ const DeptDashboard = () => {
                     requestType={request.requestType} // Assuming requestType exists in requestData
                     quantity={request.quantity} // Assuming quantity exists in requestData
                     status={request.requestStatus} // Assuming status exists in requestData
+                    onClick={() => handleOpenDeptReqModal(request)} // Add click handler for modal
                   />
                 </Box>
               ))}
@@ -123,6 +183,14 @@ const DeptDashboard = () => {
           )}
         </Box>
       </Grid>
+      {/* Render ApproveReq modal conditionally */}
+      {isDeptReqModalOpen && selectedDeptRequest && (
+        <ApproveReq
+          open={isDeptReqModalOpen}
+          onClose={handleCloseDeptReqModal}
+          requestDetails={selectedDeptRequest}
+        />
+      )}
     </Grid>
   );
 };

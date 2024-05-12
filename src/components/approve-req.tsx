@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { Modal, Box, Typography, Button, Stepper, Step, StepLabel } from '@mui/material';
 
+interface DeptRequest {
+    requestId: number;
+    requestType: string;
+    quantity: number;
+    requestDetails: string;
+    requestStatus: string; // e.g., "waiting", "approved", "rejected"
+  }
+
 interface ApproveReqProps {
     open: boolean;
     onClose: () => void;
+    requestDetails?: DeptRequest;
   }
 
 const steps = ['Submit Approval', 'HR Approval', 'CAD Approval', 'UC Main Approval', 'Clinic Approval'];
