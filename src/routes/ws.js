@@ -86,4 +86,16 @@ router.post('/maintain-ws', async (req, res) => {
   }
 });
 
+router.get('/working-scholars/unassigned', async (req, res) => {
+  try {
+    const unassignedScholars = await pool.query(
+      'SELECT * FROM working_scholars WHERE dept_fk IS NULL'
+    );
+    res.json(unassignedScholars.rows);
+  } catch (error) {
+    console.error('Error fetching unassigned working scholars:', error);
+    res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
+  }
+});
+
 module.exports = router;
