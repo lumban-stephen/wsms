@@ -24,22 +24,63 @@ router.get('/departments', async (req, res) => {
   }
 });
 
-async function fetchDeptRequests(pool) {
+// Get department details by ID
+router.get('/departments/:departmentId', async (req, res) => {
+  const departmentId = parseInt(req.params.departmentId);
+
   try {
-    const deptRequests = await pool.query(
-      'SELECT * FROM ws_requests WHERE ws_req_stat = $1',
-      ['waiting']
+    const departmentDetails = await pool.query(
+      'SELECT * FROM departments WHERE department_id = $1',
+      [departmentId]
     );
-    return deptRequests.rows;
+
+    if (departmentDetails.rows.length === 0) {
+      return res.status(404).json({ message: 'Department not found' });
+    }
+
+    res.json(departmentDetails.rows[0]);
+  } catch (error) {
+    console.error('Error fetching department details:', error);
+    res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
+  }
+});
+
+// Get department requests by department ID (assuming separate table for requests)
+router.get('/departments/:departmentId/requests', async (req, res) => {
+  const departmentId = parseInt(req.params.departmentId);
+
+  try {
+    const departmentRequests = await pool.query(
+      'SELECT * FROM ws_requests WHERE department_id = $1',
+      [departmentId]
+    );
+
+    res.json(departmentRequests.rows);
   } catch (error) {
     console.error('Error fetching department requests:', error);
-    throw error; // Re-throw the error for proper handling in the main handler
+    res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
   }
+});
+
+async function fetchDeptRequests(pool) {
+  // This function can be removed or modified based on your actual usage
 }
 
-module.exports = {
-  fetchDepartments,
-  fetchDeptRequests, // Export the fetchDeptRequests function
-};
+// Get working scholars by department ID (assuming separate table for scholars)
+router.get('/departments/:departmentId/working-scholars', async (req, res) => {
+  const departmentId = parseInt(req.params.departmentId);
 
-// Removed redundant export of router (router is already exported by express.Router())
+  try {
+    const workingScholars = await pool.query(
+      'SELECT * FROM working_scholars WHERE department_id = $1',
+      [departmentId]
+    );
+
+    res.json(workingScholars.rows);
+  } catch (error) {
+    console.error('Error fetching working scholars:', error);
+    res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
+  }
+});
+
+module.exports = router;

@@ -1,61 +1,90 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import DeptDetails from '../../components/dept-details';
 import WsCard from '../../components/ws-card';
+import { useParams } from 'react-router-dom'; // Import useParams for accessing URL parameters
+
+interface DepartmentDetails {
+  name: string;
+  description: string;
+  contactDetails: string;
+  email: string;
+}
+
+interface DeptRequest {
+  requestType: string;
+  date: string;
+}
+
+interface WorkingScholar {
+  imageUrl: string;
+  name: string;
+  role: string;
+}
 
 const DeptProfile = () => {
-  // Sample data for department details and working scholar cards
-  const deptDetails = {
-    name: 'College of Computer Studies',
-    description: 'This is the description of the College of Computer Studies.',
-    contactDetails: '123 Main Street, City, Country',
-    email: 'college@example.com',
-    requestHistory: [
-      { requestType: 'Request Type 1', date: 'June 10, 2022' },
-      { requestType: 'Request Type 2', date: 'June 15, 2022' },
-      // Add more request history data
-    ],
-  };
+  const [departmentDetails, setDepartmentDetails] = useState<DepartmentDetails | null>(null);
+  const [departmentRequests, setDepartmentRequests] = useState<DeptRequest[]>([]);
+  const [workingScholars, setWorkingScholars] = useState<WorkingScholar[]>([]);
+  const { departmentId } = useParams(); // Get department ID from URL parameter
 
-  const wsCards = [
-    { imageUrl: 'scholar1.jpg', name: 'Working Scholar 1', role: 'Web Developer' },
-    { imageUrl: 'scholar2.jpg', name: 'Working Scholar 2', role: 'UI Designer' },
-    // Add more working scholar card data
-  ];
+  useEffect(() => {
+    const fetchDepartmentData = async () => {
+      if (!departmentId) return; // Handle missing department ID
+
+      const departmentDetailsResponse = await fetch(`/api/departments/${departmentId}`);
+      const departmentRequestsResponse = await fetch(`/api/departments/${departmentId}/requests`);
+      const workingScholarsResponse = await fetch(`/api/departments/${departmentId}/working-scholars`);
+
+      if (!departmentDetailsResponse.ok || !departmentRequestsResponse.ok || !workingScholarsResponse.ok) {
+        console.error('Error fetching department data');
+        // Handle errors appropriately (e.g., display an error message)
+        return;
+      }
+
+      const departmentDetailsData = await departmentDetailsResponse.json();
+      const departmentRequestsData = await departmentRequestsResponse.json();
+      const workingScholarsData = await workingScholarsResponse.json();
+
+      setDepartmentDetails(departmentDetailsData);
+      setDepartmentRequests(departmentRequestsData);
+      setWorkingScholars(workingScholarsData);
+    };
+
+    fetchDepartmentData();
+  }, [departmentId]);
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={3}>
-      <DeptDetails
-        departmentName={deptDetails.name}
-        contactDetails={deptDetails.contactDetails}
-        email={deptDetails.email}
-        requestHistory={deptDetails.requestHistory}
-        />;
-      </Grid>
-      <Grid item xs={12} md={9}>
-        <Box>
-          <Typography variant="h4" mb={2}>
-            {deptDetails.name}
-          </Typography>
-          <Box
-            display="flex"
-            flexWrap="wrap"
-            justifyContent="flex-start"
-            alignItems="center"
-          >
-            {wsCards.map((card, index) => (
-              <Box key={index} m={1}>
-                <WsCard
-                imageUrl={card.imageUrl}
-                name={card.name}
-                department={card.role} // Assuming `role` is the same as `department`
-                />;
+      {departmentDetails ? (
+        <>
+          <Grid item xs={12} md={3}>
+            <DeptDetails
+              departmentName={departmentDetails.name}
+              contactDetails={departmentDetails.contactDetails}
+              email={departmentDetails.email}
+              // Replace with actual request history data from departmentDetails
+              requestHistory={[]} // Placeholder for actual data
+            />
+          </Grid>
+          <Grid item xs={12} md={9}>
+            <Box>
+              <Typography variant="h4" mb={2}>
+                {departmentDetails.name}
+              </Typography>
+              <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
+                {workingScholars.map((card, index) => (
+                  <Box key={index} m={1}>
+                    <WsCard imageUrl={card.imageUrl} name={card.name} department={card.role} />
+                  </Box>
+                ))}
               </Box>
-            ))}
-          </Box>
-        </Box>
-      </Grid>
+            </Box>
+          </Grid>
+        </>
+      ) : (
+        <Typography variant="body1">Loading department details...</Typography>
+      )}
     </Grid>
   );
 };
