@@ -1,4 +1,3 @@
-// WorkingScholarTable.tsx
 import React from 'react';
 import {
   Table,
@@ -15,15 +14,21 @@ import {
 import { WorkingScholar, Department } from '../utils/interfaces';
 
 interface WorkingScholarTableProps {
-  workingScholars: WorkingScholar[];
-  departments: Department[];
+  workingScholars: WorkingScholar[] | undefined; // Allow undefined for workingScholars
+  departments: Department[] | undefined; // Allow undefined for departments
   onAssignDepartment: (scholarId: number, departmentId: number) => void;
+  selectedScholar?: WorkingScholar | null; // Optional selected scholar for highlighting
+  onConfirmAssignment?: () => void; // Optional confirmation function (if implemented)
+  onCancelAssignment?: () => void; // Optional cancel function (if implemented)
 }
 
 const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
   workingScholars,
   departments,
   onAssignDepartment,
+  selectedScholar,
+  onConfirmAssignment,
+  onCancelAssignment,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -53,8 +58,8 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {workingScholars.map((scholar) => (
-            <TableRow key={scholar.id}>
+          {workingScholars?.map((scholar) => (
+            <TableRow key={scholar.id} selected={scholar === selectedScholar}>
               <TableCell>{scholar.name}</TableCell>
               <TableCell>{scholar.gender}</TableCell>
               <TableCell>{scholar.course}</TableCell>
@@ -66,6 +71,7 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
                   aria-controls="simple-menu"
                   aria-haspopup="true"
                   onClick={handleClick}
+                  disabled={selectedScholar?.dept_fk !== null} // Disable if already assigned (optional)
                 >
                   Assign to Dept
                 </Button>
@@ -76,12 +82,10 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  {departments.map((department) => (
+                  {departments?.map((department) => (
                     <MenuItem
                       key={department.id}
-                      onClick={() =>
-                        handleAssignDepartment(scholar.id, department.id)
-                      }
+                      onClick={() => handleAssignDepartment(scholar.id, department.id)}
                     >
                       {department.name}
                     </MenuItem>

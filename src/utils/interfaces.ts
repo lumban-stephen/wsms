@@ -25,6 +25,7 @@ export interface WorkingScholar {
     course: string;
     age: number;
     applicantFk: number;
+    dept_fk: number;
   }
   
 export interface Department {
