@@ -2,7 +2,11 @@ import React from 'react';
 import { IconButton, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-const AddDeptIcon = () => {
+interface AddDeptIconProps {
+  onClick: () => void; // Define the type of the onClick prop
+}
+
+const AddDeptIcon = ({ onClick }: AddDeptIconProps) => {
   return (
     <Fab
       color="primary"
@@ -12,6 +16,7 @@ const AddDeptIcon = () => {
         bottom: 20,
         right: 20,
       }}
+      onClick={onClick}
     >
       <AddIcon />
     </Fab>

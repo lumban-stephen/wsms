@@ -4,6 +4,8 @@ import DeptCard from '../../components/dept-card';
 import DeptReqCard from '../../components/deptreq-card';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import ApproveReq from '../../components/approve-req'; // Assuming ApproveReq is in the same directory
+import AddDeptIcon from '../../components/adddept-icon';
+import AddDepartmentModal from '../../components/adddept-modal';
 
 interface Department {
   imageUrl: string;
@@ -24,6 +26,15 @@ const DeptDashboard = () => {
   const [selectedDept, setSelectedDept] = useState<Department | null>(null); // State for selected department
   const [isDeptReqModalOpen, setIsDeptReqModalOpen] = useState(false); // State for modal visibility
   const [selectedDeptRequest, setSelectedDeptRequest] = useState<DeptRequest | null>(null); // State for selected request data
+  const [isAddDepartmentModalOpen, setIsAddDepartmentModalOpen] = useState(false);
+
+  const handleOpenAddDepartmentModal = () => {
+    setIsAddDepartmentModalOpen(true);
+  };
+  
+  const handleCloseAddDepartmentModal = () => {
+    setIsAddDepartmentModalOpen(false);
+  };
 
   const handleCloseDeptReqModal = () => {
     setIsDeptReqModalOpen(false);
@@ -127,6 +138,7 @@ const DeptDashboard = () => {
 
 
   return (
+    <>
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
         <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
@@ -191,7 +203,14 @@ const DeptDashboard = () => {
           requestDetails={selectedDeptRequest}
         />
       )}
+      <AddDeptIcon onClick={handleOpenAddDepartmentModal} />
     </Grid>
+    <AddDepartmentModal
+    open={isAddDepartmentModalOpen}
+    onClose={handleCloseAddDepartmentModal}
+    // Pass any additional props required by AddDepartmentModal
+  />
+  </>
   );
 };
 

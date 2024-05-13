@@ -12,17 +12,26 @@ import {
   InputLabel,
 } from '@mui/material';
 
-interface AddDepartmentModalProps {
+interface EditDepartmentModalProps {
   open: boolean;
   onClose: () => void;
+  // Add props for initial department data
+  initialDepartment: {
+    id: number; // Department ID
+    name: string;
+    admin: string;
+    contact: string;
+    email: string;
+  };
+  onSubmit: (updatedDepartment: { id: number; name: string; admin: string; contact: string; email: string }) => void; // Function to handle form submission
 }
 
-const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
-  const [departmentName, setDepartmentName] = useState('');
-  const [departmentAdmin, setDepartmentAdmin] = useState('');
+const EditDeptModal = ({ open, onClose, initialDepartment, onSubmit }: EditDepartmentModalProps) => {
+  const [departmentName, setDepartmentName] = useState(initialDepartment.name);
+  const [departmentAdmin, setDepartmentAdmin] = useState(initialDepartment.admin);
   const [deptAdmins, setDeptAdmins] = useState<string[]>([]);
-  const [deptContact, setDeptContact] = useState('');
-  const [deptEmail, setDeptEmail] = useState('');
+  const [deptContact, setDeptContact] = useState(initialDepartment.contact);
+  const [deptEmail, setDeptEmail] = useState(initialDepartment.email);
 
   useEffect(() => {
     const fetchDeptAdmins = async () => {
@@ -44,19 +53,20 @@ const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log({
-      departmentName,
-      departmentAdmin,
-      deptContact,
-      deptEmail,
-    });
-    // Reset form fields or close the modal
+    const updatedDepartment = {
+      id: initialDepartment.id, // Use the original ID for update
+      name: departmentName,
+      admin: departmentAdmin,
+      contact: deptContact,
+      email: deptEmail,
+    };
+    onSubmit(updatedDepartment); // Call the provided onSubmit function
+    // Reset form fields or close the modal (optional)
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Add Department</DialogTitle>
+      <DialogTitle>Edit Department</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <TextField
@@ -99,7 +109,7 @@ const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
           <Button type="submit" color="primary">
-            Add Dept
+            Save Changes
           </Button>
         </DialogActions>
       </form>
@@ -107,4 +117,4 @@ const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
   );
 };
 
-export default AddDepartmentModal;
+export default EditDeptModal;
