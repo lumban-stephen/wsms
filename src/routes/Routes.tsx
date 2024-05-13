@@ -17,6 +17,8 @@ import RequestWorkingScholar from '../components/requestworkingscholar';
 import MaintainWS from '../pages/maintain-ws';
 import DeptDashboard from '../pages/maintain-dept';
 import DeptProfile from '../pages/dept-profile';
+import AdminDashboard from '../pages/admin-dashboard';
+import WorkingScholarPage from '../pages/assign-ws';
 
 interface UserProfileWrapperProps {
     userdetailFk: number;
@@ -134,6 +136,22 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['admin']}>
             <DeptProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/dashboard',
+        element: (
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/assignws',
+        element: (
+          <ProtectedRoute allowedRoles={['admin']}>
+            <WorkingScholarPage />
           </ProtectedRoute>
         ),
       },
