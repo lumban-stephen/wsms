@@ -1,7 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
 
 const AdminDashboard = () => {
+  const [data, setData] = useState({
+    workingScholarsInService: 0,
+    waitingForAssignment: 0,
+    latestAnnouncement: '',
+    pendingApplicants: 0,
+    totalPending: 0,
+    pendingDeptRequest: 0,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/admin/dashboard');
+        if (response.ok) {
+          const dashboardData = await response.json();
+          setData(dashboardData);
+        } else {
+          console.error('Failed to fetch dashboard data');
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Box>
       <Grid container spacing={3}>
@@ -13,7 +40,7 @@ const AdminDashboard = () => {
                 Working Scholars in service
               </Typography>
               <Typography variant="h3" component="div">
-                1146
+                {data.workingScholarsInService}
               </Typography>
             </CardContent>
           </Card>
@@ -27,7 +54,7 @@ const AdminDashboard = () => {
                 Waiting for assignment
               </Typography>
               <Typography variant="h3" component="div">
-                5236
+                {data.waitingForAssignment}
               </Typography>
             </CardContent>
           </Card>
@@ -41,9 +68,7 @@ const AdminDashboard = () => {
                 Latest Announcement
               </Typography>
               <Typography variant="body1" component="div">
-                Lorem ipsum, lorem, ipsum, lorem, to lorem ipsum, lorem ipsum lorem, lorem ipsum lorem. Lorem, ipsum
-                dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.
+                {data.latestAnnouncement}
               </Typography>
             </CardContent>
           </Card>
@@ -57,7 +82,7 @@ const AdminDashboard = () => {
                 Pending Applicants
               </Typography>
               <Typography variant="h3" component="div">
-                523
+                {data.pendingApplicants}
               </Typography>
             </CardContent>
           </Card>
@@ -71,7 +96,7 @@ const AdminDashboard = () => {
                 Total Pending
               </Typography>
               <Typography variant="h3" component="div">
-                250
+                {data.totalPending}
               </Typography>
             </CardContent>
           </Card>
@@ -85,7 +110,7 @@ const AdminDashboard = () => {
                 Pending Dept Request
               </Typography>
               <Typography variant="h3" component="div">
-                16
+                {data.pendingDeptRequest}
               </Typography>
             </CardContent>
           </Card>
