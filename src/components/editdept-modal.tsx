@@ -17,13 +17,13 @@ interface EditDepartmentModalProps {
   onClose: () => void;
   // Add props for initial department data
   initialDepartment: {
-    id: number; // Department ID
+    id: string; // Department ID pls change to number when fixing this
     name: string;
     admin: string;
     contact: string;
     email: string;
   };
-  onSubmit: (updatedDepartment: { id: number; name: string; admin: string; contact: string; email: string }) => void; // Function to handle form submission
+  onSubmit: (updatedDepartment: { id: string; name: string; admin: string; contact: string; email: string }) => void; // Function to handle form submission
 }
 
 const EditDeptModal = ({ open, onClose, initialDepartment, onSubmit }: EditDepartmentModalProps) => {

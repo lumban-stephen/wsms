@@ -66,7 +66,7 @@ export const router = createBrowserRouter([
       {
         path: '/dept-announce',
         element: (
-          <ProtectedRoute allowedRoles={['staff']}>
+          <ProtectedRoute allowedRoles={['staff', 'admin']}>
             <DeptAnnounce />
           </ProtectedRoute>
         ),
@@ -152,6 +152,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['admin']}>
             <WorkingScholarPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/maintain-applicants',
+        element: (
+          <ProtectedRoute allowedRoles={['admin']}>
+            <MaintainApplicants />
           </ProtectedRoute>
         ),
       },

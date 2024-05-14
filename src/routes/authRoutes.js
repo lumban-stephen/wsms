@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
+const { Navigate } = require('react-router-dom');
 const router = express.Router();
 
 const pool = new Pool({
@@ -51,6 +52,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+// User login route with backward compatibility
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -60,38 +62,94 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    // Get the user from the database
-    const query = 'SELECT * FROM users WHERE username = $1';
+    // New query with INNER JOIN for user and user_details
+    const query = `
+          SELECT
+            u.user_id,
+            u.username,
+            u.password,
+            u.user_type,
+            u.dept_fk,
+            COALESCE(n.fname, '') AS first_name,
+            COALESCE(n.lname, '') AS last_name,
+            COALESCE(n.mname, '') AS middle_name,
+            COALESCE(n.suffix, '') AS suffix,
+            COALESCE(ud.address, '') AS address,
+            COALESCE(ud.contact, '') AS contact,
+            COALESCE(d.department_name, '') AS dept_name
+          FROM
+            users u
+            LEFT JOIN user_details ud ON u.userdetail_fk = ud.userdetail_id
+            LEFT JOIN names n ON ud.name_fk = n.name_id
+            LEFT JOIN departments d ON u.dept_fk = d.department_id
+          WHERE
+            u.username = $1;
+    `;
     const values = [username];
     const { rows } = await pool.query(query, values);
 
-    // If no user is found, return an error
+    // Check if any rows were returned from the main query
     if (rows.length === 0) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+      // User might not have details in user_details, use fallback
+
+      console.warn('User details missing, fallback to username only login');
+
+      // Fallback query to check only users table
+      const fallbackQuery = `
+        SELECT *
+        FROM users
+        WHERE username = $1;
+      `;
+      const { fallbackRows } = await pool.query(fallbackQuery, values).catch((err) =>{
+        console.error('Error executing fallback query:', err);
+        return { rows: [] }; // Return an empty array to avoid undefined
+      });
+
+      console.log('Fallback query:', fallbackQuery); // Add this line to log the query
+      console.log('Fallback values:', values); // Add this line to log the values
+
+      console.log('Fallback rows:', fallbackRows);
+      
+      if (fallbackRows.length > 0) {
+        // User found in users table, handle login with limited details
+        const user = fallbackRows[0];
+
+        // Compare the provided password with the stored hashed password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+          return res.status(401).json({ error: 'Invalid username or password' });
+        }
+
+        // Create a JWT token with limited user information (if possible)
+        const payload = {
+          userId: user.user_id,
+          username: user.username,
+          userType: user.user_type,
+          // Consider omitting dept_name if it might be missing
+        };
+        const secret = 'M23y?_+Sb[ynL`_WBpp2LOzbOct&rq'; // Replace with your actual JWT secret
+        const token = jwt.sign(payload, secret, { expiresIn: '1h' }); // Set token expiration time as needed
+
+        // Return the JWT token (consider adding a warning about missing details)
+        res.json({ token, warning: 'User details missing, update your profile' });
+      } else {
+        console.log('Fallback rows is empty');// Username not found in either table
+        return res.status(401).json({ error: 'Invalid username or password' });
+      }
+    } else {
+      // User found in both tables, proceed with normal login logic
+
+      if (user) { // Check if user is defined (either from main or fallback)
+        if(user.user_type == 'admin') {
+            Navigate('/dashboard');
+        } else if(user.user_type == 'staff') {
+            Navigate('/dept-announce');
+        } else {
+            Navigate('/ws-announce');
+        }
     }
-
-    const user = rows[0];
-
-    // Compare the provided password with the stored hashed password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    // If the password is invalid, return an error
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid username or password' });
     }
-
-    // Create a JWT token with the user's information
-    const payload = {
-      userId: user.user_id,
-      username: user.username,
-      user_type: user.user_type,
-      // Add any other user data you want to include in the token
-    };
-    const secret = 'M23y?_+Sb[ynL`_WBpp2LOzbOct&rq'; // Replace with your actual JWT secret
-    const token = jwt.sign(payload, secret, { expiresIn: '1h' }); // Set token expiration time as needed
-
-    // Return the JWT token to the client
-    res.json({ token });
   } catch (error) {
     console.error('Error logging in user:', error);
     res.status(500).json({ error: 'Internal server error' });

@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Card, CardContent, Divider } from '@mui/material';
+import EditDeptModal from './editdept-modal';
+import { User } from '../utils/interfaces';
+import { jwtDecode } from 'jwt-decode';
 
 interface RequestHistoryItemProps {
   requestType: string;
@@ -30,6 +33,26 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
   email,
   requestHistory,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [token, setToken] = useState<any>();
+  const decodedToken = jwtDecode<User>(token);
+  const { user_id, username, password, user_type, dept } = decodedToken;
+  const [user, setUser] = useState<User>();
+  setUser(decodedToken);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    setToken(storedToken);
+  }, []);
+
+  const handleEditClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Card>
       <CardContent>
@@ -39,7 +62,7 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
         <Typography variant="body1">{contactDetails}</Typography>
         <Typography variant="body1">{email}</Typography>
         <Box mt={2} mb={1}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleEditClick}>
             Edit
           </Button>
         </Box>
@@ -56,6 +79,25 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
             />
           ))}
         </Box>
+
+        {/* Place the modal rendering logic here (after the request history): */}
+        {isModalOpen && (
+          <EditDeptModal
+            open={isModalOpen}
+            onClose={handleModalClose}
+            initialDepartment={{
+              id: user?.username || "undefined dept_id",
+              name: departmentName,
+              admin: user?.username || "undefined username", // Replace with actual admin
+              contact: contactDetails,
+              email: user?.username || "undefined email",
+            }}
+            onSubmit={(updatedDepartment) => {
+              // Handle department update logic here (e.g., API call)
+              console.log('Updated department:', updatedDepartment);
+            }}
+          />
+        )}
       </CardContent>
     </Card>
   );

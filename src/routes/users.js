@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const bodyParser = require('body-parser');
 const { Pool } = require('pg');
-const verifyToken = require('./middleware'); // Assuming middleware.js is in the same directory
 
 const pool = new Pool({
     user: "postgres",
@@ -16,7 +16,7 @@ const pool = new Pool({
 router.use(express.json());
 
 // Endpoint to get all applicants
-router.get('/api/user', verifyToken, async (req, res) => {
+router.get('/api/user', async (req, res) => {
     try {
       const userId = req.user.user_id; // Assuming user ID is stored in req.user.id
   

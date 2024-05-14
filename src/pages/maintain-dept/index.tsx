@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate for naviga
 import ApproveReq from '../../components/approve-req'; // Assuming ApproveReq is in the same directory
 import AddDeptIcon from '../../components/adddept-icon';
 import AddDepartmentModal from '../../components/adddept-modal';
+import NavBarAdmin from '../../components/navbar-admin';
 
 interface Department {
   imageUrl: string;
@@ -139,6 +140,7 @@ const DeptDashboard = () => {
 
   return (
     <>
+    <NavBarAdmin activeTab={'Applicants'}/>
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
         <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">

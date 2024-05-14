@@ -5,16 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
 import LoginSkeleton from '../../components/loginskeleton';
 import { AuthContext } from '../../utils/AuthContext';
-import { decode } from 'punycode';
-
-type UserType = "admin" | "staff" | "ws";
-
-interface User {
-  user_id: number;
-  username: string;
-  password: string;
-  user_type: UserType;
-}
+import { User } from '../../utils/interfaces';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -58,7 +49,7 @@ const Login: React.FC = () => {
   
         // Decode the token to get the user information
         const decodedToken = jwtDecode<User>(token);
-        const { user_id, username, password, user_type } = decodedToken;
+        const { user_id, username, password, user_type, dept } = decodedToken;
 
         console.log('decoded token is: ' + decodedToken)
   
@@ -70,7 +61,7 @@ const Login: React.FC = () => {
         if(decodedToken.user_type == "staff") {
           navigate('/dept-announce');
         }else if(decodedToken.user_type == "admin"){
-          navigate('/maintain-applicants');
+          navigate('/dashboard');
         }else {
           navigate('/welcome');
         }

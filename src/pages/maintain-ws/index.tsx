@@ -6,6 +6,7 @@ import { Applicant } from '../../utils/interfaces';
 import ApplicantModal from '../../components/applicant-modal';
 import WsList from '../../components/ws-list';
 import WsModal from '../../components/ws-modal';
+import NavBarAdmin from '../../components/navbar-admin';
 
 const MaintainWS: React.FC = () => {
   const [scholars, setScholars] = useState<Applicant[]>([]);
@@ -46,6 +47,8 @@ const MaintainWS: React.FC = () => {
   console.log(scholars);
 
   return (
+    <>
+    <NavBarAdmin activeTab={'WorkingScholars'}/>
     <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', width: '100%' }}>
       {/* Content Per Tab */}
       <Box sx={{ backgroundColor: 'white', height: '87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -69,6 +72,7 @@ const MaintainWS: React.FC = () => {
         </Paper>
       </Box>
     </Box>
+    </>
   );
 };
 

@@ -6,8 +6,8 @@ const authRoutes = require('./routes/authRoutes');
 const announcement = require('./routes/announcements');
 const applicants = require('./routes/applicants')
 const wsreq = require('./routes/wsreq')
-const wsreq = require('./routes/ws')
-const wsreq = require('./routes/users')
+const ws = require('./routes/ws')
+const users = require('./routes/users')
 const departments = require('./routes/departments')
 
 const app = express();

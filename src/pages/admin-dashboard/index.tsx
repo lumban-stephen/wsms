@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
+import NavBarAdmin from '../../components/navbar-admin';
 
 const AdminDashboard = () => {
   const [data, setData] = useState({
@@ -30,6 +31,8 @@ const AdminDashboard = () => {
   }, []);
 
   return (
+    <>
+    <NavBarAdmin activeTab={'Home'} />
     <Box>
       <Grid container spacing={3}>
         {/* Working Scholars in service */}
@@ -117,6 +120,7 @@ const AdminDashboard = () => {
         </Grid>
       </Grid>
     </Box>
+    </>
   );
 };
 

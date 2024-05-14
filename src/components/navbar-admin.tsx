@@ -3,22 +3,31 @@ import '../components/navbarStyles.css';
 import Logo from './uclmLogo'
 import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
+import { useNavigate } from 'react-router-dom';
 
 interface NavBarProps {
     activeTab: string;
-    handleTabChange: (tab: string) => void;
 }
 
-const NavBarAdmin: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
+const NavBarAdmin: React.FC<NavBarProps>= ({activeTab}) =>{
+    const navigate = useNavigate(); // Create a useNavigate constant
+
     //Profile Menu Start
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // Clear token from localStorage
+        navigate('/'); // Redirect to login page
+      };
     //Profile Menu End
     return(
         <Box style={{backgroundColor:'#0975bc', height:'13vh', width: '100%',  display: 'flex', alignContent: 'center'}}> 
@@ -37,31 +46,36 @@ const NavBarAdmin: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
                         color: 'white'
                         }}
                         variant={activeTab === 'Home' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Home')}>Home</Button>
+                        onClick={() => {
+                            navigate('/dashboard');
+                        }}>Home</Button>
 
                     <Button sx={{
                         color: 'white'
                         }}
                         variant={activeTab === 'Applicants' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Applicants')}>Applicants</Button>
+                        onClick={() => {navigate('/maintain-applicants');}}>Applicants</Button>
 
                     <Button sx={{
                         color: 'white'
                         }}
                         variant={activeTab === 'WorkingScholars' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('WorkingScholars')}>Working Scholars</Button>
+                        onClick={() => navigate('/maintain-ws')}>Working Scholars</Button>
 
                     <Button sx={{
                         color: 'white'
                         }}
                         variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Departments')}>Departments</Button>
+                        onClick={() => navigate('/maintain-dept')}>Departments
+                    </Button>
 
                     <Button sx={{
                         color: 'white'
                         }}
                         variant={activeTab === 'Announcements' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('Announcements')}>Announcements</Button>      
+                        onClick={() => navigate('/maintain-applicants')}>Applications
+                    </Button>
+   
                 </Grid>
                 {/*Tabs End*/}
                 {/*Profile Section*/}
@@ -92,12 +106,9 @@ const NavBarAdmin: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
                             MenuListProps={{
                             'aria-labelledby': 'basic-button',
                             }}>
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
-                            <MenuItem onClick={handleClose}>Logout</MenuItem>    
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>    
                         </Menu>    
                     </Box>
-                    {/*Profile Section End*/}
             </Box>
     );
 }

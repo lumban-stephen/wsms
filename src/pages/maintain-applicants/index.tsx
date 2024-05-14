@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import ApplicantList from '../../components/applicant-list';
 import { Applicant } from '../../utils/interfaces';
 import ApplicantModal from '../../components/applicant-modal';
+import NavBarAdmin from '../../components/navbar-admin';
 
 const MaintainApplicants: React.FC = () => {
   const [applicants, setApplicants] = useState<Applicant[]>([]);
@@ -44,6 +45,8 @@ const MaintainApplicants: React.FC = () => {
   console.log(applicants);
 
   return (
+    <>
+    <NavBarAdmin activeTab={'Applicants'}/>
     <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', width: '100%' }}>
       {/* Content Per Tab */}
       <Box sx={{ backgroundColor: 'white', height: '87vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -67,6 +70,7 @@ const MaintainApplicants: React.FC = () => {
         </Paper>
       </Box>
     </Box>
+    </>
   );
 };
 
