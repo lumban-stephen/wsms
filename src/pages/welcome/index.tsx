@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
 import { registerUser } from '../../db/prisma';
 

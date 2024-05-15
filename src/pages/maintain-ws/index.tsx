@@ -17,7 +17,7 @@ const MaintainWS: React.FC = () => {
   useEffect(() => {
     const fetchScholars = async () => {
       try {
-        const response = await fetch('http://localhost:3000/applicants/maintain-ws');
+        const response = await fetch('http://localhost:3000/ws/maintain-ws');
         if (!response.ok) {
           throw new Error('Failed to fetch applicants');
         }

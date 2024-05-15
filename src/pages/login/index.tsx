@@ -7,7 +7,7 @@ import LoginSkeleton from '../../components/loginskeleton';
 import { AuthContext } from '../../utils/AuthContext';
 import { User } from '../../utils/interfaces';
 
-const Login: React.FC = () => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -36,37 +36,48 @@ const Login: React.FC = () => {
         body: JSON.stringify({ username, password }),
       });
   
-      if (!response.ok) {
+      if (response.ok) {
+        const data = await response.json();
+        if (data.token) {
+          const { token } = data;
+  
+          // Store the JWT token in local storage or state management solution
+          localStorage.setItem('token', token);
+          console.log('token is: ' + token);
+  
+          // Decode the token to get the user information
+          const decodedToken = jwtDecode<User>(token) as User;
+          const { user_id, username, password, userType, deptName } = decodedToken;
+  
+          console.log('decoded token is: ' , JSON.stringify(decodedToken));
+  
+          // Store user data in state or context for further use
+          setUser(decodedToken);
+  
+          // Authentication for navbar
+          setIsAuthenticated(true); // Update isAuthenticated state
+  
+          console.log(decodedToken.userType)
+
+          // Redirect to the profile page or another authenticated route
+          if (decodedToken && decodedToken.userType) {
+            console.log(decodedToken + "is the decoded token. " + "and the user type is: " +decodedToken.userType);
+            if (decodedToken.userType === "staff") {
+              navigate('/dept-announce');
+            } else if (decodedToken.userType === "admin") {
+              await navigate('/dashboard');
+            } else if (decodedToken.userType === "ws"){
+              navigate('/welcome');
+            }
+          }
+
+        } else {
+          setError('Invalid response from the server');
+        }
+      } else {
         const errorData = await response.json();
         const errorMessage = errorData.error || response.statusText;
         setError(errorMessage);
-      } else {
-        const { token } = await response.json();
-  
-        // Store the JWT token in local storage or state management solution
-        localStorage.setItem('token', token);
-        console.log('token is: ' + token)
-  
-        // Decode the token to get the user information
-        const decodedToken = jwtDecode<User>(token);
-        const { user_id, username, password, user_type, dept } = decodedToken;
-
-        console.log('decoded token is: ' + decodedToken)
-  
-        // Store user data in state or context for further use
-        setUser(decodedToken);
-        //authentication for navbar
-        setIsAuthenticated(true); // Update isAuthenticated state
-        // Redirect to the profile page or another authenticated route
-        if(decodedToken.user_type == "staff") {
-          navigate('/dept-announce');
-        }else if(decodedToken.user_type == "admin"){
-          navigate('/dashboard');
-        }else {
-          navigate('/welcome');
-        }
-
-        
       }
     } catch (error) {
       console.error('Error logging in user:', error);
@@ -130,6 +141,6 @@ const Login: React.FC = () => {
       </Grid>
     </Grid>
   );
-}
+};
 
 export default Login;

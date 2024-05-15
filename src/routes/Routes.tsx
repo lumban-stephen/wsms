@@ -19,6 +19,7 @@ import DeptDashboard from '../pages/maintain-dept';
 import DeptProfile from '../pages/dept-profile';
 import AdminDashboard from '../pages/admin-dashboard';
 import WorkingScholarPage from '../pages/assign-ws';
+import { UserType } from '../utils/interfaces';
 
 interface UserProfileWrapperProps {
     userdetailFk: number;
@@ -39,11 +40,10 @@ const UserProfileWrapper: React.FC<UserProfileWrapperProps>  = () => {
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: '',
     element: <App />,
     children: [
-      { path: '', element: <Login /> },
-      { path: '/register', element: <Register /> },
+      { path: '/', element: <Login /> },
       { path: '/signup', element: <Signup /> },
       {
         path: '/dept',
@@ -110,7 +110,7 @@ export const router = createBrowserRouter([
       {
         path: '/reqws',
         element: (
-          <ProtectedRoute allowedRoles={['dept']}>
+          <ProtectedRoute allowedRoles={['staff']}>
             <RequestWorkingScholar />
           </ProtectedRoute>
         ),

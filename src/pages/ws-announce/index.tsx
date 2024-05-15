@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box } from '@mui/material';
 import AnnounceBox from '../../components/announce-box';
 
 interface Announcement {

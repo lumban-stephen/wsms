@@ -36,7 +36,7 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [token, setToken] = useState<any>();
   const decodedToken = jwtDecode<User>(token);
-  const { user_id, username, password, user_type, dept } = decodedToken;
+  const { user_id, username, password, userType, deptName } = decodedToken;
   const [user, setUser] = useState<User>();
   setUser(decodedToken);
 

@@ -33,12 +33,13 @@ export interface Department {
     name: string;
 }
 
-type UserType = "admin" | "staff" | "ws";
+export type UserType = "admin" | "staff" | "ws";
 
 export interface User {
   user_id: number;
   username: string;
   password: string;
-  user_type: UserType;
-  dept: string;
+  userType: UserType;
+  deptName: string;
+  exp?: number;
 }

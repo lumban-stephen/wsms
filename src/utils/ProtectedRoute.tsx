@@ -1,31 +1,24 @@
-import React, { ReactNode, useState, useEffect, useContext } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import React, { ReactNode, useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { AuthContext } from './AuthContext';
+import { User, UserType } from './interfaces';
 
 interface ProtectedRouteProps {
-  allowedRoles: string[];
+  allowedRoles: UserType[];
   children: ReactNode;
-  userdetailFk?: number; // Optional property
-  token?: string; // Optional property
 }
 
-const ProtectedRoute = ({
-  allowedRoles,
-  children,
-  userdetailFk,
-  token,
-}: ProtectedRouteProps) => {
+const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const isAuthenticated = (): boolean => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
       try {
-        const decodedToken: { exp: number; user_type: string } = jwtDecode(token);
+        const decodedToken = jwtDecode<User>(storedToken);
         const currentTime = Date.now() / 1000;
-        return decodedToken.exp > currentTime && allowedRoles.includes(decodedToken.user_type);
+        return decodedToken.exp ? decodedToken.exp > currentTime : false;
       } catch (err) {
         console.error('Invalid token:', err);
       }
@@ -33,43 +26,65 @@ const ProtectedRoute = ({
     return false;
   };
 
-  // Track both authentication and authorization state
-  const [isAuthenticatedState, setIsAuthenticatedState] = useState(false); // Initial state
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  // State variable to track authentication status
+  const [isAuthenticatedState, setIsAuthenticatedState] = useState(false);
 
-  // Check authentication on initial render and after token changes
   useEffect(() => {
+    // Check authentication status on component mount
+    const isUserAuthenticated = isAuthenticated();
+    setIsAuthenticatedState(isUserAuthenticated);
+
+    // Listen for changes in local storage
     const handleStorageChange = () => {
       const isAuth = isAuthenticated();
       setIsAuthenticatedState(isAuth);
-      setIsAuthorized(isAuth); // Update authorization state based on authentication
     };
-
     window.addEventListener('storage', handleStorageChange);
 
-    return () => window.removeEventListener('storage', handleStorageChange); // Cleanup
-  }, []); // Empty dependency array to run only once on mount
+    // Cleanup
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
-  // Handle unauthorized access differently on reload
-  useEffect(() => {
-    if (!isAuthenticatedState) {
-      // Redirect to login on initial load if not authenticated
-      navigate('/login', { replace: true });
-    } else if (!isAuthorized) {
-      // Display error or handle unauthorized access on reload
-      console.error('Unauthorized access to protected route:', location.pathname); // Log unauthorized attempt
-      // Optionally: Display an error message or redirect to a permission denied page
+  const isAuthorized = (): boolean => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      try {
+        const decodedToken = jwtDecode<User>(storedToken);
+        return allowedRoles.includes(decodedToken.userType);
+      } catch (err) {
+        console.error('Error checking authorization:', err);
+      }
     }
-  }, [isAuthenticatedState, isAuthorized, location]); // Re-run on state changes and location change
+    return false;
+  };
 
-  if (!isAuthorized) {
-    return <div>You are not authorized to access this page.</div>; // Or display an error message
+  // State variable to track authorization status
+  const [isAuthorizedState, setIsAuthorizedState] = useState(false);
+
+  useEffect(() => {
+    // Check authorization status when authentication status changes
+    if (isAuthenticatedState) {
+      const isUserAuthorized = isAuthorized();
+      setIsAuthorizedState(isUserAuthorized);
+    }
+  }, [isAuthenticatedState]);
+
+  if (!isAuthorizedState) {
+    return <div>You are not authorized to access this page.</div>;
   }
-
-  return React.cloneElement(children as React.ReactElement, {
-    userdetailFk,
-    token,
-  });
-};
+  
+  return (
+    <>
+      {React.Children.count(children) > 0 ? (
+        React.Children.map(children, (child) =>
+          React.cloneElement(child as React.ReactElement, {
+            isAuthenticated: isAuthenticatedState,
+            isAuthorized: isAuthorizedState,
+          })
+        )
+      ) : null}
+    </>
+  );
+}
 
 export default ProtectedRoute;
