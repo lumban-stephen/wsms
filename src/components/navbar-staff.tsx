@@ -10,10 +10,9 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 interface NavBarProps {
     activeTab: string;
-    handleTabChange: (tab: string) => void;
 }
 
-const NavBarStaff: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
+const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
     //Profile Menu Start
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -52,40 +51,24 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab, handleTabChange}) =>{
           <Box sx={{ position: 'relative', paddingLeft: 1 }}>
             <Logo width={210} height={130} />
           </Box>
-          {/* Tabs */}
           <Grid container direction="row" justifyContent="center" alignItems="center" sx={{ flex: 1 }}>
-            {/* Departments Button with Dropdown  */}
-            <Button
-              sx={{ color: 'white' }}
-              variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
-              onClick={handleClick}
-            >
-              Departments
-            </Button>
-            <Menu
-              id="departments-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                'aria-labelledby': 'departments-button',
-              }}
-            >
-              <MenuItem onClick={() => handleTabChange('ViewDepartments')}>View Departments</MenuItem>
-              <MenuItem onClick={() => handleTabChange('ViewRequest')}>View Request</MenuItem>
-            </Menu>
-    
             <Button
               sx={{ color: 'white' }}
               variant={activeTab === 'WorkingScholars' ? 'contained' : 'outlined'}
-              onClick={() => navigate('/ws-list')}>
+              onClick={() => navigate('/deptreq')}>
+              Departments
+            </Button>
+            <Button
+              sx={{ color: 'white' }}
+              variant={activeTab === 'WorkingScholars' ? 'contained' : 'outlined'}
+              onClick={() => navigate('/dept-profile')}>
               Working Scholars
             </Button>
     
             <Button
               sx={{ color: 'white' }}
               variant={activeTab === 'Announcements' ? 'contained' : 'outlined'}
-              onClick={() => navigate('/ws-announce')}>
+              onClick={() => navigate('/dept-announce')}>
               Announcements
             </Button>
           </Grid>

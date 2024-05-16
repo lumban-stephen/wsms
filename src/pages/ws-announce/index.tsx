@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box } from '@mui/material';
 import AnnounceBox from '../../components/announce-box';
+import NavBarWS from '../../components/navbar-ws';
 
 interface Announcement {
   id: number; // Assuming your announcement table has an ID column
@@ -85,6 +86,8 @@ const WsAnnounce: React.FC = () => {
   };
 
   return (
+    <>
+    <NavBarWS activeTab={'Announcements'} />
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {announcements.length === 0 ? (
         <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -99,6 +102,7 @@ const WsAnnounce: React.FC = () => {
         ))
       )}
     </Container>
+    </>
   );
 };
 

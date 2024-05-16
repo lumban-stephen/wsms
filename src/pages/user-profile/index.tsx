@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Avatar } from '@mui/material';
 import { useParams } from "react-router-dom";
+import NavBarWS from '../../components/navbar-ws';
 
 interface ApplicantData {
   name: string;
@@ -42,6 +43,8 @@ const UserProfile: React.FC<{ userdetailFk: number; token: string }> = ({ userde
   }, [userdetailFk, token]);
 
   return (
+    <>
+    <NavBarWS activeTab={'Home'} />
     <Box display="flex" alignItems="center" mb={2}>
       {applicant ? (
         <>
@@ -62,6 +65,7 @@ const UserProfile: React.FC<{ userdetailFk: number; token: string }> = ({ userde
         <Typography variant="body2">Applicant data empty</Typography>
       )}
     </Box>
+    </>
   );
 };
 

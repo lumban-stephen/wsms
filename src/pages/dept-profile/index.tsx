@@ -4,6 +4,7 @@ import DeptDetails from '../../components/dept-details';
 import WsCard from '../../components/ws-card'; // Import WsCard component
 import WsCardModal from '../../components/wscard-modal'; // Import WsCardModal component
 import { useParams } from 'react-router-dom'; // Import useParams for accessing URL parameters
+import NavBarStaff from '../../components/navbar-staff';
 
 interface DepartmentDetails {
   name: string;
@@ -75,6 +76,8 @@ const DeptProfile = () => {
   };
 
   return (
+    <>
+    <NavBarStaff activeTab={'WorkingScholars'} />
     <Grid container spacing={2}>
       {departmentDetails ? (
         <>
@@ -118,6 +121,7 @@ const DeptProfile = () => {
         <Typography variant="body1">Loading department details...</Typography>
       )}
     </Grid>
+    </>
   );
 }
 

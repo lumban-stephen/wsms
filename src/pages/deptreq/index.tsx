@@ -3,6 +3,7 @@ import PendingRequestList from '../../components/pendingrequestlist';
 import RequestDetails from '../../components/requestdetails';
 import RequestWorkingScholar from '../../components/requestworkingscholar';
 import { Typography } from '@mui/material';
+import NavBarStaff from '../../components/navbar-staff';
 
 interface Request {
   ws_req_id: string;
@@ -93,6 +94,7 @@ const DeptReq: React.FC = () => {
 
   return (
     <>
+    <NavBarStaff activeTab={'Departments'}  />
       <div style={{ display: 'flex' }}>
         <PendingRequestList
           requests={requests} // Pass fetched requests as props
