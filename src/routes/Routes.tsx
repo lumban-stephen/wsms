@@ -163,6 +163,14 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: '/profile',
+        element: (
+          <ProtectedRoute allowedRoles={['staff', 'ws']}>
+            <UserProfile userdetailFk={0} token={''} />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);

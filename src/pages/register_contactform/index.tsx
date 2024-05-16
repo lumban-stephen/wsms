@@ -4,6 +4,7 @@ import { Stepper, Step, StepLabel, Button, Typography, Container, Paper, Box, Te
 import './styles.css'; // Import custom CSS file for transitions
 import Drop from '../../components/dropzone'
 import StepProgressBar from '../../components/stepProgressBar';
+import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
     const [completeName, setCompleteName] = useState('');
@@ -23,6 +24,7 @@ const Register: React.FC = () => {
     const month = currentDate.toLocaleString('en-US', { month: 'long' }); // Full month name
     const year = currentDate.getFullYear();
 
+    const navigate = useNavigate();
     const isNextDisabledStep1 = completeName.trim() === ''|| address.trim() === ''|| currentCourse.trim() === ''|| currentNumber.trim() === '';
     const isNextDisabledStep3 = fathersOccupation.trim() === ''|| mothersOccupation.trim() === '';
     
@@ -54,10 +56,7 @@ const Register: React.FC = () => {
           const data = await response.json();
 
           if (response.ok) {
-            if (data.redirectUrl) {
-                // Redirect to the specified URL
-                window.location.href = data.redirectUrl;
-              }
+            navigate('/signup');
           } else {
             console.error('Error registering working scholar:', await response.text());
             // Handle registration errors (e.g., display error message)

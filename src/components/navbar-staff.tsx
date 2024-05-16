@@ -85,17 +85,10 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
                     >
                         {username}  {/* Display username if available */}
                     </Button>
-                    <Menu
-                    id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                            }}>
-                            <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                            <MenuItem onClick={handleLogout}>Logout</MenuItem>    
-                    </Menu> 
+                    <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
+                      <MenuItem onClick={handleClose}>Profile</MenuItem>
+                      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    </Menu>
                 </Box>
             </Box>
     );

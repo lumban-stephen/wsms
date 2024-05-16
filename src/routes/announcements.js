@@ -14,7 +14,7 @@ const pool = new Pool({
 // Get all announcements
 router.get('/dept-announce', async (req, res) => {
     try {
-      const allAnnouncements = await pool.query('SELECT * FROM announcements'); // Assuming your table is named 'announcements'
+      const allAnnouncements = await pool.query('SELECT * FROM announcements ORDER BY announcement_id DESC'); // Assuming your table is named 'announcements'
       res.json(allAnnouncements.rows);
     } catch (error) {
       console.error('Error fetching announcements:', error);

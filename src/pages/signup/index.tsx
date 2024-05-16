@@ -34,7 +34,7 @@ const Signup: React.FC = () => {
 
       const user = await response.json();
       console.log("Successful registration", user);
-      window.location.href = '/maintain-applicants';
+      window.location.href = '/';
     } catch (error) {
       console.error("Error registering user:", error);
       setError('Registration failed. Please try again.');
