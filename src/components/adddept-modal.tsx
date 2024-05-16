@@ -42,18 +42,36 @@ const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
     fetchDeptAdmins();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log({
-      departmentName,
-      departmentAdmin,
-      deptContact,
-      deptEmail,
-    });
-    // Reset form fields or close the modal
+  
+    try {
+      const response = await fetch('/api/departments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          departmentName,
+          departmentAdmin, // Assuming departmentAdmin is a value you have in your component state
+          deptContact,
+          deptEmail,
+        }),
+      });
+  
+      if (response.ok) {
+        const createdDepartment = await response.json();
+        console.log('Created department:', createdDepartment);
+        // Reset form fields or close the modal
+        onClose();
+      } else {
+        console.error('Failed to create department:', await response.text()); // More informative error message
+      }
+    } catch (error) {
+      console.error('Error creating department:', error);
+    }
   };
-
+  
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Add Department</DialogTitle>

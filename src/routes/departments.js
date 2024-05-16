@@ -9,8 +9,7 @@ const pool = new Pool({
   database: "wsms",
   password: "10000max",
   port: 5432,
-  // Consider removing secret key from here (store in environment variables)
-  // secretkey: "M23y?_+Sb[ynL`_WBpp2LOzbOct&rq"
+  secretkey: "M23y?_+Sb[ynL`_WBpp2LOzbOct&rq"
 });
 
 // Get all departments
@@ -23,6 +22,31 @@ router.get('/departments', async (req, res) => {
     res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
   }
 });
+
+router.post('/api/departments', async (req, res) => {
+  const { departmentName, departmentAdmin, deptContact, deptEmail } = req.body;
+
+  try {
+    // Insert the department data into the database
+    const query = `
+      INSERT INTO departments (department_name, ws_count, employee_count, access_lvl, contact, dept_email)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;
+    `;
+
+    // Assuming access_lvl has a default value or is set elsewhere
+    const values = [departmentName, 0, 0, null, deptContact, deptEmail]; // Set ws_count and employee_count to 0 initially
+
+    const result = await pool.query(query, values);
+
+    // Return the newly created department
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error inserting department:', error);
+    res.status(500).json({ error: 'An error occurred while adding the department.' });
+  }
+});
+
 
 // Get department details by ID
 router.get('/departments/:departmentId', async (req, res) => {

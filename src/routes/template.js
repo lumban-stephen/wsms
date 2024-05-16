@@ -11,6 +11,4 @@ const pool = new Pool({
   secretkey: "M23y?_+Sb[ynL`_WBpp2LOzbOct&rq"
 });
 
-
-
   module.exports = router;

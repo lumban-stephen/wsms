@@ -76,7 +76,6 @@ const DeptDashboard = () => {
         // Handle errors appropriately (e.g., display an error message)
       }
     };
-
     fetchDepartments();
     fetchDeptRequests();
   }, []);
