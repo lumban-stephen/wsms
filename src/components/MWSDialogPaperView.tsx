@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, Button, DialogContent, DialogTitle, DialogActions } from '@mui/material';
+import ButtonRenew from '../components/MWSButtonRenew';
+import ButtonSuspend from '../components/MWSButtonSuspend';
 import { styled } from '@mui/system';
 import Paper from '@mui/material/Paper';
 
@@ -41,6 +43,10 @@ const MWSDialogPaperView: React.FC<Props> = ({ open, onClose, row }) => {
     if (!row) {
         return null;
     }
+
+    const handleDialogClose = () => {
+        onClose(); // Call the onClose function passed as prop
+    };
 
     return (
         <>
@@ -94,8 +100,15 @@ const MWSDialogPaperView: React.FC<Props> = ({ open, onClose, row }) => {
                                 </div>
                             </>
                         </DialogContent>
-                        <DialogActions>
-                            <Button onClick={onClose}>Close</Button>
+                        <DialogActions sx={{ display: 'grid', gridTemplateColumns: '100px 1fr 1fr', gap: '20px' , justifyContent: 'center', flexDirection: 'column' }}>
+                            <>
+                            <div>
+                            <ButtonRenew onClick={handleDialogClose} />
+                            </div>
+                            <div>
+                            <ButtonSuspend onClick={handleDialogClose}/>
+                            </div>
+                            </>
                         </DialogActions>
                     </StyledPaper>
                 </BackgroundOverlay>
