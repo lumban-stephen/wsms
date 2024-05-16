@@ -140,7 +140,7 @@ const DeptDashboard = () => {
 
   return (
     <>
-    <NavBarAdmin activeTab={'Applicants'}/>
+    <NavBarAdmin activeTab={'Departments'}/>
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
         <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
