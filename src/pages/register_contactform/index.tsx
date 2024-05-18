@@ -19,16 +19,43 @@ const Register: React.FC = () => {
     const [fathersOccupation, setFathersOccupation] = useState('');
     const [motherName, setMotherName] = useState('');
     const [mothersOccupation, setMothersOccupation] = useState('');
+    const [imageData, setImageData] = useState<string | null>(null); // To store image data
     const currentDate = new Date();
     const day = currentDate.getDate();
     const month = currentDate.toLocaleString('en-US', { month: 'long' }); // Full month name
     const year = currentDate.getFullYear();
 
+
     const navigate = useNavigate();
     const isNextDisabledStep1 = completeName.trim() === ''|| address.trim() === ''|| currentCourse.trim() === ''|| currentNumber.trim() === '';
     const isNextDisabledStep3 = fathersOccupation.trim() === ''|| mothersOccupation.trim() === '';
     
-    const handleSubmit = async () => {
+    const submitRegistrationData = async (workingScholarData: any) => {
+        try {
+          const response = await fetch('http://localhost:3000/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(workingScholarData),
+          });
+      
+          if (!response.ok) {
+            throw new Error(`Error registering working scholar: ${response.statusText}`);
+          }
+      
+          const data = await response.json();
+          console.log('Registration response:', data);
+      
+          // Handle successful registration (e.g., display success message, redirect)
+        } catch (error) {
+          console.error('Error registering working scholar:', error);
+          // Handle registration errors (e.g., display error message)
+        }
+      };
+      
+
+      const handleSubmit = async () => {
         const workingScholarData = {
           completeName,
           address,
@@ -42,31 +69,18 @@ const Register: React.FC = () => {
           fathersOccupation,
           motherName,
           mothersOccupation,
+          imageData, // Assuming imageData is populated from Drop component
         };
-    
+      
         try {
-          const response = await fetch('http://localhost:3000/auth/register', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(workingScholarData),
-          });
-    
-          const data = await response.json();
-
-          if (response.ok) {
-            navigate('/signup');
-          } else {
-            console.error('Error registering working scholar:', await response.text());
-            // Handle registration errors (e.g., display error message)
-          }
+          await submitRegistrationData(workingScholarData);
+          // Handle successful registration here (e.g., navigate to "/signup")
         } catch (error) {
           console.error('Error registering working scholar:', error);
-          // Handle network or other errors
+          // Handle registration errors here (e.g., display error message)
         }
-    };
-
+      };
+      
     const [activeStep, setActiveStep] = useState(0);
     const steps = ['Basic Details', 'Profile Upload', 'Family Info', 'Confirmation'];
 
@@ -78,7 +92,7 @@ const Register: React.FC = () => {
                 return prevActiveStep;
             }
         });
-    };
+    };      
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => {
@@ -147,8 +161,8 @@ const Register: React.FC = () => {
                                         label="Gender"
                                         onChange={(e) => setGender(e.target.value)}
                                         >
-                                            <MenuItem value={10}>Male</MenuItem>
-                                            <MenuItem value={20}>Female</MenuItem>
+                                            <MenuItem value={"male"}>male</MenuItem>
+                                            <MenuItem value={"female"}>female</MenuItem>
                                         </Select>
                                         <TextField label="Age" fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
                                         <TextField label="Last School Attended" value={school} onChange={(e) => setSchool(e.target.value)} fullWidth margin="normal" variant="standard" inputProps={{ style: { borderBottom: '1px solid black' } }} />
@@ -173,7 +187,15 @@ const Register: React.FC = () => {
                             <div className={`step ${activeStep === 1 ?'active' : ''}`}>
                                 <Grid container spacing={6} alignItems={'center'} mt={0.3} display={'flex'} justifyContent={'center'}>
                                     <Grid item xs={6}>
-                                        <Drop></Drop>
+                                    <Drop
+                                        onUploadSuccess={submitRegistrationData}
+                                        onDrop={(acceptedFiles: File[]) => {
+                                            if (acceptedFiles.length > 0) {
+                                            const fileNames = acceptedFiles.map((file) => file.name).join(', ');
+                                            alert(`You dropped ${fileNames}`);
+                                            }
+                                        }}
+                                        />
                                     </Grid>                                    
                                 </Grid>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, width:'100%'}}> {/*back button*/}

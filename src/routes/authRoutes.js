@@ -1,9 +1,10 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 
 const pool = new Pool({
   user: "postgres",
@@ -127,13 +128,39 @@ router.post('/register', async (req, res) => {
     fathersOccupation,
     motherName,
     mothersOccupation,
+    imageData,
   } = req.body;
+
+  // Log the entire request body to understand what's being received
+  console.log('Received request body:', req.body);
 
   // 1. Extract First and Last Name from completeName
   const [firstName, ...lastNameParts] = completeName.split(' ');
   const lastName = lastNameParts.join(' ');
 
   try {
+    // Ensure the directory exists
+    const dir = './user_imgs';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+
+    // Validate imageData format
+    if (!imageData) {
+      throw new Error('No image data provided');
+    }
+    const base64Pattern = /^data:image\/(png|jpg|jpeg);base64,/;
+    if (!base64Pattern.test(imageData)) {
+      throw new Error('Invalid image data format');
+    }
+    const imageBuffer = Buffer.from(imageData.replace(base64Pattern, ''), 'base64');
+
+    // Generate a unique filename (optional)
+    const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}.${imageData.split(';')[0].split('/')[1]}`;
+
+    // Save the image to the storage location
+    fs.writeFileSync(path.join(dir, filename), imageBuffer);
+
     // 2. Start a transaction
     await pool.query('BEGIN');
 
@@ -145,7 +172,7 @@ router.post('/register', async (req, res) => {
     const nameId = nameResult.rows[0].name_id;
 
     const applicantResult = await pool.query(
-      'INSERT INTO applicants (name_fk, school_name, address, course, age, year, contact, parent_fk, status) VALUES ($1, $2, $3, $4, $5, $6, $7, null, $8) RETURNING applicant_id',
+      'INSERT INTO applicants (name_fk, school_name, address, course, age, year, contact, parent_fk, status, gender, image_path, fb) VALUES ($1, $2, $3, $4, $5, $6, $7, null, $8, $9, $10, $11) RETURNING applicant_id',
       [
         nameId,
         school,
@@ -155,15 +182,24 @@ router.post('/register', async (req, res) => {
         null,
         currentNumber,
         'pending',
+        gender,
+        path.join(dir, filename), // Updated image path
+        userFB,
       ]
     );
     const applicantId = applicantResult.rows[0].applicant_id;
 
     // 4. Insert parent data (if provided)
     if (fatherName && fathersOccupation) {
+      const fatherNameResult = await pool.query(
+        'INSERT INTO names (fname, lname) VALUES ($1, $2) RETURNING name_id',
+        [fatherName.split(' ')[0], fatherName.split(' ').slice(1).join(' ')]
+      );
+      const fatherNameId = fatherNameResult.rows[0].name_id;
+
       const guardianResult = await pool.query(
         'INSERT INTO guardians (contact, name_fk, occupation) VALUES ($1, $2, $3) RETURNING guardian_id',
-        [null, nameId, fathersOccupation]
+        [null, fatherNameId, fathersOccupation]
       );
       const fatherId = guardianResult.rows[0].guardian_id;
       await pool.query('INSERT INTO parents (mother_fk, father_fk) VALUES (null, $1)', [
@@ -172,9 +208,15 @@ router.post('/register', async (req, res) => {
     }
 
     if (motherName && mothersOccupation) {
+      const motherNameResult = await pool.query(
+        'INSERT INTO names (fname, lname) VALUES ($1, $2) RETURNING name_id',
+        [motherName.split(' ')[0], motherName.split(' ').slice(1).join(' ')]
+      );
+      const motherNameId = motherNameResult.rows[0].name_id;
+
       const guardianResult = await pool.query(
         'INSERT INTO guardians (contact, name_fk, occupation) VALUES ($1, $2, $3) RETURNING guardian_id',
-        [null, nameId, mothersOccupation]
+        [null, motherNameId, mothersOccupation]
       );
       const motherId = guardianResult.rows[0].guardian_id;
       await pool.query('INSERT INTO parents (mother_fk, father_fk) VALUES ($1, null)', [
@@ -184,8 +226,10 @@ router.post('/register', async (req, res) => {
 
     // 5. Commit the transaction
     await pool.query('COMMIT');
-    res.json({ message: 'Working scholar registration successful!',
-              redirectURL: '/login' });
+    res.json({
+      message: 'Working scholar registration successful!',
+      redirectURL: '/login'
+    });
   } catch (error) {
     console.error('Error registering working scholar:', error);
     await pool.query('ROLLBACK');
