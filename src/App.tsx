@@ -4,13 +4,14 @@ import Navbar from './components/MWSNavbar'
 import PaperStyle from './components/MWSPaper'
 import TableStyle from './components/MWSTable'
 import MaintainWS from './pages/admin/MaintainWS'
+import MaintainDept from './pages/maintainDept/index'
 import './App.css';
 
 function App() {
   return (
     <div>
-      <Navbar/>
-      <MaintainWS></MaintainWS>
+      
+      <MaintainDept></MaintainDept>
       
     </div>
   );
