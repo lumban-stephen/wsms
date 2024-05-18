@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Box, Link, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import DeptCard from '../../components/dept-card';
 import DeptReqCard from '../../components/deptreq-card';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import ApproveReq from '../../components/approve-req'; // Assuming ApproveReq is in the same directory
+import ApproveReq from '../../components/approve-req';
 import AddDeptIcon from '../../components/adddept-icon';
 import AddDepartmentModal from '../../components/adddept-modal';
 import NavBarAdmin from '../../components/navbar-admin';
@@ -11,6 +11,9 @@ import NavBarAdmin from '../../components/navbar-admin';
 interface Department {
   imageUrl: string;
   departmentName: string;
+  departmentAdmin: string;
+  deptContact: string;
+  deptEmail: string;
 }
 
 interface DeptRequest {
@@ -18,72 +21,61 @@ interface DeptRequest {
   requestType: string;
   quantity: number;
   requestDetails: string;
-  requestStatus: string; // e.g., "waiting", "approved", "rejected"
+  requestStatus: string;
 }
 
 const DeptDashboard = () => {
-  const [departments, setDepartments] = useState<Department[]>([]); // State for department data
-  const [deptRequests, setDeptRequests] = useState<DeptRequest[] | null>(null); // State for department requests (with type)
-  const [selectedDept, setSelectedDept] = useState<Department | null>(null); // State for selected department
-  const [isDeptReqModalOpen, setIsDeptReqModalOpen] = useState(false); // State for modal visibility
-  const [selectedDeptRequest, setSelectedDeptRequest] = useState<DeptRequest | null>(null); // State for selected request data
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [deptRequests, setDeptRequests] = useState<DeptRequest[] | null>(null);
+  const [selectedDept, setSelectedDept] = useState<Department | null>(null);
+  const [isDeptReqModalOpen, setIsDeptReqModalOpen] = useState(false);
+  const [selectedDeptRequest, setSelectedDeptRequest] = useState<DeptRequest | null>(null);
   const [isAddDepartmentModalOpen, setIsAddDepartmentModalOpen] = useState(false);
-  const [newDepartment, setNewDepartment] = useState<Department | null>(null);
+  const navigate = useNavigate();
 
-  const handleOpenAddDepartmentModal = () => {
-    setIsAddDepartmentModalOpen(true);
-  };
-  
-  const handleCloseAddDepartmentModal = () => {
-    setIsAddDepartmentModalOpen(false);
-  };
-
-  const handleCloseDeptReqModal = () => {
-    setIsDeptReqModalOpen(false);
-    setSelectedDeptRequest(null); // Clear selected request on close (optional)
-  };
-  const navigate = useNavigate(); // Hook for navigation
-
-  // Fetch department data (replace with your actual API call)
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch('/api/departments'); // Assuming separate endpoint for departments
-        const data = await response.json();
+        const response = await fetch('/api/departments');
         if (response.ok) {
+          const data = await response.json();
           setDepartments(data);
         } else {
-          console.error('Error fetching departments:', data);
-          // Handle errors appropriately (e.g., display an error message)
+          console.error('Error fetching departments:', await response.text());
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
-        // Handle errors appropriately (e.g., display an error message)
       }
     };
 
     const fetchDeptRequests = async () => {
       try {
-        const response = await fetch('/api/dept-requests'); // Replace with your actual API endpoint
-        const data = await response.json();
+        const response = await fetch('/api/dept-requests');
         if (response.ok) {
+          const data = await response.json();
           setDeptRequests(data);
         } else {
-          console.error('Error fetching department requests:', data);
-          // Handle errors appropriately (e.g., display an error message)
+          console.error('Error fetching department requests:', await response.text());
         }
       } catch (error) {
         console.error('Error fetching department requests:', error);
-        // Handle errors appropriately (e.g., display an error message)
       }
     };
+
     fetchDepartments();
     fetchDeptRequests();
   }, []);
 
   const handleDeptClick = (department: Department) => {
-    setSelectedDept(department);
-    navigate(`/dept-profile/${department.departmentName}`); // Navigate to dept-profile page with department name
+    navigate(`/dept-profile/${department.departmentName}`);
+  };
+
+  const handleOpenAddDepartmentModal = () => {
+    setIsAddDepartmentModalOpen(true);
+  };
+
+  const handleCloseAddDepartmentModal = () => {
+    setIsAddDepartmentModalOpen(false);
   };
 
   const handleOpenDeptReqModal = (request: DeptRequest) => {
@@ -91,113 +83,70 @@ const DeptDashboard = () => {
     setIsDeptReqModalOpen(true);
   };
 
+  const handleCloseDeptReqModal = () => {
+    setIsDeptReqModalOpen(false);
+    setSelectedDeptRequest(null);
+  };
+
   const handleApprove = async () => {
-    // Implement API call to update request status
+    if (!selectedDeptRequest) return;
+
     try {
-      const response = await fetch(`/api/dept-requests/${selectedDeptRequest?.requestId}`, {
+      const response = await fetch(`/api/dept-requests/${selectedDeptRequest.requestId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ws_req_stat: 'approved' }), // Update request status
+        body: JSON.stringify({ ws_req_stat: 'approved' }),
       });
-  
+
       if (response.ok) {
         console.log('Request approved successfully');
         navigate('/maintain-dept');
-        // Update local state (optional) to reflect changes
       } else {
         console.error('Error approving request:', await response.text());
-        // Handle errors appropriately (e.g., display an error message)
       }
     } catch (error) {
       console.error('Error approving request:', error);
-      // Handle errors appropriately (e.g., display an error message)
+    }
+  };
+
+  const handleReject = async () => {
+    if (!selectedDeptRequest) return;
+
+    try {
+      const response = await fetch(`/api/dept-requests/${selectedDeptRequest.requestId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ws_req_stat: 'rejected' }),
+      });
+
+      if (response.ok) {
+        console.log('Request rejected successfully');
+        navigate('/maintain-dept');
+      } else {
+        console.error('Error rejecting request:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error rejecting request:', error);
     }
   };
 
   const handleDepartmentAdded = (addedDepartment: Department) => {
-    setNewDepartment(addedDepartment);
-    setIsAddDepartmentModalOpen(false); // Close the modal after adding the department
+    setDepartments(prevDepartments => [...prevDepartments, addedDepartment]);
+    setIsAddDepartmentModalOpen(false);
   };
-
-  const handleReject = async () => {
-    // Implement API call to update request status
-    try {
-      const response = await fetch(`/api/dept-requests/${selectedDeptRequest?.requestId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ws_req_stat: 'rejected' }), // Update request status
-      });
-  
-      if (response.ok) {
-        console.log('Request rejected successfully');
-        navigate('/maintain-dept');
-        // Update local state (optional) to reflect changes
-      } else {
-        console.error('Error rejecting request:', await response.text());
-        // Handle errors appropriately (e.g., display an error message)
-      }
-    } catch (error) {
-      console.error('Error rejecting request:', error);
-      // Handle errors appropriately (e.g., display an error message)
-    }
-  };
-
 
   return (
     <>
-    <NavBarAdmin activeTab={'Departments'}/>
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={8}>
-      <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
-  {departments.length === 0 && !newDepartment ? (
-    <Typography variant="body1" gutterBottom>
-      There are no departments available at this time.
-    </Typography>
-  ) : (
-    <>
-      {newDepartment && (
-        <Box key={newDepartment.departmentName} m={1}>
-          <DeptCard
-            imageUrl={newDepartment.imageUrl}
-            departmentName={newDepartment.departmentName}
-          />
-        </Box>
-      )}
-      {departments.map((department, index) => (
-        <Box key={index} m={1}>
-          <Link
-            component="button"
-            underline="none"
-            onClick={() => handleDeptClick(department)}
-          >
-            <DeptCard
-              imageUrl={department.imageUrl}
-              departmentName={department.departmentName}
-            />
-          </Link>
-        </Box>
-      ))}
-    </>
-  )}
-</Box>
-      </Grid>
-      <Grid item xs={12} md={4}>
-      <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
-          {departments.length === 0 && !newDepartment ? (
-            <Typography variant="body1" gutterBottom>
-              There are no departments available at this time.
-            </Typography>
-          ) : (
-            <>
-              {newDepartment && (
-                <Box key={newDepartment.departmentName} m={1}>
-                  <DeptCard
-                    imageUrl={newDepartment.imageUrl}
-                    departmentName={newDepartment.departmentName}
-                  />
-                </Box>
-              )}
-              {departments.map((department, index) => (
+      <NavBarAdmin activeTab={'Departments'} />
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={8}>
+          <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
+            {departments.length === 0 ? (
+              <Typography variant="body1" gutterBottom>
+                There are no departments available at this time.
+              </Typography>
+            ) : (
+              departments.map((department, index) => (
                 <Box key={index} m={1}>
                   <Link
                     component="button"
@@ -207,31 +156,24 @@ const DeptDashboard = () => {
                     <DeptCard
                       imageUrl={department.imageUrl}
                       departmentName={department.departmentName}
+                      departmentAdmin={department.departmentAdmin}  // Add this line
+                      deptContact={department.deptContact}  // Add this line
+                      deptEmail={department.deptEmail}  // Add this line
                     />
                   </Link>
                 </Box>
-              ))}
-            </>
-          )}
-        </Box>
+              ))
+            )}
+          </Box>
+        </Grid>
       </Grid>
-      {/* Render ApproveReq modal conditionally */}
-      {isDeptReqModalOpen && selectedDeptRequest && (
-        <ApproveReq
-          open={isDeptReqModalOpen}
-          onClose={handleCloseDeptReqModal}
-          requestDetails={selectedDeptRequest}
-        />
-      )}
       <AddDeptIcon onClick={handleOpenAddDepartmentModal} />
-    </Grid>
-    <AddDepartmentModal
-      open={isAddDepartmentModalOpen}
-      onClose={handleCloseAddDepartmentModal}
-      onDepartmentAdded={handleDepartmentAdded}
-      // Pass any additional props required by AddDepartmentModal
-    />
-  </>
+      <AddDepartmentModal
+        open={isAddDepartmentModalOpen}
+        onClose={handleCloseAddDepartmentModal}
+        onDepartmentAdded={handleDepartmentAdded}
+      />
+    </>
   );
 };
 

@@ -10,19 +10,20 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Menu,
 } from '@mui/material';
-
 
 interface Department {
   imageUrl: string;
   departmentName: string;
+  departmentAdmin: string;  // Added departmentAdmin property
+  deptContact: string;  // Added deptContact property
+  deptEmail: string;  // Added deptEmail property
 }
 
 interface AddDepartmentModalProps {
   open: boolean;
   onClose: () => void;
-  onDepartmentAdded: (addedDepartment: Department) => void; // Add this line
+  onDepartmentAdded: (department: Department) => void;  // Adjust to include new properties
 }
 
 const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentModalProps) => {
@@ -32,6 +33,18 @@ const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentM
   const [deptContact, setDeptContact] = useState('');
   const [deptEmail, setDeptEmail] = useState('');
   const [userRole, setUserRole] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+
+  const handleAdd = () => {
+    const newDepartment: Department = {
+      imageUrl,
+      departmentName,
+      departmentAdmin,
+      deptContact,
+      deptEmail,
+    };
+    onDepartmentAdded(newDepartment);
+  };
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -54,42 +67,25 @@ const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentM
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    try {
-      const response = await fetch('/api/departments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          departmentName,
-          departmentAdmin,
-          deptContact,
-          deptEmail,
-        }),
-      });
+    const newDepartment: Department = {
+      imageUrl: 'path/to/default/image.jpg', // Use a default image path or allow user to upload
+      departmentName,
+      departmentAdmin,
+      deptContact,
+      deptEmail,
+    };
+    
+    // Call the onDepartmentAdded prop to pass the new department back to the parent component
+    onDepartmentAdded(newDepartment);
 
-      const formData = {
-        departmentName,
-        departmentAdmin,
-        deptContact,
-        deptEmail,
-      };
-      console.log('Form data:', formData);
-  
-      if (response.ok) {
-        const createdDepartment = await response.json();
-        console.log('Created department:', createdDepartment);
-        onDepartmentAdded(createdDepartment); // Call the onDepartmentAdded prop with the created department
-      } else {
-        console.error('Failed to create department:', await response.text());
-      }
-    } catch (error) {
-      console.error('Error creating department:', error);
-    }
+    // Reset form fields
+    setDepartmentName('');
+    setDepartmentAdmin('');
+    setDeptContact('');
+    setDeptEmail('');
+    onClose();
   };
 
-
-  
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Add Department</DialogTitle>
@@ -109,22 +105,8 @@ const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentM
               value={departmentAdmin}
               onChange={(e) => setDepartmentAdmin(e.target.value)}
             >
-              
               <MenuItem value="Admin">Admin</MenuItem>
               <MenuItem value="Staff">Staff</MenuItem>
-              {(userRole === 'Admin' || userRole === 'Staff') && [
-                <MenuItem key="admin" value="Admin">
-                  Admin
-                </MenuItem>,
-                <MenuItem key="staff" value="Staff">
-                  Staff
-                </MenuItem>,
-              ]}
-              {deptAdmins.map((username) => (
-                <MenuItem key={username} value={username}>
-                  {username}
-                </MenuItem>
-              ))}
             </Select>
           </FormControl>
           <TextField
@@ -144,9 +126,7 @@ const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentM
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" color="primary">
-            Add Dept
-          </Button>
+          <Button onClick={handleAdd}>Add Dept</Button>
         </DialogActions>
       </form>
     </Dialog>

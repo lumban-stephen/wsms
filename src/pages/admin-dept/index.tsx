@@ -52,7 +52,7 @@ const AdminDept: React.FC = () => {
         <Grid container spacing={2}>
           {departments.map((dept, index) => (
             <Grid item xs={6} sm={4} md={3} key={index}>
-              <DeptCard imageUrl="" departmentName={dept} />
+              {/* <DeptCard imageUrl="" departmentName={dept} /> */}
             </Grid>
           ))}
         </Grid>

@@ -1,24 +1,29 @@
 import React from 'react';
-import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+import { Card, CardContent, Typography, CardMedia } from '@mui/material';
 
 interface DeptCardProps {
   imageUrl: string;
   departmentName: string;
+  departmentAdmin: string;  // Added departmentAdmin prop
+  deptContact: string;  // Added deptContact prop
+  deptEmail: string;  // Added deptEmail prop
 }
 
-const DeptCard: React.FC<DeptCardProps> = ({ imageUrl, departmentName }) => {
+const DeptCard = ({
+  imageUrl,
+  departmentName,
+  departmentAdmin,
+  deptContact,
+  deptEmail
+}: DeptCardProps) => {
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        height="194"
-        image={imageUrl}
-        alt="Department"
-      />
+    <Card>
+      <CardMedia component="img" height="140" image={imageUrl} alt={departmentName} />
       <CardContent>
-        <Typography variant="h5" component="div" align="center">
+        <Typography variant="h5" component="div">
           {departmentName}
         </Typography>
+        
       </CardContent>
     </Card>
   );
