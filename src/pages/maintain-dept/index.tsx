@@ -28,6 +28,7 @@ const DeptDashboard = () => {
   const [isDeptReqModalOpen, setIsDeptReqModalOpen] = useState(false); // State for modal visibility
   const [selectedDeptRequest, setSelectedDeptRequest] = useState<DeptRequest | null>(null); // State for selected request data
   const [isAddDepartmentModalOpen, setIsAddDepartmentModalOpen] = useState(false);
+  const [newDepartment, setNewDepartment] = useState<Department | null>(null);
 
   const handleOpenAddDepartmentModal = () => {
     setIsAddDepartmentModalOpen(true);
@@ -113,6 +114,11 @@ const DeptDashboard = () => {
     }
   };
 
+  const handleDepartmentAdded = (addedDepartment: Department) => {
+    setNewDepartment(addedDepartment);
+    setIsAddDepartmentModalOpen(false); // Close the modal after adding the department
+  };
+
   const handleReject = async () => {
     // Implement API call to update request status
     try {
@@ -142,57 +148,70 @@ const DeptDashboard = () => {
     <NavBarAdmin activeTab={'Departments'}/>
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
-        <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
-          {departments.length === 0 ? (
+      <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
+  {departments.length === 0 && !newDepartment ? (
+    <Typography variant="body1" gutterBottom>
+      There are no departments available at this time.
+    </Typography>
+  ) : (
+    <>
+      {newDepartment && (
+        <Box key={newDepartment.departmentName} m={1}>
+          <DeptCard
+            imageUrl={newDepartment.imageUrl}
+            departmentName={newDepartment.departmentName}
+          />
+        </Box>
+      )}
+      {departments.map((department, index) => (
+        <Box key={index} m={1}>
+          <Link
+            component="button"
+            underline="none"
+            onClick={() => handleDeptClick(department)}
+          >
+            <DeptCard
+              imageUrl={department.imageUrl}
+              departmentName={department.departmentName}
+            />
+          </Link>
+        </Box>
+      ))}
+    </>
+  )}
+</Box>
+      </Grid>
+      <Grid item xs={12} md={4}>
+      <Box display="flex" flexWrap="wrap" justifyContent="flex-start" alignItems="center">
+          {departments.length === 0 && !newDepartment ? (
             <Typography variant="body1" gutterBottom>
               There are no departments available at this time.
             </Typography>
           ) : (
-            departments.map((department, index) => (
-              <Box key={index} m={1}>
-                <Link
-                  component="button"
-                  underline="none" // Remove link underline for a button-like appearance
-                  onClick={() => handleDeptClick(department)}
-                >
-                  <DeptCard imageUrl={department.imageUrl} departmentName={department.departmentName} />
-                </Link>
-              </Box>
-            ))
-          )}
-        </Box>
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <Box display="flex" flexDirection="column">
-          {selectedDept ? (
-            <Typography variant="h6" gutterBottom>
-              Selected Department: {selectedDept.departmentName}
-            </Typography>
-          ) : (
-            <Typography variant="body1">Please select a department.</Typography>
-          )}
-          {deptRequests === null ? (
-            <Typography variant="body1" gutterBottom>
-              Loading department requests...
-            </Typography>
-          ) : deptRequests?.length === 0 ? (
-            <Typography variant="body1" gutterBottom>
-              There are no department requests at this time.
-            </Typography>
-          ) : (
-            <Box>
-              {deptRequests.map((request, index) => (
-                <Box key={index} m={1}>
-                  <DeptReqCard
-                    collegeName={request.requestDetails} // Assuming collegeName exists in requestData
-                    requestType={request.requestType} // Assuming requestType exists in requestData
-                    quantity={request.quantity} // Assuming quantity exists in requestData
-                    status={request.requestStatus} // Assuming status exists in requestData
-                    onClick={() => handleOpenDeptReqModal(request)} // Add click handler for modal
+            <>
+              {newDepartment && (
+                <Box key={newDepartment.departmentName} m={1}>
+                  <DeptCard
+                    imageUrl={newDepartment.imageUrl}
+                    departmentName={newDepartment.departmentName}
                   />
                 </Box>
+              )}
+              {departments.map((department, index) => (
+                <Box key={index} m={1}>
+                  <Link
+                    component="button"
+                    underline="none"
+                    onClick={() => handleDeptClick(department)}
+                  >
+                    <DeptCard
+                      imageUrl={department.imageUrl}
+                      departmentName={department.departmentName}
+                    />
+                  </Link>
+                </Box>
               ))}
-            </Box>
+            </>
           )}
         </Box>
       </Grid>
@@ -207,10 +226,11 @@ const DeptDashboard = () => {
       <AddDeptIcon onClick={handleOpenAddDepartmentModal} />
     </Grid>
     <AddDepartmentModal
-    open={isAddDepartmentModalOpen}
-    onClose={handleCloseAddDepartmentModal}
-    // Pass any additional props required by AddDepartmentModal
-  />
+      open={isAddDepartmentModalOpen}
+      onClose={handleCloseAddDepartmentModal}
+      onDepartmentAdded={handleDepartmentAdded}
+      // Pass any additional props required by AddDepartmentModal
+    />
   </>
   );
 };

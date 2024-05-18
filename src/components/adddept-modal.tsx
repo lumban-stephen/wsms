@@ -10,36 +10,45 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Menu,
 } from '@mui/material';
+
+
+interface Department {
+  imageUrl: string;
+  departmentName: string;
+}
 
 interface AddDepartmentModalProps {
   open: boolean;
   onClose: () => void;
+  onDepartmentAdded: (addedDepartment: Department) => void; // Add this line
 }
 
-const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
+const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentModalProps) => {
   const [departmentName, setDepartmentName] = useState('');
   const [departmentAdmin, setDepartmentAdmin] = useState('');
   const [deptAdmins, setDeptAdmins] = useState<string[]>([]);
   const [deptContact, setDeptContact] = useState('');
   const [deptEmail, setDeptEmail] = useState('');
+  const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
-    const fetchDeptAdmins = async () => {
+    const fetchUserRole = async () => {
       try {
-        const response = await fetch('/api/dept-admins');
+        const response = await fetch('/api/user-role');
         if (response.ok) {
-          const usernames = await response.json();
-          setDeptAdmins(usernames);
+          const role = await response.text();
+          setUserRole(role);
         } else {
-          console.error('Failed to fetch department admins');
+          console.error('Failed to fetch user role');
         }
       } catch (error) {
-        console.error('Error fetching department admins:', error);
+        console.error('Error fetching user role:', error);
       }
     };
 
-    fetchDeptAdmins();
+    fetchUserRole();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,24 +62,33 @@ const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
         },
         body: JSON.stringify({
           departmentName,
-          departmentAdmin, // Assuming departmentAdmin is a value you have in your component state
+          departmentAdmin,
           deptContact,
           deptEmail,
         }),
       });
+
+      const formData = {
+        departmentName,
+        departmentAdmin,
+        deptContact,
+        deptEmail,
+      };
+      console.log('Form data:', formData);
   
       if (response.ok) {
         const createdDepartment = await response.json();
         console.log('Created department:', createdDepartment);
-        // Reset form fields or close the modal
-        onClose();
+        onDepartmentAdded(createdDepartment); // Call the onDepartmentAdded prop with the created department
       } else {
-        console.error('Failed to create department:', await response.text()); // More informative error message
+        console.error('Failed to create department:', await response.text());
       }
     } catch (error) {
       console.error('Error creating department:', error);
     }
   };
+
+
   
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -91,7 +109,17 @@ const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
               value={departmentAdmin}
               onChange={(e) => setDepartmentAdmin(e.target.value)}
             >
-              <MenuItem value="">Select Department Admin</MenuItem>
+              
+              <MenuItem value="Admin">Admin</MenuItem>
+              <MenuItem value="Staff">Staff</MenuItem>
+              {(userRole === 'Admin' || userRole === 'Staff') && [
+                <MenuItem key="admin" value="Admin">
+                  Admin
+                </MenuItem>,
+                <MenuItem key="staff" value="Staff">
+                  Staff
+                </MenuItem>,
+              ]}
               {deptAdmins.map((username) => (
                 <MenuItem key={username} value={username}>
                   {username}
