@@ -3,8 +3,9 @@ import { Box, TextField, Select, MenuItem, Button, Typography, SelectChangeEvent
 
 const RequestWorkingScholar: React.FC = () => {
   const [message, setMessage] = useState('');
-  const [requestType, setRequestType] = useState('Admission');
+  const [requestType, setRequestType] = useState('Additional');
   const [quantity, setQuantity] = useState(2);
+  const [userName, setUserName] = useState(); // Assuming userName is retrieved from the user's session or context
 
   const handleMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
@@ -18,12 +19,43 @@ const RequestWorkingScholar: React.FC = () => {
     setQuantity(value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Message:', message);
-    console.log('Request Type:', requestType);
-    console.log('Quantity:', quantity);
+    const token = localStorage.getItem('token'); // Assuming token is stored in LocalStorage
+    if (!token) {
+      console.error('Missing token');
+      return; // Handle missing token error
+    }
+
+    try {
+      const response = await fetch('/reqws', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Include authorization header with token
+        },
+        body: JSON.stringify({
+          ws_req_name: userName, // Include user name
+          message,
+          dept_name_fk: 'Department Name', // Replace with the actual department name or retrieve it from context/session
+          ws_req_stat: 'Pending', // Set the initial status to 'Pending'
+          ws_req_type: requestType === 'Additional' ? 'additional' : 'replacement', // Map the requestType value to the expected format
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        console.error('Error creating request:', data);
+        // Handle errors (e.g., display error message to user)
+        return;
+      }
+
+      console.log('Request created successfully:', data);
+      // Handle successful request creation (e.g., display confirmation message)
+    } catch (error) {
+      console.error('Error creating request:', error);
+      // Handle errors (e.g., display error message to user)
+    }
   };
 
   return (
@@ -57,7 +89,7 @@ const RequestWorkingScholar: React.FC = () => {
           onChange={handleRequestTypeChange}
           sx={{ minWidth: 120 }}
         >
-          <MenuItem value="Admission">Admission</MenuItem>
+          <MenuItem value="Admission">Additional</MenuItem>
           <MenuItem value="Replacement">Replacement</MenuItem>
         </Select>
       </Box>

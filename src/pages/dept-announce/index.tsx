@@ -3,6 +3,7 @@ import { Paper, Container, Typography, Box } from '@mui/material';
 import AnnounceBox from '../../components/announce-box';
 import DeptAnnounceBoxInput from '../../components/announcebox-input';
 import CreatePostModal from '../../components/create-post-modal'; // Import the CreatePostModal component
+import NavBarStaff from '../../components/navbar-staff';
 
 interface Announcement {
   id: number; // Assuming your announcement table has an ID column
@@ -47,8 +48,6 @@ const DeptAnnounce: React.FC = () => {
         return; // Handle the case where no token is present
       }
 
-      // 2. Construct the request URL
-      const baseUrl = window.location.origin;
       const announcementUrl = `http://localhost:3000/api-announce/dept-announce/`;
 
       // 3. Create the request body with announcement data and potentially the user's ID
@@ -89,6 +88,8 @@ const DeptAnnounce: React.FC = () => {
   };
 
   return (
+    <>
+    <NavBarStaff activeTab={'Announcements'}  />
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <DeptAnnounceBoxInput onAnnouncementCreate={handleAnnouncementCreate} /> {/* Pass handleAnnouncementCreate to DeptAnnounceBoxInput */}
       <CreatePostModal open={isModalOpen} onClose={handleCloseModal} onAnnouncementCreate={handleAnnouncementCreate} /> {/* Pass modal props */}
@@ -105,6 +106,7 @@ const DeptAnnounce: React.FC = () => {
         ))
       )}
     </Container>
+    </>
   );
 };
 

@@ -2,20 +2,12 @@ import React, { useContext, useState } from 'react';
 import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, TextField, Typography } from '@mui/material';
 import LoginImage from '../../assets/uclm-banner.jpg';
 import { jwtDecode } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginSkeleton from '../../components/loginskeleton';
 import { AuthContext } from '../../utils/AuthContext';
+import { User } from '../../utils/interfaces';
 
-type UserType = "admin" | "staff" | "ws";
-
-interface User {
-  user_id: number;
-  username: string;
-  password: string;
-  user_type: UserType;
-}
-
-const Login: React.FC = () => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -44,29 +36,48 @@ const Login: React.FC = () => {
         body: JSON.stringify({ username, password }),
       });
   
-      if (!response.ok) {
+      if (response.ok) {
+        const data = await response.json();
+        if (data.token) {
+          const { token } = data;
+  
+          // Store the JWT token in local storage or state management solution
+          localStorage.setItem('token', token);
+          console.log('token is: ' + token);
+  
+          // Decode the token to get the user information
+          const decodedToken = jwtDecode<User>(token) as User;
+          const { user_id, username, password, userType, deptName } = decodedToken;
+  
+          console.log('decoded token is: ' , JSON.stringify(decodedToken));
+  
+          // Store user data in state or context for further use
+          setUser(decodedToken);
+  
+          // Authentication for navbar
+          setIsAuthenticated(true); // Update isAuthenticated state
+  
+          console.log(decodedToken.userType)
+
+          // Redirect to the profile page or another authenticated route
+          if (decodedToken && decodedToken.userType) {
+            console.log(decodedToken + "is the decoded token. " + "and the user type is: " +decodedToken.userType);
+            if (decodedToken.userType === "staff") {
+              navigate('/dept-announce');
+            } else if (decodedToken.userType === "admin") {
+              await navigate('/dashboard');
+            } else if (decodedToken.userType === "ws"){
+              navigate('/welcome');
+            }
+          }
+
+        } else {
+          setError('Invalid response from the server');
+        }
+      } else {
         const errorData = await response.json();
         const errorMessage = errorData.error || response.statusText;
         setError(errorMessage);
-      } else {
-        const { token } = await response.json();
-  
-        // Store the JWT token in local storage or state management solution
-        localStorage.setItem('token', token);
-        console.log('token is: ' + token)
-  
-        // Decode the token to get the user information
-        const decodedToken = jwtDecode<User>(token);
-        const { user_id, username, password, user_type } = decodedToken;
-
-        console.log('decoded token is: ' + decodedToken)
-  
-        // Store user data in state or context for further use
-        setUser(decodedToken);
-        //authentication for navbar
-        setIsAuthenticated(true); // Update isAuthenticated state
-        // Redirect to the profile page or another authenticated route
-        navigate('/dept-announce');
       }
     } catch (error) {
       console.error('Error logging in user:', error);
@@ -78,7 +89,6 @@ const Login: React.FC = () => {
 
   return (
     <Grid container>
-      {/* Image Section */}
       <Grid item xs={12} md={8} style={{ position: 'relative' }}>
         <img src={LoginImage} alt="Login banner" style={{ width: '100%', height: '100vh', objectFit: 'cover' }} />
         <Typography variant="h3" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white' }}>
@@ -88,7 +98,6 @@ const Login: React.FC = () => {
           Lapu-Lapu and Mandaue
         </Typography>
       </Grid>
-      {/* Login Section */}
       <Grid item xs={12} md={4}>
         <Container style={{ color: 'black', backgroundColor: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <div>
@@ -122,12 +131,16 @@ const Login: React.FC = () => {
               Login
             </Button>
             )}
+            <Typography variant="body1" style={{ position: 'absolute', bottom: '10%', left: '92%', transform: 'translate(-50%, -50%)', color: 'white' }}> 
+                <Link to={'/register'}> Apply for Working Scholarship </Link> 
+            </Typography>
             {error && <FormHelperText error>{error}</FormHelperText>}
           </div>
+          
         </Container>
       </Grid>
     </Grid>
   );
-}
+};
 
 export default Login;

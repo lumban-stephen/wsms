@@ -1,32 +1,38 @@
-// PendingRequestList.tsx
 import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
 
-interface PendingRequestProps {
-  title: string;
-  date: string;
-  requestType: string;
-  status: string;
-  requestId: string;
+interface Request {
+  ws_req_id: string;
+  ws_req_name: string;
+  message: string;
+  dept_name_fk: string;
+  ws_req_stat: string;
+  ws_req_type: string;
   quantity: number;
+  date_created: string;
+}
+
+
+interface PendingRequestProps {
+  request: Request; // Update prop type
   onViewClick: (
-    requestId: string,
-    requestType: string,
-    quantity: number
+    ws_req_id: string,
+    ws_req_name: string,
+    message: string,
+    dept_name_fk: string,
+    ws_req_stat: string,
+    ws_req_type: string,
+    quantity: number,
+    date_created: string
   ) => void;
 }
 
 const PendingRequest: React.FC<PendingRequestProps> = ({
-  title,
-  date,
-  requestType,
-  status,
-  requestId,
-  quantity,
+  request,
   onViewClick,
 }) => {
   const handleViewClick = () => {
-    onViewClick(requestId, requestType, quantity);
+    onViewClick(request.ws_req_id, request.ws_req_name, request.message, request.dept_name_fk, request.ws_req_stat, request.ws_req_type, request.quantity, request.date_created);
   };
 
   return (
@@ -42,10 +48,10 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
       }}
     >
       <div>
-        <Typography variant="h6">{title}</Typography>
-        <Typography variant="body2">{date}</Typography>
-        <Typography variant="body2">Request Type: {requestType}</Typography>
-        <Typography variant="body2">Status: {status}</Typography>
+        <Typography variant="h6">{request.ws_req_name}</Typography>
+        <Typography variant="body2">{request.date_created}</Typography>
+        <Typography variant="body2">Request Type: {request.ws_req_type}</Typography>
+        <Typography variant="body2">Status: {request.ws_req_stat}</Typography>
       </div>
       <Button variant="contained" color="primary" onClick={handleViewClick}>
         View
@@ -55,34 +61,23 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
 };
 
 interface PendingRequestListProps {
+  requests: Request[];
   onViewClick: (
-    requestId: string,
-    requestType: string,
-    quantity: number
+    ws_req_id: string,
+    ws_req_name: string,
+    message: string,
+    dept_name_fk: string,
+    ws_req_stat: string,
+    ws_req_type: string,
+    quantity: number,
+    date_created: string
   ) => void;
 }
 
-const PendingRequestList: React.FC<PendingRequestListProps> = ({ onViewClick }) => {
-  const pendingRequests: any[] = [
-    // Your pending request data
-    {
-      title: 'College of Computer Studies',
-      date: 'Feb 12, 2024',
-      requestType: 'Replacement',
-      status: 'Pending for approval',
-      requestId: 'REQ001',
-      quantity: 10,
-    },
-    {
-      title: 'College of Computer Studies',
-      date: 'Mar 5, 2024',
-      requestType: 'New Request',
-      status: 'Under Review',
-      requestId: 'REQ002',
-      quantity: 5,
-    },
-  ];
-
+const PendingRequestList: React.FC<PendingRequestListProps> = ({
+  requests,
+  onViewClick,
+}) => {
   return (
     <Box
       sx={{
@@ -95,15 +90,10 @@ const PendingRequestList: React.FC<PendingRequestListProps> = ({ onViewClick }) 
         flexDirection: 'column',
       }}
     >
-      {pendingRequests.map((request, index) => (
+      {requests.map((request, index) => (
         <PendingRequest
           key={index}
-          title={request.title}
-          date={request.date}
-          requestType={request.requestType}
-          status={request.status}
-          requestId={request.requestId}
-          quantity={request.quantity}
+          request={request} // Pass the entire request object as prop
           onViewClick={onViewClick}
         />
       ))}
