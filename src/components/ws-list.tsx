@@ -37,38 +37,40 @@ const WsList: React.FC<WsListProps> = ({ scholars, setScholars, handleViewSchola
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
-          {scholars.length > 0 ? (
-            <TableBody>
-              {scholars.map((scholar) => (
-                <TableRow key={scholar.applicant_id}>
-                  <TableCell>{scholar.full_name}</TableCell>
-                  <TableCell>{scholar.course}</TableCell>
-                  <TableCell>{scholar.dept}</TableCell>
-                  <TableCell>{scholar.contact}</TableCell>
-                  <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                  <TableCell>{scholar.status}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      style={{ backgroundColor: "#0975bc", color: "white" }}
-                      onClick={() => handleViewScholar(scholar)}
-                    >
-                      View
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          ) : (
-            <TableRow>
-              <TableCell colSpan={8} align="center">
-                <Typography variant="h5" style={{ textAlign: 'center' }}>
-                  No Working Scholar Found!
-                </Typography>
-              </TableCell>
-            </TableRow>
-          )}
+          <TableBody sx={{ maxHeight: 400, overflowY: 'auto' }}>  {/* Added styles for scrollability */}
+            {scholars.length > 0 ? (
+              <>
+                {scholars.map((scholar) => (
+                  <TableRow key={scholar.applicant_id}>
+                    <TableCell>{scholar.full_name}</TableCell>
+                    <TableCell>{scholar.course}</TableCell>
+                    <TableCell>{scholar.dept}</TableCell>
+                    <TableCell>{scholar.contact}</TableCell>
+                    <TableCell>{new Date().toLocaleDateString()}</TableCell>
+                    <TableCell>{scholar.status}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        style={{ backgroundColor: "#0975bc", color: "white" }}
+                        onClick={() => handleViewScholar(scholar)}
+                      >
+                        View
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
+            ) : (
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  <Typography variant="h5" style={{ textAlign: 'center' }}>
+                    No Working Scholar Found!
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </TableContainer>
       {selectedScholar && (

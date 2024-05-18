@@ -39,12 +39,29 @@ router.post('/reqws', async (req, res) => {
   }
 });
 
+router.get('/maintain-applicants', async (req, res) => {
+  try {
+    const query = `
+      SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name
+      FROM applicants a
+      INNER JOIN names n ON a.name_fk = n.name_id
+      WHERE a.status = 'pending'  -- Filter for pending applicants only
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching applicants:', error);
+    res.status(500).json({ error: 'An error occurred while fetching applicants' });
+  }
+});
+
 router.get('/maintain-ws', async (req, res) => {
   try {
     const query = `
       SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name
       FROM applicants a
-      INNER JOIN names n ON a.name_fk = n.name_id;
+      INNER JOIN names n ON a.name_fk = n.name_id
+      WHERE a.status = 'accepted'  -- Filter for accepted applicants
     `;
     const { rows } = await pool.query(query);
     res.json(rows);
@@ -96,6 +113,33 @@ router.get('/working-scholars/unassigned', async (req, res) => {
   } catch (error) {
     console.error('Error fetching unassigned working scholars:', error);
     res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
+  }
+});
+
+router.post('/suspend', async (req, res) => {
+  try {
+    const { applicant_fk } = req.body;
+
+    if (!applicant_fk) {
+      return res.status(400).json({ message: 'Missing applicant ID' });
+    }
+
+    const query = `
+      UPDATE applicants
+      SET status = 'denied'
+      WHERE applicant_id = $1
+    `;
+
+    const result = await pool.query(query, [applicant_fk]);
+
+    if (result.rowCount === 1) {
+      res.json({ message: 'Applicant successfully suspended.' });
+    } else {
+      res.status(500).json({ message: 'An error occurred while suspending working scholar.' });
+    }
+  } catch (error) {
+    console.error('Error suspending working scholar:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 

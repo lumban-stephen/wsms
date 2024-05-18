@@ -64,7 +64,7 @@ const WsModal: React.FC<WsModalProps> = ({
   const handleSuspend = async () => {
     try {
       const updatedWs = { ...workingScholar, status: 'Suspended' };
-      const response = await fetch('http://localhost:3000/applicants/maintain-ws', {
+      const response = await fetch('http://localhost:3000/applicants/suspend', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
