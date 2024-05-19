@@ -108,23 +108,23 @@ router.post('/adddept', async (req, res) => {
 // });
 
 
-// Get department details by ID
-router.get('/departments/:departmentId', async (req, res) => {
+// Get working scholar from specific department
+router.get('/dept-profile/:departmentId/working-scholars', async (req, res) => {
   const departmentId = parseInt(req.params.departmentId);
 
   try {
-    const departmentDetails = await pool.query(
-      'SELECT * FROM departments WHERE department_id = $1',
+    const workingScholars = await pool.query(
+      'SELECT * FROM working_scholars WHERE dept_fk = $1',
       [departmentId]
     );
 
-    if (departmentDetails.rows.length === 0) {
-      return res.status(404).json({ message: 'Department not found' });
+    if (workingScholars.rows.length === 0) {
+      return res.status(404).json({ message: 'No Working Scholars here' });
     }
 
     res.json(departmentDetails.rows[0]);
   } catch (error) {
-    console.error('Error fetching department details:', error);
+    console.error('Error fetching Working Scholars:', error);
     res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
   }
 });

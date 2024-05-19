@@ -40,30 +40,34 @@ const DeptProfile = () => {
   const [wsCardModalOpen, setWsCardModalOpen] = useState(false);
   const [selectedWsData, setSelectedWsData] = useState<WorkingScholar | null>(null);
 
+  const fetchDepartmentData = async () => {
+    if (!departmentId) return; // Handle missing department ID
+
+    // const departmentDetailsResponse = await fetch(`/api/departments/${departmentId}`);
+    // const departmentRequestsResponse = await fetch(`/api/departments/${departmentId}/requests`);
+    const workingScholarsResponse = await fetch(`/dept-profile/${departmentId}/working-scholars`);
+
+    //!departmentDetailsResponse.ok || !departmentRequestsResponse.ok ||
+
+    if ( !workingScholarsResponse.ok) {
+      console.error('Error fetching department data');
+      // Handle errors appropriately (e.g., display an error message)
+      return;
+    }
+
+    // const departmentDetailsData = await departmentDetailsResponse.json();
+    // const departmentRequestsData = await departmentRequestsResponse.json();
+    const workingScholarsData = await workingScholarsResponse.json();
+    console.log(workingScholarsData)
+    // setDepartmentDetails(departmentDetailsData);
+    // setDepartmentRequests(departmentRequestsData);
+    setWorkingScholars(workingScholarsData);
+    console.log(workingScholars)
+  };
+
   useEffect(() => {
-    const fetchDepartmentData = async () => {
-      if (!departmentId) return; // Handle missing department ID
-
-      const departmentDetailsResponse = await fetch(`/api/departments/${departmentId}`);
-      const departmentRequestsResponse = await fetch(`/api/departments/${departmentId}/requests`);
-      const workingScholarsResponse = await fetch(`/api/departments/${departmentId}/working-scholars`);
-
-      if (!departmentDetailsResponse.ok || !departmentRequestsResponse.ok || !workingScholarsResponse.ok) {
-        console.error('Error fetching department data');
-        // Handle errors appropriately (e.g., display an error message)
-        return;
-      }
-
-      const departmentDetailsData = await departmentDetailsResponse.json();
-      const departmentRequestsData = await departmentRequestsResponse.json();
-      const workingScholarsData = await workingScholarsResponse.json();
-
-      setDepartmentDetails(departmentDetailsData);
-      setDepartmentRequests(departmentRequestsData);
-      setWorkingScholars(workingScholarsData);
-    };
-
     fetchDepartmentData();
+    console.log(workingScholars)
   }, [departmentId]);
 
   const handleWsCardClick = (scholarData: WorkingScholar) => {

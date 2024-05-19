@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 type Department = {
-  department_id: string;
+  department_id: number;
   imageUrl: string;
   department_name: string;
   userType: string;

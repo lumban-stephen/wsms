@@ -10,7 +10,7 @@ import NavBarAdmin from '../../components/navbar-admin';
 import imageUrl from '../../assets/uclm-banner.jpg';
 
 type Department = {
-  department_id: string;
+  department_id: number;
   imageUrl: string;
   department_name: string;
   userType: string;
@@ -160,6 +160,7 @@ const DeptDashboard: React.FC = () => {
                   >
                     <DeptCard
                       imageUrl={imageUrl}
+                      departmentId={department.department_id}
                       departmentName={department.department_name}
                       userType={department.userType}
                       deptContact={department.contact}
