@@ -132,7 +132,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/dept-profile/:additionalPath',
+        path: '/dept-profile/:departmentId',
         element: (
           <ProtectedRoute allowedRoles={['admin']}>
             <DeptProfile />

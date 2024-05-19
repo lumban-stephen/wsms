@@ -114,15 +114,21 @@ router.get('/dept-profile/:departmentId/working-scholars', async (req, res) => {
 
   try {
     const workingScholars = await pool.query(
-      'SELECT * FROM working_scholars WHERE dept_fk = $1',
+      `SELECT w.ws_id, w.dept_fk, n.fname || ' ' || n.lname AS name, 
+           a.address, a.school_name, 
+           a.fb, a.contact
+      FROM working_scholars w
+      INNER JOIN applicants a ON w.applicant_fk = a.applicant_id
+      INNER JOIN names n ON a.name_fk = n.name_id
+      WHERE w.dept_fk = $1`,
       [departmentId]
     );
 
     if (workingScholars.rows.length === 0) {
       return res.status(404).json({ message: 'No Working Scholars here' });
     }
-
-    res.json(departmentDetails.rows[0]);
+    console.log(workingScholars.rows)
+    res.json(workingScholars.rows);
   } catch (error) {
     console.error('Error fetching Working Scholars:', error);
     res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
@@ -151,18 +157,18 @@ async function fetchDeptRequests(pool) {
 }
 
 // Get working scholars by department ID (assuming separate table for scholars)
-router.get('/departments/:departmentId/working-scholars', async (req, res) => {
+router.get('/departments/:departmentId/', async (req, res) => {
   const departmentId = parseInt(req.params.departmentId);
 
   try {
-    const workingScholars = await pool.query(
-      'SELECT * FROM working_scholars WHERE department_id = $1',
+    const deptDetail = await pool.query(
+      'SELECT department_id, department_name, contact, dept_email FROM departments WHERE department_id = $1',
       [departmentId]
     );
 
-    res.json(workingScholars.rows);
+    res.json(deptDetail.rows[0]);
   } catch (error) {
-    console.error('Error fetching working scholars:', error);
+    console.error('Error fetching dept details:', error);
     res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
   }
 });
