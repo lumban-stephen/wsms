@@ -12,38 +12,66 @@ import {
   InputLabel,
 } from '@mui/material';
 
-interface Department {
+type Department = {
+  departmentId: string;
   imageUrl: string;
   departmentName: string;
-  departmentAdmin: string;  // Added departmentAdmin property
-  deptContact: string;  // Added deptContact property
-  deptEmail: string;  // Added deptEmail property
-}
+  userType: string;
+  contact: string;
+  deptEmail: string;
+};
 
-interface AddDepartmentModalProps {
+type AddDepartmentModalProps = {
   open: boolean;
   onClose: () => void;
-  onDepartmentAdded: (department: Department) => void;  // Adjust to include new properties
-}
+  onDepartmentAdded: (department: Department) => void; // Ensure this matches the global Department type
+};
 
-const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentModalProps) => {
+const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ open, onClose, onDepartmentAdded }) => {
   const [departmentName, setDepartmentName] = useState('');
-  const [departmentAdmin, setDepartmentAdmin] = useState('');
+  const [userType, setUserType] = useState('');
   const [deptAdmins, setDeptAdmins] = useState<string[]>([]);
-  const [deptContact, setDeptContact] = useState('');
+  const [contact, setContact] = useState('');
   const [deptEmail, setDeptEmail] = useState('');
   const [userRole, setUserRole] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [departmentAdminUserId, setDepartmentAdminUserId] = useState('');
 
-  const handleAdd = () => {
-    const newDepartment: Department = {
-      imageUrl,
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newDepartment = {
       departmentName,
-      departmentAdmin,
-      deptContact,
+      contact,
       deptEmail,
+      userType,
     };
-    onDepartmentAdded(newDepartment);
+
+    try {
+      const response = await fetch('/api/departments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newDepartment),
+      });
+
+      if (response.ok) {
+        const data: Department = await response.json();
+        onDepartmentAdded(data);
+      } else {
+        console.error('Failed to add department');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    // Reset form fields
+    setDepartmentName('');
+    setUserType('');
+    setContact('');
+    setDeptEmail('');
+    onClose();
   };
 
   useEffect(() => {
@@ -64,32 +92,12 @@ const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentM
     fetchUserRole();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  
-    const newDepartment: Department = {
-      imageUrl: 'path/to/default/image.jpg', // Use a default image path or allow user to upload
-      departmentName,
-      departmentAdmin,
-      deptContact,
-      deptEmail,
-    };
-    
-    // Call the onDepartmentAdded prop to pass the new department back to the parent component
-    onDepartmentAdded(newDepartment);
 
-    // Reset form fields
-    setDepartmentName('');
-    setDepartmentAdmin('');
-    setDeptContact('');
-    setDeptEmail('');
-    onClose();
-  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Add Department</DialogTitle>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleAdd}>
         <DialogContent>
           <TextField
             label="Department Name"
@@ -99,25 +107,25 @@ const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentM
             margin="normal"
           />
           <FormControl fullWidth margin="normal">
-            <InputLabel id="department-admin-label">Department Admin</InputLabel>
+            <InputLabel id="user-type-label">User Type</InputLabel>
             <Select
-              labelId="department-admin-label"
-              value={departmentAdmin}
-              onChange={(e) => setDepartmentAdmin(e.target.value)}
+              labelId="user-type-label"
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
             >
-              <MenuItem value="Admin">Admin</MenuItem>
-              <MenuItem value="Staff">Staff</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+              <MenuItem value="staff">Staff</MenuItem>
             </Select>
           </FormControl>
           <TextField
-            label="Dept. Contact #"
-            value={deptContact}
-            onChange={(e) => setDeptContact(e.target.value)}
+            label="Contact"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
             fullWidth
             margin="normal"
           />
           <TextField
-            label="Dept. Email"
+            label="Department Email"
             value={deptEmail}
             onChange={(e) => setDeptEmail(e.target.value)}
             fullWidth
@@ -126,7 +134,9 @@ const AddDepartmentModal = ({ open, onClose, onDepartmentAdded }: AddDepartmentM
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={handleAdd}>Add Dept</Button>
+          <Button onClick={handleAdd} variant="contained" color="primary">
+            Add Department
+          </Button>
         </DialogActions>
       </form>
     </Dialog>

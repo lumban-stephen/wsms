@@ -8,13 +8,14 @@ import AddDeptIcon from '../../components/adddept-icon';
 import AddDepartmentModal from '../../components/adddept-modal';
 import NavBarAdmin from '../../components/navbar-admin';
 
-interface Department {
+type Department = {
+  departmentId: string;
   imageUrl: string;
   departmentName: string;
-  departmentAdmin: string;
-  deptContact: string;
+  userType: string;
+  contact: string;
   deptEmail: string;
-}
+};
 
 interface DeptRequest {
   requestId: number;
@@ -24,19 +25,18 @@ interface DeptRequest {
   requestStatus: string;
 }
 
-const DeptDashboard = () => {
+const DeptDashboard: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [deptRequests, setDeptRequests] = useState<DeptRequest[] | null>(null);
-  const [selectedDept, setSelectedDept] = useState<Department | null>(null);
-  const [isDeptReqModalOpen, setIsDeptReqModalOpen] = useState(false);
   const [selectedDeptRequest, setSelectedDeptRequest] = useState<DeptRequest | null>(null);
+  const [isDeptReqModalOpen, setIsDeptReqModalOpen] = useState(false);
   const [isAddDepartmentModalOpen, setIsAddDepartmentModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch('/api/departments');
+        const response = await fetch('/api/departments-users');
         if (response.ok) {
           const data = await response.json();
           setDepartments(data);
@@ -48,6 +48,10 @@ const DeptDashboard = () => {
       }
     };
 
+    fetchDepartments();
+  }, []);
+
+  useEffect(() => {
     const fetchDeptRequests = async () => {
       try {
         const response = await fetch('/api/dept-requests');
@@ -62,12 +66,11 @@ const DeptDashboard = () => {
       }
     };
 
-    fetchDepartments();
     fetchDeptRequests();
   }, []);
 
   const handleDeptClick = (department: Department) => {
-    navigate(`/dept-profile/${department.departmentName}`);
+    navigate(`/dept-profile/${department.departmentId}`);
   };
 
   const handleOpenAddDepartmentModal = () => {
@@ -131,7 +134,7 @@ const DeptDashboard = () => {
   };
 
   const handleDepartmentAdded = (addedDepartment: Department) => {
-    setDepartments(prevDepartments => [...prevDepartments, addedDepartment]);
+    setDepartments((prevDepartments) => [...prevDepartments, addedDepartment]);
     setIsAddDepartmentModalOpen(false);
   };
 
@@ -156,9 +159,9 @@ const DeptDashboard = () => {
                     <DeptCard
                       imageUrl={department.imageUrl}
                       departmentName={department.departmentName}
-                      departmentAdmin={department.departmentAdmin}  // Add this line
-                      deptContact={department.deptContact}  // Add this line
-                      deptEmail={department.deptEmail}  // Add this line
+                      departmentAdmin={department.userType}
+                      deptContact={department.contact}
+                      deptEmail={department.deptEmail}
                     />
                   </Link>
                 </Box>
@@ -169,10 +172,10 @@ const DeptDashboard = () => {
       </Grid>
       <AddDeptIcon onClick={handleOpenAddDepartmentModal} />
       <AddDepartmentModal
-        open={isAddDepartmentModalOpen}
-        onClose={handleCloseAddDepartmentModal}
-        onDepartmentAdded={handleDepartmentAdded}
-      />
+          open={isAddDepartmentModalOpen}
+          onClose={handleCloseAddDepartmentModal}
+          onDepartmentAdded={handleDepartmentAdded} // Ensure this matches the global Department type
+        />
     </>
   );
 };
