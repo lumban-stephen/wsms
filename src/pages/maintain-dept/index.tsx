@@ -67,7 +67,7 @@ const DeptDashboard: React.FC = () => {
         // Handle errors appropriately (e.g., display an error message)
       }
     };
-
+    fetchAllDepartments();
     fetchDepartments();
   }, []);
 
