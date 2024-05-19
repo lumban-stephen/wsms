@@ -11,10 +11,6 @@ interface WsCardModalProps {
     lastSchoolAttended: string;
     facebookAccount: string;
     contactNo: string;
-    guardianName: string;
-    guardianContact: string;
-    contractStart: string;
-    contractEnd: string;
   };
 }
 
@@ -56,42 +52,6 @@ const WsCardModal: React.FC<WsCardModalProps> = ({ open, onClose, wsData }) => {
         <TextField
           label="Contact #"
           value={wsData.contactNo}
-          fullWidth
-          margin="normal"
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <TextField
-          label="Guardian Name"
-          value={wsData.guardianName}
-          fullWidth
-          margin="normal"
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <TextField
-          label="Guardian Contact"
-          value={wsData.guardianContact}
-          fullWidth
-          margin="normal"
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <TextField
-          label="Contract Start"
-          value={wsData.contractStart}
-          fullWidth
-          margin="normal"
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <TextField
-          label="Contract End"
-          value={wsData.contractEnd}
           fullWidth
           margin="normal"
           InputProps={{

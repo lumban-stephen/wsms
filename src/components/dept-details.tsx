@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Button, Card, CardContent, Divider } from '@mui/material';
 import EditDeptModal from './editdept-modal';
-import { User } from '../utils/interfaces';
-import { jwtDecode } from 'jwt-decode';
 
 interface RequestHistoryItemProps {
   requestType: string;
@@ -14,6 +12,8 @@ interface DeptDetailsProps {
   contactDetails: string;
   email: string;
   requestHistory: RequestHistoryItemProps[];
+  // Added userId prop to receive user ID from parent component
+  userId?: string;
 }
 
 const RequestHistoryItem: React.FC<RequestHistoryItemProps> = ({ requestType, date }) => {
@@ -32,18 +32,9 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
   contactDetails,
   email,
   requestHistory,
+  userId, // Use userId prop instead of decodedToken.user_id
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [token, setToken] = useState<any>();
-  const decodedToken = jwtDecode<User>(token);
-  const { user_id, username, password, userType, deptName } = decodedToken;
-  const [user, setUser] = useState<User>();
-  setUser(decodedToken);
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    setToken(storedToken);
-  }, []);
 
   const handleEditClick = () => {
     setIsModalOpen(true);
@@ -54,7 +45,7 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
   };
 
   return (
-    <Card>
+    <Card style={{ width: '500px', flex: '1', overflowY: 'scroll', padding: '10px'}}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {departmentName}
@@ -86,11 +77,11 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
             open={isModalOpen}
             onClose={handleModalClose}
             initialDepartment={{
-              id: user?.username || "undefined dept_id",
+              id: userId || "undefined dept_id", // Use userId prop or fallback
               name: departmentName,
-              admin: user?.username || "undefined username", // Replace with actual admin
+              admin: userId || "undefined username", // Replace with actual admin
               contact: contactDetails,
-              email: user?.username || "undefined email",
+              email: email,
             }}
             onSubmit={(updatedDepartment) => {
               // Handle department update logic here (e.g., API call)
@@ -104,3 +95,4 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
 };
 
 export default DeptDetails;
+

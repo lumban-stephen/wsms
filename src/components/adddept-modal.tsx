@@ -12,70 +12,92 @@ import {
   InputLabel,
 } from '@mui/material';
 
-interface AddDepartmentModalProps {
+type Department = {
+  department_id: number;
+  imageUrl: string;
+  department_name: string;
+  userType: string;
+  contact: string;
+  deptEmail: string;
+};
+
+type AddDepartmentModalProps = {
   open: boolean;
   onClose: () => void;
-}
+  onDepartmentAdded: (department: Department) => void; // Ensure this matches the global Department type
+};
 
-const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
+const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ open, onClose, onDepartmentAdded }) => {
   const [departmentName, setDepartmentName] = useState('');
-  const [departmentAdmin, setDepartmentAdmin] = useState('');
+  const [userType, setUserType] = useState('');
   const [deptAdmins, setDeptAdmins] = useState<string[]>([]);
-  const [deptContact, setDeptContact] = useState('');
+  const [contact, setContact] = useState('');
   const [deptEmail, setDeptEmail] = useState('');
+  const [userRole, setUserRole] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [departmentAdminUserId, setDepartmentAdminUserId] = useState('');
 
-  useEffect(() => {
-    const fetchDeptAdmins = async () => {
-      try {
-        const response = await fetch('/api/dept-admins');
-        if (response.ok) {
-          const usernames = await response.json();
-          setDeptAdmins(usernames);
-        } else {
-          console.error('Failed to fetch department admins');
-        }
-      } catch (error) {
-        console.error('Error fetching department admins:', error);
-      }
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newDepartment = {
+      departmentName,
+      contact,
+      deptEmail,
+      userType,
     };
 
-    fetchDeptAdmins();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  
     try {
-      const response = await fetch('/api/departments', {
+      const response = await fetch('http://localhost:3000/departments/adddept', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          departmentName,
-          departmentAdmin, // Assuming departmentAdmin is a value you have in your component state
-          deptContact,
-          deptEmail,
-        }),
+        body: JSON.stringify(newDepartment),
       });
-  
+
       if (response.ok) {
-        const createdDepartment = await response.json();
-        console.log('Created department:', createdDepartment);
-        // Reset form fields or close the modal
-        onClose();
+        const data = await response.json();
+        onDepartmentAdded(data);
       } else {
-        console.error('Failed to create department:', await response.text()); // More informative error message
+        console.error('Failed to add department');
       }
     } catch (error) {
-      console.error('Error creating department:', error);
+      console.error('Error:', error);
     }
+
+    // Reset form fields
+    setDepartmentName('');
+    setUserType('');
+    setContact('');
+    setDeptEmail('');
+    onClose();
   };
-  
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch('/api/user-role');
+        if (response.ok) {
+          const role = await response.text();
+          setUserRole(role);
+        } else {
+          console.error('Failed to fetch user role');
+        }
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
+
+
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Add Department</DialogTitle>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleAdd}>
         <DialogContent>
           <TextField
             label="Department Name"
@@ -85,29 +107,25 @@ const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
             margin="normal"
           />
           <FormControl fullWidth margin="normal">
-            <InputLabel id="department-admin-label">Department Admin</InputLabel>
+            <InputLabel id="user-type-label">Department Admin</InputLabel>
             <Select
-              labelId="department-admin-label"
-              value={departmentAdmin}
-              onChange={(e) => setDepartmentAdmin(e.target.value)}
+              labelId="user-type-label"
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
             >
-              <MenuItem value="">Select Department Admin</MenuItem>
-              {deptAdmins.map((username) => (
-                <MenuItem key={username} value={username}>
-                  {username}
-                </MenuItem>
-              ))}
+              <MenuItem value="admin">Admin</MenuItem>
+              <MenuItem value="staff">Staff</MenuItem>
             </Select>
           </FormControl>
           <TextField
-            label="Dept. Contact #"
-            value={deptContact}
-            onChange={(e) => setDeptContact(e.target.value)}
+            label="Contact"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
             fullWidth
             margin="normal"
           />
           <TextField
-            label="Dept. Email"
+            label="Department Email"
             value={deptEmail}
             onChange={(e) => setDeptEmail(e.target.value)}
             fullWidth
@@ -116,8 +134,8 @@ const AddDepartmentModal = ({ open, onClose }: AddDepartmentModalProps) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" color="primary">
-            Add Dept
+          <Button onClick={handleAdd} variant="contained" color="primary">
+            Add Department
           </Button>
         </DialogActions>
       </form>

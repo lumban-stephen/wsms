@@ -25,8 +25,9 @@ app.use('/applicants', applicants);
 app.use('/wsreq', wsreq);
 app.use('/users', users);
 app.use('/ws', ws);
-app.use('/api/departments', departments);
+app.use('/departments', departments);
 app.use('/admin', dashboard)
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
