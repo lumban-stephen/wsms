@@ -12,21 +12,22 @@ const MaintainApplicants: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
 
-  useEffect(() => {
-    const fetchApplicants = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/ws/maintain-applicants');
-        if (!response.ok) {
-          throw new Error('Failed to fetch applicants');
-        }
-        const data = await response.json();
-        setApplicants(data);
-      } catch (error) {
-        setError((error as Error).message);
-      } finally {
-        setIsLoading(false);
+  const fetchApplicants = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/ws/maintain-applicants');
+      if (!response.ok) {
+        throw new Error('Failed to fetch applicants');
       }
-    };
+      const data = await response.json();
+      setApplicants(data);
+    } catch (error) {
+      setError((error as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchApplicants();
   }, []);
 
@@ -36,6 +37,11 @@ const MaintainApplicants: React.FC = () => {
 
   const handleCloseModal = () => {
     setSelectedApplicant(null);
+  };
+
+  const afterReject = () => {
+    handleCloseModal();
+    fetchApplicants();
   };
 
   if (error) {
@@ -62,7 +68,7 @@ const MaintainApplicants: React.FC = () => {
               isOpen={!!selectedApplicant}
               onClose={handleCloseModal}
               applicant={selectedApplicant}
-              onApplicantUpdate={handleCloseModal}
+              onApplicantUpdate={afterReject}
             />
           )}
         </Paper>

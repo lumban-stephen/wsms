@@ -42,11 +42,13 @@ router.post('/reqws', async (req, res) => {
 router.get('/maintain-applicants', async (req, res) => {
   try {
     const query = `
-      SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name
+      SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name, ws.isRegistered
       FROM applicants a
       INNER JOIN names n ON a.name_fk = n.name_id
+      LEFT JOIN working_scholars ws ON a.applicant_id = ws.applicant_fk -- Use LEFT JOIN for potential missing entries
       WHERE a.status = 'pending'  -- Filter for pending applicants only
     `;
+
     const { rows } = await pool.query(query);
     res.json(rows);
   } catch (error) {
@@ -124,19 +126,36 @@ router.post('/suspend', async (req, res) => {
       return res.status(400).json({ message: 'Missing applicant ID' });
     }
 
-    const query = `
+    // 1. Find working scholar record (optional, based on your needs)
+    const findScholarQuery = `
+      SELECT *
+      FROM working_scholars
+      WHERE applicant_fk = $1
+    `;
+
+    const { rows: scholarRows } = await pool.query(findScholarQuery, [applicant_fk]);
+
+    // 2. Update applicant status (assuming scholar record found)
+    const updateApplicantQuery = `
       UPDATE applicants
       SET status = 'denied'
       WHERE applicant_id = $1
     `;
 
-    const result = await pool.query(query, [applicant_fk]);
+    await pool.query(updateApplicantQuery, [applicant_fk]);
 
-    if (result.rowCount === 1) {
-      res.json({ message: 'Applicant successfully suspended.' });
-    } else {
-      res.status(500).json({ message: 'An error occurred while suspending working scholar.' });
+    // 3. Update isRegistered if scholar record found
+    if (scholarRows.length > 0) {
+      const updateScholarQuery = `
+        UPDATE working_scholars
+        SET isRegistered = false
+        WHERE applicant_fk = $1
+      `;
+
+      await pool.query(updateScholarQuery, [applicant_fk]);
     }
+
+    res.json({ message: 'Applicant successfully suspended.' });
   } catch (error) {
     console.error('Error suspending working scholar:', error);
     res.status(500).json({ message: 'Internal server error' });

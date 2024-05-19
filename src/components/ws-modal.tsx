@@ -34,6 +34,10 @@ const WsModal: React.FC<WsModalProps> = ({
     // Add logic to enable editing of fields
   };
 
+  const register = () => {
+    window.location.href = '/signup';
+  };
+
   const handleSaveChanges = async () => {
     try {
       const response = await fetch('http://localhost:3000/applicants/maintain-ws', {
@@ -64,7 +68,7 @@ const WsModal: React.FC<WsModalProps> = ({
   const handleSuspend = async () => {
     try {
       const updatedWs = { ...workingScholar, status: 'Suspended' };
-      const response = await fetch('http://localhost:3000/applicants/suspend', {
+      const response = await fetch('http://localhost:3000/ws/suspend', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +107,7 @@ const WsModal: React.FC<WsModalProps> = ({
                 {/* Add avatar component here */}
               </Box>
             </Grid>
-            <Avatar sx={{ bgcolor: deepOrange[500], width: 150, height: 150 }}>N</Avatar>
+            <Avatar sx={{ bgcolor: deepOrange[500], width: 150, height: 150 }}>{workingScholar.full_name.charAt(0)}</Avatar>
             <Grid item xs={8}>
               <Typography variant="h6">{workingScholar.full_name}</Typography>
               <Typography variant="body2">{workingScholar.age}</Typography>
@@ -161,6 +165,13 @@ const WsModal: React.FC<WsModalProps> = ({
               disabled={workingScholar.status === 'Suspended'}
             >
               {workingScholar.status === 'Suspended' ? 'Suspended' : 'Suspend'}
+            </Button>
+            <Button
+              variant="outlined"
+              disabled={!workingScholar.isRegistered}
+              onClick={register}
+            >
+              {workingScholar.isRegistered === false ? 'Register' : 'WS is Registered'}
             </Button>
           </Box>
         </Box>

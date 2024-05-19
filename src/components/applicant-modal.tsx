@@ -40,28 +40,26 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({
 
   const handleApprove = async () => {
     try {
-      
-      const response = await fetch('http://localhost:3000/applicants/maintain-applicants', {
+      const response = await fetch('/applicants/approve', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ applicant_fk: applicant.applicant_id }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicant_id: applicant.applicant_id }), // Replace with your logic to get applicant ID
       });
   
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Response:', data);
-        alert(data.message);
-        window.location.href = '/signup';
-      } else {
-        const errorData = await response.json();
-        console.log('Error:', errorData);
-        alert(errorData.message);
+      if (!response.ok) {
+        throw new Error('Failed to approve applicant');
       }
+  
+      const data = await response.json();
+      console.log('Approval response:', data);
+  
+      // Close the modal (assuming you have a function to close the modal)
+      setIsApproveModalOpen(false);
+  
+      // Optionally, update applicant data in the frontend state or refetch data
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while processing the request.');
+      console.error('Error approving applicant:', error);
+      // Display an error message to the user
     }
   };
 
