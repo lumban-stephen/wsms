@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, CardMedia } from '@mui/material';
+import { Card, CardContent, Typography, CardMedia, Grid } from '@mui/material';
 
 interface DeptCardProps {
   imageUrl: string;
@@ -20,10 +20,13 @@ const DeptCard: React.FC<DeptCardProps> = ({
     <Card>
       <CardMedia component="img" height="140" image={imageUrl} alt={departmentName} />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {departmentName}
-        </Typography>
-        
+        <Grid container direction="column" spacing={2}>
+          <Grid item xs={12}>
+            <Typography gutterBottom variant="h5" component="div" color="secondary">
+              {departmentName}
+            </Typography>
+          </Grid>
+        </Grid>
       </CardContent>
     </Card>
   );

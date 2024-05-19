@@ -13,9 +13,9 @@ import {
 } from '@mui/material';
 
 type Department = {
-  departmentId: string;
+  department_id: string;
   imageUrl: string;
-  departmentName: string;
+  department_name: string;
   userType: string;
   contact: string;
   deptEmail: string;

@@ -10,9 +10,9 @@ import NavBarAdmin from '../../components/navbar-admin';
 import imageUrl from '../../assets/uclm-banner.jpg';
 
 type Department = {
-  departmentId: string;
+  department_id: string;
   imageUrl: string;
-  departmentName: string;
+  department_name: string;
   userType: string;
   contact: string;
   deptEmail: string;
@@ -35,6 +35,21 @@ const DeptDashboard: React.FC = () => {
   const [isAddDepartmentModalOpen, setIsAddDepartmentModalOpen] = useState(false);
   const navigate = useNavigate();
 
+  const fetchAllDepartments = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/departments/adddept');
+      const data = await response.json();
+      if (response.ok) {
+        setDepartments((prevDepartments) => [...prevDepartments, ...data]);
+      } else {
+        console.error('Error fetching all departments:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching all departments:', error);
+    }
+  };
+
+
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -42,6 +57,7 @@ const DeptDashboard: React.FC = () => {
         const data = await response.json();
         if (response.ok) {
           setDepartments(data);
+          console.log(data)
         } else {
           console.error('Error fetching departments:', data);
           // Handle errors appropriately (e.g., display an error message)
@@ -52,27 +68,11 @@ const DeptDashboard: React.FC = () => {
       }
     };
 
-
-    const fetchAllDepartments = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/departments/adddept');
-        const data = await response.json();
-        if (response.ok) {
-          setDepartments((prevDepartments) => [...prevDepartments, ...data]);
-        } else {
-          console.error('Error fetching all departments:', data);
-        }
-      } catch (error) {
-        console.error('Error fetching all departments:', error);
-      }
-    };
-
     fetchDepartments();
-    fetchAllDepartments();
   }, []);
 
   const handleDeptClick = (department: Department) => {
-    navigate(`/dept-profile/${department.departmentId}`);
+    navigate(`/dept-profile/${department.department_id}`);
   };
 
   const handleOpenAddDepartmentModal = () => {
@@ -160,7 +160,7 @@ const DeptDashboard: React.FC = () => {
                   >
                     <DeptCard
                       imageUrl={imageUrl}
-                      departmentName={department.departmentName}
+                      departmentName={department.department_name}
                       userType={department.userType}
                       deptContact={department.contact}
                       deptEmail={department.deptEmail}
