@@ -18,12 +18,29 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({
 }) => {
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
 
-  const handleApproveClick = () => {
-    setIsApproveModalOpen(true);
-  };
-
-  const handleApprove = async () => {
-    // ... existing handleApprove logic ...
+  const handleApproveConfirmation = async () => {
+    try {
+      const response = await fetch('/applicants/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicant_id: applicant.applicant_id }), // Replace with your logic to get applicant ID
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to approve applicant');
+      }
+  
+      const data = await response.json();
+      console.log('Approval response:', data);
+  
+      // Close the modal (assuming you have a function to close the modal)
+      setIsApproveModalOpen(false);
+  
+      // Optionally, update applicant data in the frontend state or refetch data
+    } catch (error) {
+      console.error('Error approving applicant:', error);
+      // Display an error message to the user
+    }
   };
 
   if (!isOpen) return null;
@@ -58,7 +75,7 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({
           {/* Conditionally hide approve button */}
           <button
             className={styles.modalButton}
-            onClick={handleApproveClick}
+            onClick={handleApproveConfirmation}
             disabled={isApproveButtonHidden}
           >
             Approve
@@ -70,7 +87,7 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({
       </div>
       {isApproveModalOpen && (
         <ApproveApplicantBox
-          onApprove={handleApprove} // Pass handleApprove function for Approve action
+          onApprove={handleApproveConfirmation} // Pass handleApprove function for Approve action
           onReject={() => setIsApproveModalOpen(false)} // Close ApproveApplicantBox on reject
         />
       )}

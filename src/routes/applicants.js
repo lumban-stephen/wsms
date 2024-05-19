@@ -50,4 +50,63 @@ router.get('/maintain-applicants', async (req, res) => {
     }
   });
 
+  router.post('/reject', async (req, res) => {
+    try {
+      const { applicant_fk } = req.body;
+  
+      if (!applicant_fk) {
+        return res.status(400).json({ message: 'Missing applicant ID' });
+      }
+  
+      const query = `
+        UPDATE applicants
+        SET status = 'denied'
+        WHERE applicant_id = $1
+      `;
+  
+      const result = await pool.query(query, [applicant_fk]);
+  
+      if (result.rowCount === 1) {
+        res.json({ message: 'Applicant successfully rejected.' });
+      } else {
+        res.status(500).json({ message: 'An error occurred while rejecting applicant.' });
+      }
+    } catch (error) {
+      console.error('Error rejecting applicant:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  router.post('/approve', async (req, res) => {
+    try {
+      const { applicant_fk } = req.body;
+  
+      if (!applicant_fk) {
+        return res.status(400).json({ message: 'Missing applicant ID' });
+      }
+  
+      // Update applicant status to 'accepted'
+      const updateApplicantQuery = `
+        UPDATE applicants
+        SET status = 'accepted'
+        WHERE applicant_id = $1
+      `;
+  
+      await pool.query(updateApplicantQuery, [applicant_fk]);
+  
+      // Insert applicant into working_scholars table
+      const insertScholarQuery = `
+        INSERT INTO working_scholars (dept_fk, applicant_fk)
+        VALUES ($1, $2)
+      `;
+  
+      await pool.query(insertScholarQuery, [null, applicant_fk]);
+  
+      res.json({ message: 'Applicant successfully approved.' });
+    } catch (error) {
+      console.error('Error approving applicant:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
 module.exports = router;

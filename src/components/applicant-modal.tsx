@@ -40,28 +40,55 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({
 
   const handleApprove = async () => {
     try {
-      
-      const response = await fetch('http://localhost:3000/applicants/maintain-applicants', {
+      const response = await fetch('/applicants/approve', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ applicant_fk: applicant.applicant_id }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicant_id: applicant.applicant_id }), // Replace with your logic to get applicant ID
       });
   
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Response:', data);
-        alert(data.message);
-        window.location.href = '/signup';
-      } else {
-        const errorData = await response.json();
-        console.log('Error:', errorData);
-        alert(errorData.message);
+      if (!response.ok) {
+        throw new Error('Failed to approve applicant');
       }
+  
+      const data = await response.json();
+      console.log('Approval response:', data);
+  
+      // Close the modal (assuming you have a function to close the modal)
+      setIsApproveModalOpen(false);
+  
+      // Optionally, update applicant data in the frontend state or refetch data
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while processing the request.');
+      console.error('Error approving applicant:', error);
+      // Display an error message to the user
+    }
+  };
+
+  const handleReject = async () => {
+    if (window.confirm('Are you sure you want to reject this applicant?')) {
+      try {
+        const response = await fetch('http://localhost:3000/applicants/reject', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ applicant_fk: applicant.applicant_id, status: 'denied' }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Response:', data);
+          alert(data.message);
+          onApplicantUpdate({ ...applicant, status: 'denied' });
+          setIsApproveModalOpen(false);
+        } else {
+          const errorData = await response.json();
+          console.log('Error:', errorData);
+          alert(errorData.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while processing the request.');
+      }
     }
   };
 
@@ -106,7 +133,7 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({
           <Button variant="contained" color="primary" onClick={handleApprove} disabled={applicant.status === 'accepted'}>
             Approve
           </Button>
-          <Button variant="outlined" color="error" onClick={onClose}>
+          <Button variant="outlined" color="error" onClick={handleReject}>
             Reject
           </Button>
         </Box>
