@@ -66,7 +66,6 @@ router.get('/dashboard', async (req, res) => {
 
     console.log(dashboardData); // Log the constructed data for debugging
     res.json(dashboardData); // Send the data as a JSON response
-    pool.release(); // Release the connection from the pool
 
   } catch (error) {
     console.error('Error fetching dashboard data:', error);

@@ -14,7 +14,7 @@ const MaintainApplicants: React.FC = () => {
 
   const fetchApplicants = async () => {
     try {
-      const response = await fetch('http://localhost:3000/ws/maintain-applicants');
+      const response = await fetch('http://localhost:3000/applicants/maintain-applicants');
       if (!response.ok) {
         throw new Error('Failed to fetch applicants');
       }

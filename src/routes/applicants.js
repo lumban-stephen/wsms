@@ -20,7 +20,8 @@ router.get('/maintain-applicants', async (req, res) => {
       const query = `
         SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name
         FROM applicants a
-        INNER JOIN names n ON a.name_fk = n.name_id;
+        INNER JOIN names n ON a.name_fk = n.name_id
+        WHERE a.status = 'pending';
       `;
       const { rows } = await pool.query(query);
       res.json(rows);

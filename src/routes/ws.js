@@ -42,12 +42,12 @@ router.post('/reqws', async (req, res) => {
 router.get('/maintain-applicants', async (req, res) => {
   try {
     const query = `
-      SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name, ws.isRegistered
-      FROM applicants a
-      INNER JOIN names n ON a.name_fk = n.name_id
-      LEFT JOIN working_scholars ws ON a.applicant_id = ws.applicant_fk -- Use LEFT JOIN for potential missing entries
-      WHERE a.status = 'pending'  -- Filter for pending applicants only
-    `;
+    SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name, ws.isRegistered
+    FROM applicants a
+    INNER JOIN names n ON a.name_fk = n.name_id
+    LEFT JOIN working_scholars ws ON a.applicant_id = ws.applicant_fk -- Use LEFT JOIN for potential missing entries
+    WHERE a.status = 'pending'  -- Filter for pending applicants only
+`;
 
     const { rows } = await pool.query(query);
     res.json(rows);
