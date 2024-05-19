@@ -16,6 +16,7 @@ export interface Applicant {
     school_name: string;
     fbAccount: string;
     dept?: string;
+    isRegistered: boolean;
 }
 
 export interface WorkingScholar {

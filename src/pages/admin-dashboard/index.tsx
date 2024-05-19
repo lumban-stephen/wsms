@@ -2,124 +2,140 @@ import React, { useState, useEffect } from 'react';
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
 import NavBarAdmin from '../../components/navbar-admin';
 
+type DashboardData = {
+  workingScholarsInService: number;
+  waitingForAssignment: number;
+  latestAnnouncement: string;
+  pendingApplicants: number;
+  totalRetired: number;
+  pendingDeptRequest: number;
+};
+
+const defaultDashboardData: DashboardData = {
+  workingScholarsInService: 0,
+  waitingForAssignment: 0,
+  latestAnnouncement: '',
+  pendingApplicants: 0,
+  totalRetired: 0,
+  pendingDeptRequest: 0,
+};
+
 const AdminDashboard = () => {
-  const [data, setData] = useState({
-    workingScholarsInService: 0,
-    waitingForAssignment: 0,
-    latestAnnouncement: '',
-    pendingApplicants: 0,
-    totalPending: 0,
-    pendingDeptRequest: 0,
-  });
+  const [dashboardData, setDashboardData] = useState<DashboardData>(defaultDashboardData);
+  const [isLoading, setIsLoading] = useState(true);
+  const fetchDashboardData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/admin/dashboard', {
+        method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+      });
+      if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      const data = await response.json();
+      setDashboardData(data);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/admin/dashboard');
-        if (response.ok) {
-          const dashboardData = await response.json();
-          setData(dashboardData);
-        } else {
-          console.error('Failed to fetch dashboard data');
-        }
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      }
-    };
-
-    fetchData();
+    fetchDashboardData();
   }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-    <NavBarAdmin activeTab={'Home'} />
-    <Box>
-      <Grid container spacing={3}>
-        {/* Working Scholars in service */}
-        <Grid item xs={12} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div" gutterBottom>
-                Working Scholars in service
-              </Typography>
-              <Typography variant="h3" component="div">
-                {data.workingScholarsInService}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+      <NavBarAdmin activeTab={'Home'} />
+      <Box>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Working Scholars in service
+                </Typography>
+                <Typography variant="h3" component="div">
+                  {dashboardData?.workingScholarsInService}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-        {/* Waiting for assignment */}
-        <Grid item xs={12} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div" gutterBottom>
-                Waiting for assignment
-              </Typography>
-              <Typography variant="h3" component="div">
-                {data.waitingForAssignment}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Waiting for assignment
+                </Typography>
+                <Typography variant="h3" component="div">
+                  {dashboardData?.waitingForAssignment}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-        {/* Latest Announcement */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div" gutterBottom>
-                Latest Announcement
-              </Typography>
-              <Typography variant="body1" component="div">
-                {data.latestAnnouncement}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Latest Announcement
+                </Typography>
+                <Typography variant="body1" component="div">
+                  {dashboardData?.latestAnnouncement}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-        {/* Pending Applicants */}
-        <Grid item xs={12} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div" gutterBottom>
-                Pending Applicants
-              </Typography>
-              <Typography variant="h3" component="div">
-                {data.pendingApplicants}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Pending Applicants
+                </Typography>
+                <Typography variant="h3" component="div">
+                  {dashboardData?.pendingApplicants}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-        {/* Total Pending */}
-        <Grid item xs={12} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div" gutterBottom>
-                Total Pending
-              </Typography>
-              <Typography variant="h3" component="div">
-                {data.totalPending}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Total Retired
+                </Typography>
+                <Typography variant="h3" component="div">
+                  {dashboardData?.totalRetired}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-        {/* Pending Dept Request */}
-        <Grid item xs={12} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div" gutterBottom>
-                Pending Dept Request
-              </Typography>
-              <Typography variant="h3" component="div">
-                {data.pendingDeptRequest}
-              </Typography>
-            </CardContent>
-          </Card>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Pending Dept Request
+                </Typography>
+                <Typography variant="h3" component="div">
+                  {dashboardData?.pendingDeptRequest}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
     </>
   );
 };

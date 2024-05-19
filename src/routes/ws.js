@@ -39,12 +39,31 @@ router.post('/reqws', async (req, res) => {
   }
 });
 
+router.get('/maintain-applicants', async (req, res) => {
+  try {
+    const query = `
+    SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name, ws.isRegistered
+    FROM applicants a
+    INNER JOIN names n ON a.name_fk = n.name_id
+    LEFT JOIN working_scholars ws ON a.applicant_id = ws.applicant_fk -- Use LEFT JOIN for potential missing entries
+    WHERE a.status = 'pending'  -- Filter for pending applicants only
+`;
+
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching applicants:', error);
+    res.status(500).json({ error: 'An error occurred while fetching applicants' });
+  }
+});
+
 router.get('/maintain-ws', async (req, res) => {
   try {
     const query = `
       SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name
       FROM applicants a
-      INNER JOIN names n ON a.name_fk = n.name_id;
+      INNER JOIN names n ON a.name_fk = n.name_id
+      WHERE a.status = 'accepted'  -- Filter for accepted applicants
     `;
     const { rows } = await pool.query(query);
     res.json(rows);
@@ -96,6 +115,50 @@ router.get('/working-scholars/unassigned', async (req, res) => {
   } catch (error) {
     console.error('Error fetching unassigned working scholars:', error);
     res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
+  }
+});
+
+router.post('/suspend', async (req, res) => {
+  try {
+    const { applicant_fk } = req.body;
+
+    if (!applicant_fk) {
+      return res.status(400).json({ message: 'Missing applicant ID' });
+    }
+
+    // 1. Find working scholar record (optional, based on your needs)
+    const findScholarQuery = `
+      SELECT *
+      FROM working_scholars
+      WHERE applicant_fk = $1
+    `;
+
+    const { rows: scholarRows } = await pool.query(findScholarQuery, [applicant_fk]);
+
+    // 2. Update applicant status (assuming scholar record found)
+    const updateApplicantQuery = `
+      UPDATE applicants
+      SET status = 'denied'
+      WHERE applicant_id = $1
+    `;
+
+    await pool.query(updateApplicantQuery, [applicant_fk]);
+
+    // 3. Update isRegistered if scholar record found
+    if (scholarRows.length > 0) {
+      const updateScholarQuery = `
+        UPDATE working_scholars
+        SET isRegistered = false
+        WHERE applicant_fk = $1
+      `;
+
+      await pool.query(updateScholarQuery, [applicant_fk]);
+    }
+
+    res.json({ message: 'Applicant successfully suspended.' });
+  } catch (error) {
+    console.error('Error suspending working scholar:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
