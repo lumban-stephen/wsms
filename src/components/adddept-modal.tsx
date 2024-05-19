@@ -48,7 +48,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ open, onClose, 
     };
 
     try {
-      const response = await fetch('/api/departments', {
+      const response = await fetch('http://localhost:3000/departments/adddept', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ open, onClose, 
       });
 
       if (response.ok) {
-        const data: Department = await response.json();
+        const data = await response.json();
         onDepartmentAdded(data);
       } else {
         console.error('Failed to add department');
@@ -107,7 +107,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ open, onClose, 
             margin="normal"
           />
           <FormControl fullWidth margin="normal">
-            <InputLabel id="user-type-label">User Type</InputLabel>
+            <InputLabel id="user-type-label">Department Admin</InputLabel>
             <Select
               labelId="user-type-label"
               value={userType}

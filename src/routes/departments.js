@@ -14,7 +14,7 @@ const pool = new Pool({
 });
 
 // API route to add a new department
-app.post('/api/add-department', async (req, res) => {
+router.post('/api/add-department', async (req, res) => {
   const { departmentId, imageUrl, departmentName, userType, contact, deptEmail } = req.body;
   try {
     const query = `
@@ -30,12 +30,10 @@ app.post('/api/add-department', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+
 
 // Get all departments
-router.get('/departments', async (req, res) => {
+router.get('/alldept', async (req, res) => {
   try {
     const allDepartments = await pool.query('SELECT * FROM departments'); // Replace with your department table name
     res.json(allDepartments.rows);
@@ -46,7 +44,7 @@ router.get('/departments', async (req, res) => {
 });
 
 // Add a new department and user
-router.post('/departments', async (req, res) => {
+router.post('/adddept', async (req, res) => {
   const { departmentName, contact, deptEmail, userType } = req.body;
 
   try {
@@ -70,7 +68,14 @@ router.post('/departments', async (req, res) => {
     // Commit the transaction
     await pool.query('COMMIT');
 
-    res.status(201).json({ departmentId: newDepartmentId, userId: newUserId });
+    res.status(201).json({
+      departmentId: newDepartmentId,
+      userId: newUserId,
+      departmentName, // Include the departmentName from the request body
+      contact, // Include the contact from the request body
+      deptEmail, // Include the deptEmail from the request body
+      userType, // Include the userType from the request body
+    });
   } catch (error) {
     // Rollback the transaction if an error occurred
     await pool.query('ROLLBACK');
@@ -80,27 +85,27 @@ router.post('/departments', async (req, res) => {
 });
 
 // Get all departments with users
-router.get('/api/departments-users', async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT 
-        d.department_id AS "departmentId",
-        d.department_name AS "departmentName",
-        d.contact AS "contact",
-        d.dept_email AS "deptEmail",
-        u.user_type AS "userType",
-        'path/to/default/image.jpg' AS "imageUrl"
-      FROM 
-        departments d
-      LEFT JOIN 
-        users u ON d.department_id = u.dept_fk;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching departments and users:', err.message);
-    res.status(500).send('Server error');
-  }
-});
+// router.get('/api/departments-users', async (req, res) => {
+//   try {
+//     const result = await pool.query(`
+//       SELECT 
+//         d.department_id AS "departmentId",
+//         d.department_name AS "departmentName",
+//         d.contact AS "contact",
+//         d.dept_email AS "deptEmail",
+//         u.user_type AS "userType",
+//         'path/to/default/image.jpg' AS "imageUrl"
+//       FROM 
+//         departments d
+//       LEFT JOIN 
+//         users u ON d.department_id = u.dept_fk;
+//     `);
+//     res.json(result.rows);
+//   } catch (err) {
+//     console.error('Error fetching departments and users:', err.message);
+//     res.status(500).send('Server error');
+//   }
+// });
 
 
 // Get department details by ID

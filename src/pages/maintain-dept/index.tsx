@@ -7,6 +7,7 @@ import ApproveReq from '../../components/approve-req';
 import AddDeptIcon from '../../components/adddept-icon';
 import AddDepartmentModal from '../../components/adddept-modal';
 import NavBarAdmin from '../../components/navbar-admin';
+import imageUrl from '../../assets/uclm-banner.jpg';
 
 type Department = {
   departmentId: string;
@@ -27,6 +28,7 @@ interface DeptRequest {
 
 const DeptDashboard: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
+  // const [departments, setAllDepartments] = useState([]);
   const [deptRequests, setDeptRequests] = useState<DeptRequest[] | null>(null);
   const [selectedDeptRequest, setSelectedDeptRequest] = useState<DeptRequest | null>(null);
   const [isDeptReqModalOpen, setIsDeptReqModalOpen] = useState(false);
@@ -36,37 +38,37 @@ const DeptDashboard: React.FC = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch('/api/departments-users');
+        const response = await fetch('http://localhost:3000/departments/alldept'); // Assuming separate endpoint for departments
+        const data = await response.json();
         if (response.ok) {
-          const data = await response.json();
           setDepartments(data);
         } else {
-          console.error('Error fetching departments:', await response.text());
+          console.error('Error fetching departments:', data);
+          // Handle errors appropriately (e.g., display an error message)
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
+        // Handle errors appropriately (e.g., display an error message)
+      }
+    };
+
+
+    const fetchAllDepartments = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/departments/adddept');
+        const data = await response.json();
+        if (response.ok) {
+          setDepartments((prevDepartments) => [...prevDepartments, ...data]);
+        } else {
+          console.error('Error fetching all departments:', data);
+        }
+      } catch (error) {
+        console.error('Error fetching all departments:', error);
       }
     };
 
     fetchDepartments();
-  }, []);
-
-  useEffect(() => {
-    const fetchDeptRequests = async () => {
-      try {
-        const response = await fetch('/api/dept-requests');
-        if (response.ok) {
-          const data = await response.json();
-          setDeptRequests(data);
-        } else {
-          console.error('Error fetching department requests:', await response.text());
-        }
-      } catch (error) {
-        console.error('Error fetching department requests:', error);
-      }
-    };
-
-    fetchDeptRequests();
+    fetchAllDepartments();
   }, []);
 
   const handleDeptClick = (department: Department) => {
@@ -157,9 +159,9 @@ const DeptDashboard: React.FC = () => {
                     onClick={() => handleDeptClick(department)}
                   >
                     <DeptCard
-                      imageUrl={department.imageUrl}
+                      imageUrl={imageUrl}
                       departmentName={department.departmentName}
-                      departmentAdmin={department.userType}
+                      userType={department.userType}
                       deptContact={department.contact}
                       deptEmail={department.deptEmail}
                     />

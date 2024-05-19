@@ -4,15 +4,15 @@ import { Card, CardContent, Typography, CardMedia } from '@mui/material';
 interface DeptCardProps {
   imageUrl: string;
   departmentName: string;
-  departmentAdmin: string;  // Added departmentAdmin prop
-  deptContact: string;  // Added deptContact prop
-  deptEmail: string;  // Added deptEmail prop
+  userType: string;
+  deptContact: string;
+  deptEmail: string;
 }
 
-const DeptCard = ({
+const DeptCard: React.FC<DeptCardProps> = ({
   imageUrl,
   departmentName,
-  departmentAdmin,
+  userType,
   deptContact,
   deptEmail
 }: DeptCardProps) => {
@@ -20,7 +20,7 @@ const DeptCard = ({
     <Card>
       <CardMedia component="img" height="140" image={imageUrl} alt={departmentName} />
       <CardContent>
-        <Typography variant="h5" component="div">
+        <Typography gutterBottom variant="h5" component="div">
           {departmentName}
         </Typography>
         
