@@ -4,6 +4,8 @@ import RequestDetails from '../../components/requestdetails';
 import RequestWorkingScholar from '../../components/requestworkingscholar';
 import { Typography } from '@mui/material';
 import NavBarStaff from '../../components/navbar-staff';
+import { jwtDecode } from 'jwt-decode';
+import { User } from '../../utils/user';
 
 interface Request {
   ws_req_id: string;
@@ -31,19 +33,25 @@ const DeptReq: React.FC = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [showRequestDetails, setShowRequestDetails] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
-  const [userDept, setUserDept] = useState<string | null>(null); // Store user's department
+  const [userDept, setUserDept] = useState<number>(); // Store user's department
+  const [username, setUsername] = useState<string>('');
 
   useEffect(() => {
     // Retrieve department from token data (modify based on your token structure)
-    const tokenData = localStorage.getItem('userToken');
-    if (tokenData) {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
       try {
-        const parsedToken = JSON.parse(tokenData);
-        const dept = parsedToken.department; // Replace "department" with the actual property name in your token
-        setUserDept(dept);
-      } catch (error) {
-        console.error('Error parsing token:', error);
-      }
+        const decodedToken = jwtDecode<User>(storedToken);
+        setUsername(decodedToken.username);
+        setUserDept(decodedToken.dept_fk);
+        if(!userDept) {
+          console.log("dept didn't go through")
+        }else{
+          console.log(userDept)
+        }
+    } catch (error) {
+        console.error('Error decoding token:', error);
+    }
     }
   }, []);
 
