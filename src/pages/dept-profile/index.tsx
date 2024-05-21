@@ -6,6 +6,7 @@ import WsCardModal from '../../components/wscard-modal'; // Import WsCardModal c
 import { useParams } from 'react-router-dom'; // Import useParams for accessing URL parameters
 import NavBarStaff from '../../components/navbar-staff';
 import { Height } from '@mui/icons-material';
+import NavBarAdmin from '../../components/navbar-admin';
 
 interface DepartmentDetails {
   department_name: string;
@@ -103,7 +104,7 @@ const DeptProfile = () => {
 
   return (
     <>
-    <NavBarStaff activeTab={'WorkingScholars'} />
+    <NavBarAdmin activeTab={'WorkingScholars'} />
     <Grid container spacing={2} >
       {departmentDetails ? (
         <>
@@ -127,7 +128,7 @@ const DeptProfile = () => {
                 {workingScholars.map((card, index) => (
                   <Box key={index} m={1}>
                     <WsCard
-                      imageUrl='./assets/default.jpg'
+                      imageUrl='../assets/default-dp.jpg'
                       name={card.name}
                       department={departmentDetails.department_name}
                       onClick={() => handleWsCardClick(card)} // Pass scholar data on click

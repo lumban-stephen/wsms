@@ -37,7 +37,7 @@ const WsCard: React.FC<WsCardProps> = ({ imageUrl, name, department, onClick, st
       )}
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <Typography variant="body2" color="text.secondary" align="center">
-          {department}
+          {name}
         </Typography>
       </CardContent>
     </Card>

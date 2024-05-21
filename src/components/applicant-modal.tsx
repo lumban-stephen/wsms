@@ -40,7 +40,7 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({
 
   const handleApprove = async () => {
     try {
-      const response = await fetch('/applicants/approve', {
+      const response = await fetch('http://localhost:3000/applicants/maintain-applicants', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ applicant_id: applicant.applicant_id }), // Replace with your logic to get applicant ID

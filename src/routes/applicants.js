@@ -40,7 +40,13 @@ router.get('/maintain-applicants', async (req, res) => {
         [applicant_fk]
       );
   
-      if (result.rowCount === 1) {
+      const updateApplicantQuery = await pool.query(`
+      UPDATE applicants
+      SET status = 'accepted'
+      WHERE applicant_id = $1
+    `, [applicant_fk]);;
+
+      if (result.rowCount === 1 && updateApplicantQuery.rowCount === 1) {
         res.status(201).json({ message: 'Applicant added to working scholars successfully!' });
       } else {
         res.status(500).json({ message: 'Error adding applicant to working scholars' });
@@ -97,11 +103,11 @@ router.get('/maintain-applicants', async (req, res) => {
   
       // Insert applicant into working_scholars table
       const insertScholarQuery = `
-        INSERT INTO working_scholars (dept_fk, applicant_fk)
-        VALUES ($1, $2)
+        INSERT INTO working_scholars (applicant_fk)
+        VALUES ($1)
       `;
   
-      await pool.query(insertScholarQuery, [null, applicant_fk]);
+      await pool.query(insertScholarQuery, [applicant_fk]);
   
       res.json({ message: 'Applicant successfully approved.' });
     } catch (error) {
