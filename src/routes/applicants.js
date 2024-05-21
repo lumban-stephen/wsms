@@ -32,27 +32,41 @@ router.get('/maintain-applicants', async (req, res) => {
   });
 
   router.post('/maintain-applicants', async (req, res) => {
+    const { applicant_fk } = req.body;
+  
     try {
-      const { applicant_fk } = req.body;
+      const client = await pool.connect();
   
-      const result = await pool.query(
-        'INSERT INTO working_scholars (applicant_fk) VALUES ($1)',
-        [applicant_fk]
-      );
+      try {
+        await client.query('BEGIN');
   
-      const updateApplicantQuery = await pool.query(`
-      UPDATE applicants
-      SET status = 'accepted'
-      WHERE applicant_id = $1
-    `, [applicant_fk]);;
-
-      if (result.rowCount === 1 && updateApplicantQuery.rowCount === 1) {
-        res.status(201).json({ message: 'Applicant added to working scholars successfully!' });
-      } else {
-        res.status(500).json({ message: 'Error adding applicant to working scholars' });
+        const insertQuery = 'INSERT INTO working_scholars (applicant_fk) VALUES ($1) RETURNING *';
+        const insertResult = await client.query(insertQuery, [applicant_fk]);
+  
+        if (insertResult.rowCount === 1) {
+          const updateQuery = 'UPDATE applicants SET status = \'accepted\' WHERE applicant_id = $1';
+          const updateResult = await client.query(updateQuery, [applicant_fk]);
+  
+          if (updateResult.rowCount === 1) {
+            await client.query('COMMIT');
+            res.status(201).json({ message: 'Applicant added to working scholars successfully!' });
+          } else {
+            await client.query('ROLLBACK');
+            res.status(500).json({ message: 'Error updating applicant status' });
+          }
+        } else {
+          await client.query('ROLLBACK');
+          res.status(500).json({ message: 'Error adding applicant to working scholars' });
+        }
+      } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Error during transaction:', error);
+        res.status(500).json({ message: 'Internal server error' });
+      } finally {
+        client.release();
       }
     } catch (error) {
-      console.error('Error adding working scholar:', error);
+      console.error('Error acquiring client:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   });
