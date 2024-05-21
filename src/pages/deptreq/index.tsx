@@ -42,6 +42,7 @@ const DeptReq: React.FC = () => {
     if (storedToken) {
       try {
         const decodedToken = jwtDecode<User>(storedToken);
+        console.log(decodedToken)
         setUsername(decodedToken.username);
         setUserDept(decodedToken.dept_fk);
         if(!userDept) {
@@ -57,9 +58,9 @@ const DeptReq: React.FC = () => {
 
   const fetchData = async () => {
     if (!userDept) return; // Don't fetch if department is not available
-
+    console.log(userDept);
     try {
-      const response = await fetch(`/api/pending-requests?dept=${userDept}`); // Add query parameter for department
+      const response = await fetch(`http://localhost:3000/wsreq/requests/${userDept}`); // Add query parameter for department
       const data = await response.json();
       if (response.ok) {
         setRequests(data);
@@ -112,7 +113,7 @@ const DeptReq: React.FC = () => {
           {userDept ? ( // Check if user department is available
             showRequestDetails && selectedRequest ? (
               selectedRequest.ws_req_stat === 'Pending' ? ( // Check the status
-                <RequestWorkingScholar />
+                <RequestWorkingScholar deptFk={userDept} username={username} />
               ) : (
                 <RequestDetails
                   requestId={selectedRequest.ws_req_id}
@@ -122,7 +123,7 @@ const DeptReq: React.FC = () => {
                 />
               )
             ) : (
-              <RequestWorkingScholar /> // Default case: show RequestWorkingScholar initially
+              <RequestWorkingScholar deptFk={userDept} username={username} /> // Default case: show RequestWorkingScholar initially
             )
           ) : (
             <Typography variant="body1">You are not assigned to a department.</Typography>

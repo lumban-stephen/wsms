@@ -44,3 +44,8 @@ export interface User {
   deptName: string;
   exp?: number;
 }
+
+export interface Props {
+  deptFk: number; // Prop to receive department foreign key
+  username: string;
+}

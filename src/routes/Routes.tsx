@@ -109,14 +109,6 @@ export const router = createBrowserRouter([
         element: <UserProfileWrapper userdetailFk={0} token={''} />,
       },
       {
-        path: '/reqws',
-        element: (
-          <ProtectedRoute allowedRoles={['staff']}>
-            <RequestWorkingScholar />
-          </ProtectedRoute>
-        ),
-      },
-      {
         path: '/maintain-ws',
         element: (
           <ProtectedRoute allowedRoles={['admin']}>
