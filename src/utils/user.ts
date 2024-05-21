@@ -6,4 +6,5 @@ export interface User {
   password: string;
   user_type: UserType;
   userdetail_fk: number;
+  dept_fk: number;
 }

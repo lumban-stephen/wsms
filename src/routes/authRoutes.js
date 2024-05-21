@@ -99,6 +99,7 @@ router.post('/login', async (req, res) => {
       userId: user.user_id,
       username: user.username,
       userType: user.user_type,
+      dept_fk: user.dept_fk,
       deptName: user.department_name,
     };
     const secret = process.env.SECRET_KEY;

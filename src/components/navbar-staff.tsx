@@ -5,7 +5,7 @@ import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid } from '@mui/materia
 import { deepPurple } from '@mui/material/colors';
 import { jwtDecode } from 'jwt-decode';
 import { User } from '../utils/user';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 
 
 interface NavBarProps {
@@ -31,6 +31,7 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
 
       // Username State
   const [username, setUsername] = useState<string>('');
+  const [dept, setDept] = useState<number>();
   const navigate = useNavigate();
 
   // Fetch username from token on component mount (assuming token is available)
@@ -40,6 +41,13 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
         try {
             const decodedToken = jwtDecode<User>(storedToken);
             setUsername(decodedToken.username);
+            setDept(decodedToken.dept_fk);
+            if(!dept) {
+              console.log("dept didn't go through")
+            }else{
+              console.log(dept)
+            }
+            
         } catch (error) {
             console.error('Error decoding token:', error);
         }
@@ -61,7 +69,7 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
             <Button
               sx={{ color: 'white' }}
               variant={activeTab === 'WorkingScholars' ? 'contained' : 'outlined'}
-              onClick={() => navigate('/dept-profile')}>
+              onClick={() => navigate('/staff-profile/' + dept )}>
               Working Scholars
             </Button>
     
