@@ -1,12 +1,12 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Box, TextField, Select, MenuItem, Button, Typography, SelectChangeEvent } from '@mui/material';
+import { Props } from '../utils/interfaces';
 
-const RequestWorkingScholar: React.FC = () => {
+const RequestWorkingScholar: React.FC<Props> = ({ deptFk, username }) => {
   const [message, setMessage] = useState('');
-  const [requestType, setRequestType] = useState('Additional');
-  const [quantity, setQuantity] = useState(2);
-  const [userName, setUserName] = useState(); // Assuming userName is retrieved from the user's session or context
-
+  const [requestType, setRequestType] = useState('additional');
+  const [quantity, setQuantity] = useState(1);
+  const [userName, setUserName] = useState(username); // Assuming userName is retrieved from the user's session or context
   const handleMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
   };
@@ -28,7 +28,7 @@ const RequestWorkingScholar: React.FC = () => {
     }
 
     try {
-      const response = await fetch('/reqws', {
+      const response = await fetch('http://localhost:3000/wsreq/deptreq', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,10 +36,11 @@ const RequestWorkingScholar: React.FC = () => {
         },
         body: JSON.stringify({
           ws_req_name: userName, // Include user name
-          message,
-          dept_name_fk: 'Department Name', // Replace with the actual department name or retrieve it from context/session
-          ws_req_stat: 'Pending', // Set the initial status to 'Pending'
+          message: message,
+          dept_fk: deptFk, // Replace with the actual department name or retrieve it from context/session
+          ws_req_stat: 'waiting', // Set the initial status to 'Pending'
           ws_req_type: requestType === 'Additional' ? 'additional' : 'replacement', // Map the requestType value to the expected format
+          quantity: quantity,
         }),
       });
 
@@ -63,12 +64,13 @@ const RequestWorkingScholar: React.FC = () => {
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        width: '75vw',
-        padding: 2,
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+        flexGrow: 1, // Allow component to grow and fill remaining space
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        padding: 2,
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+        height: '100vh',
       }}
     >
       <Typography variant="h5" gutterBottom>
@@ -80,7 +82,7 @@ const RequestWorkingScholar: React.FC = () => {
         rows={4}
         value={message}
         onChange={handleMessageChange}
-        sx={{ width: '100%', marginBottom: 2 }}
+        sx={{ width: '100%', marginBottom: 2}}
       />
       <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
         <Typography sx={{ marginRight: 2 }}>Request Type:</Typography>
@@ -88,9 +90,10 @@ const RequestWorkingScholar: React.FC = () => {
           value={requestType}
           onChange={handleRequestTypeChange}
           sx={{ minWidth: 120 }}
+          required 
         >
-          <MenuItem value="Admission">Additional</MenuItem>
-          <MenuItem value="Replacement">Replacement</MenuItem>
+          <MenuItem value="additional">Additional</MenuItem>
+          <MenuItem value="replacement">Replacement</MenuItem>
         </Select>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>

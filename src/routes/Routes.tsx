@@ -20,6 +20,7 @@ import DeptProfile from '../pages/dept-profile';
 import AdminDashboard from '../pages/admin-dashboard';
 import WorkingScholarPage from '../pages/assign-ws';
 import { UserType } from '../utils/interfaces';
+import StaffProfile from '../pages/staff-profile';
 
 interface UserProfileWrapperProps {
     userdetailFk: number;
@@ -108,14 +109,6 @@ export const router = createBrowserRouter([
         element: <UserProfileWrapper userdetailFk={0} token={''} />,
       },
       {
-        path: '/reqws',
-        element: (
-          <ProtectedRoute allowedRoles={['staff']}>
-            <RequestWorkingScholar />
-          </ProtectedRoute>
-        ),
-      },
-      {
         path: '/maintain-ws',
         element: (
           <ProtectedRoute allowedRoles={['admin']}>
@@ -168,6 +161,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['staff', 'ws']}>
             <UserProfile userdetailFk={0} token={''} />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/staff-profile/:departmentId',
+        element: (
+          <ProtectedRoute allowedRoles={['staff', 'ws']}>
+            <StaffProfile />
           </ProtectedRoute>
         ),
       },
