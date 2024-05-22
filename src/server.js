@@ -10,6 +10,7 @@ const ws = require('./routes/ws')
 const users = require('./routes/users')
 const departments = require('./routes/departments');
 const dashboard = require('./routes/dashboard');
+const deptadmin = require('./routes/deptadmins');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/users', users);
 app.use('/ws', ws);
 app.use('/departments', departments);
 app.use('/admin', dashboard)
+app.use('/deptadmin', deptadmin)
 
 
 const port = process.env.PORT || 3000;

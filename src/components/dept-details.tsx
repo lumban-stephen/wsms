@@ -8,12 +8,11 @@ interface RequestHistoryItemProps {
 }
 
 interface DeptDetailsProps {
+  departmentId?:number;
   departmentName: string;
   contactDetails: string;
   email: string;
   requestHistory: RequestHistoryItemProps[];
-  // Added userId prop to receive user ID from parent component
-  userId?: string;
 }
 
 const RequestHistoryItem: React.FC<RequestHistoryItemProps> = ({ requestType, date }) => {
@@ -32,16 +31,21 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
   contactDetails,
   email,
   requestHistory,
-  userId, // Use userId prop instead of decodedToken.user_id
+  departmentId
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleEditClick = () => {
-    setIsModalOpen(true);
-  };
+  const [temp, setTemp] = useState('');
+  const [deptId, setDepartmentId] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>();
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+  };
+
+  const handleEditClick = () => {
+    setTemp(departmentName);
+    setIsModalOpen(true);
   };
 
   return (
@@ -72,14 +76,13 @@ const DeptDetails: React.FC<DeptDetailsProps> = ({
         </Box>
 
         {/* Place the modal rendering logic here (after the request history): */}
-        {isModalOpen && (
+        {isModalOpen && departmentId && (
           <EditDeptModal
             open={isModalOpen}
             onClose={handleModalClose}
             initialDepartment={{
-              id: userId || "undefined dept_id", // Use userId prop or fallback
+              id: departmentId,
               name: departmentName,
-              admin: userId || "undefined username", // Replace with actual admin
               contact: contactDetails,
               email: email,
             }}

@@ -148,7 +148,7 @@ router.post('/suspend', async (req, res) => {
     if (scholarRows.length > 0) {
       const updateScholarQuery = `
         UPDATE working_scholars
-        SET isRegistered = false
+        SET isregistered = false
         WHERE applicant_fk = $1
       `;
 

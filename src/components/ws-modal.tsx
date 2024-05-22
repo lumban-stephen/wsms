@@ -79,7 +79,6 @@ const WsModal: React.FC<WsModalProps> = ({
         const data = await response.json();
         console.log('Response:', data);
         alert(data.message);
-        onWsUpdate(updatedWs); // Update the working scholar with the new status
         onClose(); // Close the modal after updating
       } else {
         const errorData = await response.json();

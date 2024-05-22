@@ -32,11 +32,25 @@ const DeptProfile = () => {
   const [departmentDetails, setDepartmentDetails] = useState<DepartmentDetails | null>(null);
   const [departmentRequests, setDepartmentRequests] = useState<DeptRequest[]>([]);
   const [workingScholars, setWorkingScholars] = useState<WorkingScholar[]>([]);
-  const { departmentId } = useParams(); // Get department ID from URL parameter
-
+  const { departmentId } = useParams<string | ''>(); // Get department ID from URL parameter
+  const isValidNumber = !isNaN(Number(departmentId));
   const [wsCardModalOpen, setWsCardModalOpen] = useState(false);
   const [selectedWsData, setSelectedWsData] = useState<WorkingScholar | null>(null);
+  const [numericId, setNumericId] = useState<number>();
+  const [isNumericIdValid, setIsNumericIdValid] = useState(false);
+  const [temp, setTemp] = useState<string>();
 
+  useEffect(() => {
+    if (departmentId !== undefined) {
+      setNumericId(parseInt(departmentId, 10));
+    } else {
+      setNumericId(0);
+    }
+  }, [departmentId]);
+
+  console.log("Numeric id is: " + numericId)
+
+ 
   const fetchDeptDetailData = async () => {
     if (!departmentId) {
       console.log("No departmentId found.");
@@ -111,6 +125,7 @@ const DeptProfile = () => {
           <Grid item xs={12} md={3}>
             <Box style={{ height: 'calc(100vh - 64px)', overflowY: 'auto' }}>
             <DeptDetails
+              departmentId={numericId}
               departmentName={departmentDetails.department_name}
               contactDetails={departmentDetails.contact}
               email={departmentDetails.dept_email}

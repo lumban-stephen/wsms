@@ -173,4 +173,29 @@ router.get('/departments/:departmentId/', async (req, res) => {
   }
 });
 
+router.get('/departments/by-name/:name', async (req, res) => {
+  const { name } = req.params;
+
+  if (!name) {
+    return res.status(400).json({ error: 'Missing department name parameter' });
+  }
+
+  try {
+    const query = `SELECT department_id FROM departments WHERE department_name = $1`;
+    const values = [name];
+
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Department not found' });
+    }
+
+    const departmentId = result.rows[0].id;
+    res.json({ id: departmentId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;

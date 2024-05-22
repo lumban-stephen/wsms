@@ -17,18 +17,16 @@ interface EditDepartmentModalProps {
   onClose: () => void;
   // Add props for initial department data
   initialDepartment: {
-    id: string; // Department ID pls change to number when fixing this
+    id: number | 0; // Department ID pls change to number when fixing this
     name: string;
-    admin: string;
     contact: string;
     email: string;
   };
-  onSubmit: (updatedDepartment: { id: string; name: string; admin: string; contact: string; email: string }) => void; // Function to handle form submission
+  onSubmit: (updatedDepartment: { id: number; name: string; contact: string; email: string }) => void; // Function to handle form submission
 }
 
 const EditDeptModal = ({ open, onClose, initialDepartment, onSubmit }: EditDepartmentModalProps) => {
   const [departmentName, setDepartmentName] = useState(initialDepartment.name);
-  const [departmentAdmin, setDepartmentAdmin] = useState(initialDepartment.admin);
   const [deptAdmins, setDeptAdmins] = useState<string[]>([]);
   const [deptContact, setDeptContact] = useState(initialDepartment.contact);
   const [deptEmail, setDeptEmail] = useState(initialDepartment.email);
@@ -36,7 +34,7 @@ const EditDeptModal = ({ open, onClose, initialDepartment, onSubmit }: EditDepar
   useEffect(() => {
     const fetchDeptAdmins = async () => {
       try {
-        const response = await fetch('/api/dept-admins');
+        const response = await fetch('http://localhost:3000/deptadmin/fetchstaff');
         if (response.ok) {
           const usernames = await response.json();
           setDeptAdmins(usernames);
@@ -51,17 +49,38 @@ const EditDeptModal = ({ open, onClose, initialDepartment, onSubmit }: EditDepar
     fetchDeptAdmins();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
     const updatedDepartment = {
-      id: initialDepartment.id, // Use the original ID for update
+      id: initialDepartment.id,
       name: departmentName,
-      admin: departmentAdmin,
       contact: deptContact,
       email: deptEmail,
     };
-    onSubmit(updatedDepartment); // Call the provided onSubmit function
-    // Reset form fields or close the modal (optional)
+  
+    try {
+      const response = await fetch('http://localhost:3000/deptadmin/updatedept', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedDepartment),
+      });
+    
+      if (response.ok) {
+        // Handle successful update
+        console.log('Department updated successfully');
+        onSubmit(updatedDepartment);
+        onClose();
+      } else {
+        const errorData = await response.json(); // Try parsing error data from response
+        console.error('Failed to update department:', response.statusText);
+        console.error('Error details:', errorData); // Log any error details from backend
+      }
+    } catch (error) {
+      console.error('Error updating department:', error);
+    }
   };
 
   return (
@@ -78,18 +97,6 @@ const EditDeptModal = ({ open, onClose, initialDepartment, onSubmit }: EditDepar
           />
           <FormControl fullWidth margin="normal">
             <InputLabel id="department-admin-label">Department Admin</InputLabel>
-            <Select
-              labelId="department-admin-label"
-              value={departmentAdmin}
-              onChange={(e) => setDepartmentAdmin(e.target.value)}
-            >
-              <MenuItem value="">Select Department Admin</MenuItem>
-              {deptAdmins.map((username) => (
-                <MenuItem key={username} value={username}>
-                  {username}
-                </MenuItem>
-              ))}
-            </Select>
           </FormControl>
           <TextField
             label="Dept. Contact #"
