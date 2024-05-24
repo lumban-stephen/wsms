@@ -11,6 +11,7 @@ const users = require('./routes/users')
 const departments = require('./routes/departments');
 const dashboard = require('./routes/dashboard');
 const deptadmin = require('./routes/deptadmins');
+const requests = require('./routes/requests');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/ws', ws);
 app.use('/departments', departments);
 app.use('/admin', dashboard)
 app.use('/deptadmin', deptadmin)
+app.use('/requests', requests)
 
 
 const port = process.env.PORT || 3000;

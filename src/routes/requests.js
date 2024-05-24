@@ -11,31 +11,56 @@ const pool = new Pool({
   secretkey: "M23y?_+Sb[ynL`_WBpp2LOzbOct&rq"
 });
 
-// Update department request status (assuming request ID is in the request body)
-router.put('/api/dept-requests/:requestId', async (req, res) => {
-  const { requestId } = req.params;
-  const { ws_req_stat } = req.body; // Assuming 'ws_req_stat' is the status field
-
-  // Validate request data (replace with your validation logic)
-  if (!requestId || !ws_req_stat || (ws_req_stat !== 'approved' && ws_req_stat !== 'rejected' && ws_req_stat !== 'waiting')) {
-    return res.status(400).json({ message: 'Invalid request data' });
-  }
-
+router.get('/fetchrequests', async (req, res) => {
   try {
-    const client = await pool.connect();
-    const query = `
-      UPDATE ws_requests
-      SET ws_req_stat = $1
-      WHERE request_id = $2;
-    `;
-    const values = [ws_req_stat, requestId];
-    await client.query(query, values);
-    await client.release();
-    res.status(200).json({ message: 'Request updated successfully' });
+      const requestQuery = `
+          SELECT *
+          FROM ws_requests
+          ORDER BY ws_req_id ASC;  -- Optionally order by request ID
+      `;
+      const requestResult = await pool.query(requestQuery);
+
+      // Log the result to ensure it's correct
+      console.log(requestResult);
+
+      // Send the result as a JSON response
+      res.json(requestResult.rows);
   } catch (error) {
-    console.error('Error updating request:', error);
-    res.status(500).json({ message: 'Internal server error' });
+      // Log the error
+      console.log(error);
+
+      // Send an error response
+      res.status(500).json({ error: 'Internal Server Error' });
   }
+});
+
+router.put('dept-requests/:requestId', async (req, res) => {
+  const requestId = req.params.requestId;
+  const updatedStep = req.body.approvedStep; // Assuming property name is approvedStep
+
+    try {
+      // Update approval step using a parameterized query
+      const updateRequestQuery = `
+        UPDATE ws_requests
+        SET ws_req_approved_step = LEAST($2, 4)  -- Limit to 4 steps
+        WHERE ws_req_id = $1
+        RETURNING *;  -- Optionally return updated data
+      `;
+
+      const updateResult = await client.query(updateRequestQuery, [requestId, updatedStep]);
+
+      if (updateResult.rowCount === 0) {
+        return res.status(404).json({ message: 'Request not found' });
+      }
+
+      // Optionally handle the updated data (if returned)
+      // const updatedRequest = updateResult.rows[0];
+
+      res.json({ message: 'Request approval step updated successfully' });
+    } finally {
+      await client.release();
+    }
+
 });
 
 module.exports = router;

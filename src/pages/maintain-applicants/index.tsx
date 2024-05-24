@@ -20,6 +20,7 @@ const MaintainApplicants: React.FC = () => {
       }
       const data = await response.json();
       setApplicants(data);
+      handleCloseModal();
     } catch (error) {
       setError((error as Error).message);
     } finally {

@@ -15,11 +15,11 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({
   message,
 }) => {
   const steps = [
-    { label: 'Approved', isCompleted: true },
-    { label: 'Approved', isCompleted: true },
-    { label: 'Approved', isCompleted: false },
-    { label: 'UC Man\nApproved', isCompleted: false },
-    { label: 'CITC\nApproved', isCompleted: false },
+    { label: 'Guidance Approval', isCompleted: false },
+    { label: 'HR Approval', isCompleted: false },
+    { label: 'CAD Approval', isCompleted: false },
+    { label: 'UC Main Approval', isCompleted: false },
+    { label: 'Clinic Approval', isCompleted: false },
   ];
 
   return (

@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
 import { Modal, Box, Typography, Button, Stepper, Step, StepLabel } from '@mui/material';
 
-interface DeptRequest {
-    requestId: number;
-    requestType: string;
-    quantity: number;
-    requestDetails: string;
-    requestStatus: string; // e.g., "waiting", "approved", "rejected"
-  }
+interface Request {
+  ws_req_id: number;
+  ws_req_name: string;
+  message: string;
+  dept_name_fk: string;
+  ws_req_stat: string;
+  ws_req_type: string;
+  quantity: number;
+  date_created: string;
+  approve_step?: number;
+}
 
 interface ApproveReqProps {
-    open: boolean;
-    onClose: () => void;
-    requestDetails?: DeptRequest;
-  }
+  onClose: () => void;
+  requestDetails?: Request;
+  open: boolean;
+}
 
 const steps = ['Submit Approval', 'HR Approval', 'CAD Approval', 'UC Main Approval', 'Clinic Approval'];
 
-const ApproveReq: React.FC<ApproveReqProps> = ({ open, onClose }) => {
+const ApproveReq: React.FC<ApproveReqProps> = ({ onClose, requestDetails, open }) => {
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
@@ -43,38 +47,40 @@ const ApproveReq: React.FC<ApproveReqProps> = ({ open, onClose }) => {
           p: 4,
         }}
       >
-        <Typography variant="h6" gutterBottom>
-          Request ID: 123456
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Request Date: May 12, 2024
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Request Type: Replacement
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Quantity: 5
-        </Typography>
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            Request ID: {requestDetails?.ws_req_id}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Request Date: {requestDetails?.date_created}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Request Type: {requestDetails?.ws_req_type}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Quantity: {requestDetails?.quantity}
+          </Typography>
 
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+          <Stepper activeStep={requestDetails?.approve_step} alternativeLabel>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
 
-        <Box mt={2} display="flex" justifyContent="flex-end">
-          <Button variant="contained" color="error" onClick={onClose} sx={{ mr: 2 }}>
-            Reject
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={activeStep === steps.length - 1 ? handleApprove : handleNext}
-          >
-            {activeStep === steps.length - 1 ? 'Approve' : 'Approve Step'}
-          </Button>
+          <Box mt={2} display="flex" justifyContent="flex-end">
+            <Button variant="contained" color="error" onClick={onClose} sx={{ mr: 2 }}>
+              Reject
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={activeStep === steps.length - 1 ? handleApprove : handleNext}
+            >
+              {activeStep === steps.length - 1 ? 'Approve' : 'Approve Step'}
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Modal>

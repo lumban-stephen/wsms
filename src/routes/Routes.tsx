@@ -21,6 +21,7 @@ import AdminDashboard from '../pages/admin-dashboard';
 import WorkingScholarPage from '../pages/assign-ws';
 import { UserType } from '../utils/interfaces';
 import StaffProfile from '../pages/staff-profile';
+import Approver from '../pages/approver';
 
 interface UserProfileWrapperProps {
     userdetailFk: number;
@@ -169,6 +170,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['staff', 'ws']}>
             <StaffProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/approver',
+        element: (
+          <ProtectedRoute allowedRoles={['admin', 'ws']}>
+            <Approver />
           </ProtectedRoute>
         ),
       },
