@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, Box, Typography, Button, Stepper, Step, StepLabel } from '@mui/material';
+import { Modal, Box, Typography, Button, Stepper, Step, StepLabel, Skeleton } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import AssignWS from './assignws';
 
 interface Request {
   ws_req_id: number;
@@ -20,18 +22,80 @@ interface ApproveReqProps {
 }
 
 const steps = ['Submit Approval', 'HR Approval', 'CAD Approval', 'UC Main Approval', 'Clinic Approval'];
+const colors = ['#ced4da', '#73869c', '#2c73e6', '#00b074', '#e74c3c']; // Define colors for each step
 
 const ApproveReq: React.FC<ApproveReqProps> = ({ onClose, requestDetails, open }) => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(requestDetails?.approve_step || 0);
+  const [isAssignWSModalOpen, setIsAssignWSModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  const handleApprove = () => {
-    // Handle approve logic here
-    console.log('Request approved');
-    onClose();
+  const handleApprove = async () => {
+    if (activeStep === steps.length - 1) {
+      setIsAssignWSModalOpen(true);
+    } else {
+      if (!requestDetails) {
+        console.error('Request details are missing');
+        return;
+      }
+  
+      setIsLoading(true); // Set loading state to true
+      try {
+        const response = await fetch(`http://localhost:3000/requests/approve/${requestDetails.ws_req_id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json', // Set content type to JSON
+          },
+          body: JSON.stringify({ approvedStep: activeStep + 1 }), // Send the next step
+        });
+  
+        if (!response.ok) {
+          const errorText = await response.text(); // Get response body as text
+          console.log('Failed response:', response.status, errorText); // Log the response status and text
+          throw new Error(`Failed to approve request: ${response.status} ${response.statusText}`);
+        }
+  
+        const data = await response.json(); // Parse the response data (optional)
+        console.log('Approval successful:', data); // Log the response data (optional)
+  
+        setIsLoading(false); // Set loading state to false after successful response
+        handleNext(); // Call handleNext only after successful response
+      } catch (error) {
+        setIsLoading(false); // Set loading state to false after error
+        console.error('Error approving request:', error); // Handle error appropriately, e.g., display an error message to the user
+        alert(`An error occurred while approving the request: ${error}`);
+      }
+    }
+  };
+  
+  
+
+  const handleCloseAssignWSModal = () => {
+    setIsAssignWSModalOpen(false);
+  };
+
+  const handleReject = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/requests/rejectreq/${requestDetails?.ws_req_id}`, {
+        method: 'POST',
+      });
+
+      console.log(response)
+  
+      if (!response.ok) {
+        throw new Error('Failed to reject request');
+      }
+  
+      onClose(); // Close the ApproveReq modal
+    } catch (error) {
+      console.error('Error rejecting request:', error);
+      // Handle error appropriately, e.g., display an error message to the user
+    }
   };
 
   return (
@@ -61,27 +125,34 @@ const ApproveReq: React.FC<ApproveReqProps> = ({ onClose, requestDetails, open }
             Quantity: {requestDetails?.quantity}
           </Typography>
 
-          <Stepper activeStep={requestDetails?.approve_step} alternativeLabel>
-            {steps.map((label) => (
+          <Stepper activeStep={activeStep} alternativeLabel>
+            {steps.map((label, index) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel
+                  style={{
+                    color: activeStep >= index ? colors[index] : '#ced4da', // Set color based on activeStep
+                  }}
+                >
+                  {label}
+                </StepLabel>
               </Step>
             ))}
           </Stepper>
 
           <Box mt={2} display="flex" justifyContent="flex-end">
-            <Button variant="contained" color="error" onClick={onClose} sx={{ mr: 2 }}>
+            <Button variant="contained" color="error" onClick={handleReject} sx={{ mr: 2 }}>
               Reject
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={activeStep === steps.length - 1 ? handleApprove : handleNext}
-            >
+            <Button variant="contained" color="primary" onClick={handleApprove}>
               {activeStep === steps.length - 1 ? 'Approve' : 'Approve Step'}
             </Button>
           </Box>
         </Box>
+        {isLoading && <Skeleton variant="rectangular" width={400} height={100} />}
+      <AssignWS
+        open={isAssignWSModalOpen}
+        onClose={handleCloseAssignWSModal}
+      />
       </Box>
     </Modal>
   );

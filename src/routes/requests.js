@@ -1,4 +1,5 @@
 const express = require('express');
+const { request } = require('http');
 const { Pool } = require('pg');
 const router = express.Router();
 
@@ -15,7 +16,8 @@ router.get('/fetchrequests', async (req, res) => {
   try {
       const requestQuery = `
           SELECT *
-          FROM ws_requests
+          FROM ws_requests 
+          WHERE ws_req_stat = 'waiting'
           ORDER BY ws_req_id ASC;  -- Optionally order by request ID
       `;
       const requestResult = await pool.query(requestQuery);
@@ -34,33 +36,64 @@ router.get('/fetchrequests', async (req, res) => {
   }
 });
 
-router.put('dept-requests/:requestId', async (req, res) => {
+router.put('/approve/:requestId', async (req, res) => {
   const requestId = req.params.requestId;
   const updatedStep = req.body.approvedStep; // Assuming property name is approvedStep
 
-    try {
-      // Update approval step using a parameterized query
-      const updateRequestQuery = `
-        UPDATE ws_requests
-        SET ws_req_approved_step = LEAST($2, 4)  -- Limit to 4 steps
-        WHERE ws_req_id = $1
-        RETURNING *;  -- Optionally return updated data
-      `;
+  // Validate parameters
+  if (!requestId || updatedStep === undefined) {
+    return res.status(400).json({ message: 'Invalid request parameters' });
+  }
 
-      const updateResult = await client.query(updateRequestQuery, [requestId, updatedStep]);
+  try {
+    // Update approval step using a parameterized query
+    const updateRequestQuery = `
+      UPDATE ws_requests
+      SET approve_step = LEAST($2, 4)  -- Limit to 4 steps
+      WHERE ws_req_id = $1
+      RETURNING *;  -- Optionally return updated data
+    `;
 
-      if (updateResult.rowCount === 0) {
-        return res.status(404).json({ message: 'Request not found' });
-      }
+    const updateResult = await pool.query(updateRequestQuery, [requestId, updatedStep]);
 
-      // Optionally handle the updated data (if returned)
-      // const updatedRequest = updateResult.rows[0];
-
-      res.json({ message: 'Request approval step updated successfully' });
-    } finally {
-      await client.release();
+    if (updateResult.rowCount === 0) {
+      return res.status(404).json({ message: 'Request not found' });
     }
 
+    // Optionally handle the updated data (if returned)
+    // const updatedRequest = updateResult.rows[0];
+    console.log(updateResult);
+
+    res.json({ message: 'Request approval step updated successfully' });
+  } catch (error) {
+    console.error('Error approving request:', error);
+
+    // Check for specific error types (e.g., database errors)
+    if (error.code) {
+      // Handle database errors
+      res.status(500).json({ message: 'Database error occurred during approval. Please try again later.' });
+    } else {
+      // Generic error handling
+      res.status(500).json({ message: 'Failed to approve request.' });
+    }
+  }
+});
+
+router.post('/rejectreq/:requestId', async (req, res) => {
+  const requestId = req.params.requestId;
+
+  try {
+    // Update approval step using a parameterized query
+    const rejectRequest = `UPDATE ws_requests SET ws_req_stat = $1 WHERE ws_req_id = $2`;
+    const values = ['rejected', requestId];
+
+    await pool.query(rejectRequest, values);
+
+    res.json({ message: 'Request rejected successfully' });
+  } catch (error) {
+    console.error('Error rejecting request backend:', error);
+    res.status(500).json({ message: 'backend Failed to reject request' });
+  }
 });
 
 module.exports = router;

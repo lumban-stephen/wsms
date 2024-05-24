@@ -22,6 +22,8 @@ import WorkingScholarPage from '../pages/assign-ws';
 import { UserType } from '../utils/interfaces';
 import StaffProfile from '../pages/staff-profile';
 import Approver from '../pages/approver';
+import AssignWS from '../components/assignws';
+import ApproverFinal from '../pages/approverfinal';
 
 interface UserProfileWrapperProps {
     userdetailFk: number;
@@ -178,6 +180,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['admin', 'ws']}>
             <Approver />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/approver/final',
+        element: (
+          <ProtectedRoute allowedRoles={['admin', 'ws']}>
+            <ApproverFinal />
           </ProtectedRoute>
         ),
       },
