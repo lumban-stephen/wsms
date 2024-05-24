@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Box, Typography, Button, Stepper, Step, StepLabel, Skeleton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AssignWS from './assignws';
+import { WorkingScholar } from '../utils/interfaces';
 
 interface Request {
   ws_req_id: number;
   ws_req_name: string;
   message: string;
-  dept_name_fk: string;
+  dept_name_fk: number;
   ws_req_stat: string;
   ws_req_type: string;
   quantity: number;
@@ -28,15 +29,49 @@ const ApproveReq: React.FC<ApproveReqProps> = ({ onClose, requestDetails, open }
   const [activeStep, setActiveStep] = useState(requestDetails?.approve_step || 0);
   const [isAssignWSModalOpen, setIsAssignWSModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [workingScholars, setWorkingScholars] = useState<WorkingScholar[]>();
 
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const responseScholars = await fetch('/api/ws/working-scholars/unassigned'); // Replace with your actual API endpoint
+  //       const scholarData = await responseScholars.json();
+  //       setWorkingScholars(scholarData);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //       // Handle errors appropriately (e.g., display error message)
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
+  useEffect(() => {
+    console.log("ws are " + workingScholars); // This will be logged after workingScholars is updated
+  }, [workingScholars]);
+
   const handleApprove = async () => {
     if (activeStep === steps.length - 1) {
+      try {
+        const response = await fetch('http://localhost:3000/ws/working-scholars/unassigned');
+    
+        if (!response.ok) {
+          throw new Error('Failed to fetch unassigned working scholars');
+        }
+        
+        const data = await response.json();
+        setWorkingScholars(data);
+        console.log("ws are " + workingScholars)
+      } catch (error) {
+        console.error('Error fetching unassigned working scholars:', error);
+        // Handle errors appropriately (e.g., display an error message to the user)
+      }
       setIsAssignWSModalOpen(true);
     } else {
       if (!requestDetails) {
@@ -72,7 +107,6 @@ const ApproveReq: React.FC<ApproveReqProps> = ({ onClose, requestDetails, open }
       }
     }
   };
-  
   
 
   const handleCloseAssignWSModal = () => {
@@ -152,6 +186,8 @@ const ApproveReq: React.FC<ApproveReqProps> = ({ onClose, requestDetails, open }
       <AssignWS
         open={isAssignWSModalOpen}
         onClose={handleCloseAssignWSModal}
+        workingScholars={workingScholars}
+        departmentId={requestDetails?.dept_name_fk}
       />
       </Box>
     </Modal>

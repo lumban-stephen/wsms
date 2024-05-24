@@ -31,7 +31,7 @@ interface Request {
   ws_req_id: number;
   ws_req_name: string;
   message: string;
-  dept_name_fk: string;
+  dept_name_fk: number;
   ws_req_stat: string;
   ws_req_type: string;
   quantity: number;
@@ -60,9 +60,6 @@ const Approver: React.FC = () => {
   const navigate = useNavigate();
   const [showRequestDetails, setShowRequestDetails] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(0);
-
-
-
 
   const fetchAllDepartments = async () => {
     try {

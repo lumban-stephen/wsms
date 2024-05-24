@@ -109,14 +109,29 @@ router.post('/maintain-ws', async (req, res) => {
 router.get('/working-scholars/unassigned', async (req, res) => {
   try {
     const unassignedScholars = await pool.query(
-      'SELECT * FROM working_scholars WHERE dept_fk IS NULL'
+      `
+      SELECT ws.ws_id AS id,
+       CONCAT(n.fname, ' ', n.lname) AS name,  -- Concatenate fname and lname with space
+       a.gender,
+       a.course,
+       a.age,
+       ws.applicant_fk,
+       ws.dept_fk
+      FROM working_scholars AS ws
+      INNER JOIN applicants AS a ON ws.applicant_fk = a.applicant_id
+      INNER JOIN names AS n ON a.name_fk = n.name_id;
+      `
     );
+    // Send only the data (rows) in the response
     res.json(unassignedScholars.rows);
   } catch (error) {
     console.error('Error fetching unassigned working scholars:', error);
     res.status(500).json({ message: 'Server Error' }); // Handle errors appropriately
   }
 });
+
+
+
 
 router.post('/suspend', async (req, res) => {
   try {
@@ -161,5 +176,36 @@ router.post('/suspend', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+router.put('/assigndept', async (req, res) => {
+  const { departmentId, scholarIds } = req.body;
+
+  // Validate parameters
+  if (!departmentId || !scholarIds || scholarIds.length === 0) {
+    return res.status(400).json({ message: 'Invalid request parameters' });
+  }
+
+  try {
+    // Batch update using a loop or transaction
+    const updatePromises = scholarIds.map(async (scholarId) => {
+      const updateRequestQuery = `
+        UPDATE working_scholars
+        SET dept_fk = $1
+        WHERE ws_id = $2
+      `;
+    
+      await pool.query(updateRequestQuery, [departmentId, scholarId]);
+    });
+    
+    await Promise.all(updatePromises); // Wait for all updates to finish
+
+    console.log('Scholars assigned successfully!');
+    res.json({ message: 'Assignments updated successfully' });
+  } catch (error) {
+    console.error('Error assigning scholars:', error);
+    // ... (same error handling logic)
+  }
+});
+
 
 module.exports = router;

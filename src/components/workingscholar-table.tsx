@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -10,13 +10,14 @@ import {
   Button,
   Menu,
   MenuItem,
+  Checkbox,
 } from '@mui/material';
 import { WorkingScholar, Department } from '../utils/interfaces';
 
 interface WorkingScholarTableProps {
-  workingScholars: WorkingScholar[] | undefined; // Allow undefined for workingScholars
-  departments: Department[] | undefined; // Allow undefined for departments
-  onAssignDepartment: (scholarId: number, departmentId: number) => void;
+  workingScholars: WorkingScholar[] | undefined;
+  departmentId?: number;
+  onAssignDepartment: (scholarIds: number[], departmentId: number) => void;
   selectedScholar?: WorkingScholar | null; // Optional selected scholar for highlighting
   onConfirmAssignment?: () => void; // Optional confirmation function (if implemented)
   onCancelAssignment?: () => void; // Optional cancel function (if implemented)
@@ -24,13 +25,14 @@ interface WorkingScholarTableProps {
 
 const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
   workingScholars,
-  departments,
+  departmentId,
   onAssignDepartment,
   selectedScholar,
   onConfirmAssignment,
   onCancelAssignment,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [selectedScholars, setSelectedScholars] = useState<number[]>([]); 
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -40,62 +42,123 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
     setAnchorEl(null);
   };
 
-  const handleAssignDepartment = (scholarId: number, departmentId: number) => {
-    onAssignDepartment(scholarId, departmentId);
+  const handleAssignDepartment = (scholarIds: number[], departmentId: number) => {
+    onAssignDepartment(scholarIds, departmentId);
     handleClose();
   };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, scholarId: number) => {
+    const isChecked = event.target.checked;
+    const updatedSelectedScholars = [...selectedScholars];
+
+    if (isChecked) {
+      updatedSelectedScholars.push(scholarId);
+    } else {
+      const index = updatedSelectedScholars.indexOf(scholarId);
+      updatedSelectedScholars.splice(index, 1);
+    }
+
+    setSelectedScholars(updatedSelectedScholars);
+  };
+
+  const handleConfirmAssignment = async () => {
+    if (!selectedScholars.length) {
+      alert('Please select working scholars to assign.');
+      return;
+    }
+  
+    // Get the chosen department ID (replace with actual logic)
+    const chosenDepartmentId = 1; // Replace with actual logic to get the chosen department
+  
+    try {
+      // Call the function to assign scholars to department
+      await assignScholarsToDepartment(selectedScholars, chosenDepartmentId);
+  
+      // Reset selected scholars after successful assignment
+      setSelectedScholars([]);
+  
+      // Call onConfirmAssignment if provided (optional)
+      if (onConfirmAssignment) {
+        onConfirmAssignment();
+      }
+  
+      console.log('Scholars assigned successfully!');
+    } catch (error) {
+      console.error('Error assigning scholars:', error);
+      // Handle error message to the user (e.g., display an error toast)
+    }
+  };
+  
+  const assignScholarsToDepartment = async (scholarIds: number[], departmentId: number) => {
+    try {
+      const response = await fetch(`http://localhost:3000/ws/assigndept`, {
+        method: 'PUT',
+        body: JSON.stringify({ departmentId, scholarIds }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to assign scholars');
+      }
+  
+      const data = await response.json();
+      console.log('Assignment successful:', data); // Handle success message
+    } catch (error) {
+      console.error('Error assigning scholars:', error);
+      // Handle error message to the user (e.g., display an error toast)
+    }
+  };
+  
 
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell>
+              <Checkbox
+                color="primary"
+                indeterminate={selectedScholars.length > 0 && selectedScholars.length !== workingScholars?.length}
+                checked={selectedScholars.length === workingScholars?.length}
+                onChange={() => {
+                  if (selectedScholars.length === workingScholars?.length) {
+                    setSelectedScholars([]);
+                  } else {
+                    const allScholarIds = workingScholars?.map((scholar) => scholar.id) || [];
+                    setSelectedScholars(allScholarIds);
+                  }
+                }}
+              />
+            </TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Gender</TableCell>
             <TableCell>Course</TableCell>
             <TableCell>Age</TableCell>
-            <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {workingScholars?.map((scholar) => (
             <TableRow key={scholar.id} selected={scholar === selectedScholar}>
+              <TableCell>
+                <Checkbox
+                  color="primary"
+                  checked={selectedScholars.includes(scholar.id)}
+                  onChange={(event) => handleCheckboxChange(event, scholar.id)}
+                />
+              </TableCell>
               <TableCell>{scholar.name}</TableCell>
               <TableCell>{scholar.gender}</TableCell>
               <TableCell>{scholar.course}</TableCell>
               <TableCell>{scholar.age}</TableCell>
-              <TableCell>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                  disabled={selectedScholar?.dept_fk !== null} // Disable if already assigned (optional)
-                >
-                  Assign to Dept
-                </Button>
-                <Menu
-                  id="simple-menu"
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
-                  {departments?.map((department) => (
-                    <MenuItem
-                      key={department.id}
-                      onClick={() => handleAssignDepartment(scholar.id, department.id)}
-                    >
-                      {department.name}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      {onConfirmAssignment && (
+        <Button variant="contained" color="primary" onClick={handleConfirmAssignment}>
+          Assign Selected Scholars
+        </Button>
+      )}
     </TableContainer>
   );
 };

@@ -18,7 +18,6 @@ import MaintainWS from '../pages/maintain-ws';
 import DeptDashboard from '../pages/maintain-dept';
 import DeptProfile from '../pages/dept-profile';
 import AdminDashboard from '../pages/admin-dashboard';
-import WorkingScholarPage from '../pages/assign-ws';
 import { UserType } from '../utils/interfaces';
 import StaffProfile from '../pages/staff-profile';
 import Approver from '../pages/approver';
@@ -140,14 +139,6 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['admin']}>
             <AdminDashboard />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '/assignws',
-        element: (
-          <ProtectedRoute allowedRoles={['admin']}>
-            <WorkingScholarPage />
           </ProtectedRoute>
         ),
       },
