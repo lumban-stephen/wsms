@@ -67,6 +67,11 @@ const NavBarAdmin: React.FC<NavBarProps>= ({activeTab}) =>{
                         }}
                         variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
                         onClick={() => navigate('/maintain-dept')}>Departments</Button>   
+                    <Button sx={{
+                        color: 'white'
+                        }}
+                        variant={activeTab === 'Admins' ? 'contained' : 'outlined'}
+                        onClick={() => navigate('/registerstaffadmin')}>Admin</Button>   
                 </Grid>
                     <Box sx={{ display: 'flex', alignItems: 'center'}}>
                     <Divider orientation="vertical" flexItem sx={{ bgcolor: 'white', height: '50px', margin: 'auto' }}/>

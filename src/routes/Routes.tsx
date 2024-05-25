@@ -182,6 +182,14 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: '/registerstaffadmin',
+        element: (
+          <ProtectedRoute allowedRoles={['admin']}>
+            <Admin />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);

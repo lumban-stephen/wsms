@@ -12,6 +12,11 @@ import {
   InputLabel,
 } from '@mui/material';
 
+type User = {
+  userId: number;
+  username: string;
+};
+
 type Department = {
   department_id: number;
   imageUrl: string;
@@ -19,32 +24,53 @@ type Department = {
   userType: string;
   contact: string;
   deptEmail: string;
+  departmentAdminUserId: number; // Updated to use the userId instead of username
 };
 
 type AddDepartmentModalProps = {
   open: boolean;
   onClose: () => void;
-  onDepartmentAdded: (department: Department) => void; // Ensure this matches the global Department type
+  onDepartmentAdded: (department: Department) => void;
 };
 
 const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ open, onClose, onDepartmentAdded }) => {
   const [departmentName, setDepartmentName] = useState('');
   const [userType, setUserType] = useState('');
-  const [deptAdmins, setDeptAdmins] = useState<string[]>([]);
   const [contact, setContact] = useState('');
   const [deptEmail, setDeptEmail] = useState('');
-  const [userRole, setUserRole] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [departmentAdminUserId, setDepartmentAdminUserId] = useState('');
+  const [departmentAdminUserId, setDepartmentAdminUserId] = useState<number | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/users');
+        if (response.ok) {
+          const users = await response.json();
+          setUsers(users);
+        } else {
+          console.error('Failed to fetch users');
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newDepartment = {
-      departmentName,
+    const newDepartment: Department = {
+      department_name: departmentName,
       contact,
       deptEmail,
       userType,
+      departmentAdminUserId: departmentAdminUserId || 0, // Set a default value if departmentAdminUserId is null
+      imageUrl: '', // Assuming you have a default image URL or will handle it on the backend
+      department_id: 0, // This will be assigned by the backend
     };
 
     try {
@@ -71,28 +97,9 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ open, onClose, 
     setUserType('');
     setContact('');
     setDeptEmail('');
+    setDepartmentAdminUserId(null);
     onClose();
   };
-
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const response = await fetch('/api/user-role');
-        if (response.ok) {
-          const role = await response.text();
-          setUserRole(role);
-        } else {
-          console.error('Failed to fetch user role');
-        }
-      } catch (error) {
-        console.error('Error fetching user role:', error);
-      }
-    };
-
-    fetchUserRole();
-  }, []);
-
-
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -110,11 +117,15 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ open, onClose, 
             <InputLabel id="user-type-label">Department Admin</InputLabel>
             <Select
               labelId="user-type-label"
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
+              value={departmentAdminUserId || ''}
+              onChange={(e) => setDepartmentAdminUserId(Number(e.target.value) || null)}
             >
-              <MenuItem value="admin">Admin</MenuItem>
-              <MenuItem value="staff">Staff</MenuItem>
+              <MenuItem value="">Select Department Admin</MenuItem>
+              {users.map((user) => (
+                <MenuItem key={user.userId} value={user.userId}>
+                  {user.username}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <TextField
