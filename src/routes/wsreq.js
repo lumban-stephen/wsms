@@ -31,7 +31,7 @@ router.get('/requests/:userDept', async (req, res) => {
       SELECT * 
       FROM ws_requests 
       WHERE dept_name_fk = $1
-      ORDER BY ws_req_id DESC;
+      ORDER BY ws_req_id ASC;
     `;
     const values = [userDept];
 

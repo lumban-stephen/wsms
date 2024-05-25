@@ -133,4 +133,43 @@ router.put('/updatestatus/:requestId', async (req, res) => {
   }
 });
 
+router.put('/cancel/:requestId', async (req, res) => {
+  const requestId = req.params.requestId;
+
+  // Validate parameters
+  if (!requestId) {
+    return res.status(400).json({ message: 'Invalid request parameters' });
+  }
+
+  try {
+    // Update approval step using a parameterized query
+    const updateRequestQuery = `
+      UPDATE ws_requests
+      SET ws_req_stat = 'cancelled'
+      WHERE ws_req_id = $1
+    `;
+
+    const updateResult = await pool.query(updateRequestQuery, [requestId]);
+
+    if (updateResult.rowCount === 0) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    console.log(updateResult);
+
+    res.json({ message: 'Request status cancelled successfully' });
+  } catch (error) {
+    console.error('Error approving status cancellation:', error);
+
+    // Check for specific error types (e.g., database errors)
+    if (error.code) {
+      // Handle database errors
+      res.status(500).json({ message: 'Database error occurred during approval. Please try again later.' });
+    } else {
+      // Generic error handling
+      res.status(500).json({ message: 'Failed to cancel request.' });
+    }
+  }
+});
+
 module.exports = router;

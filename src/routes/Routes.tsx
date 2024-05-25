@@ -122,7 +122,7 @@ export const router = createBrowserRouter([
         path: '/maintain-dept',
         element: (
           <ProtectedRoute allowedRoles={['admin']}>
-            <DeptDashboard />
+            <Approver />
           </ProtectedRoute>
         ),
       },

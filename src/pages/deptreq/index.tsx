@@ -16,6 +16,7 @@ interface Request {
   ws_req_type: string;
   quantity: number;
   date_created: string;
+  approve_step: number;
 }
 
 interface PendingRequestListProps {
@@ -25,7 +26,8 @@ interface PendingRequestListProps {
     requestType: string,
     quantity: number,
     status: string,
-    message: string
+    message: string,
+    approve_step: number
   ) => void;
 }
 
@@ -86,9 +88,10 @@ const DeptReq: React.FC = () => {
     ws_req_stat: string,
     ws_req_type: string,
     quantity: number,
-    date_created: string
+    date_created: string,
+    approve_step: number,
   ) => {
-    setShowRequestDetails(true);
+    setShowRequestDetails(!showRequestDetails);
     setSelectedRequest({
       ws_req_id,
       ws_req_name,
@@ -98,6 +101,7 @@ const DeptReq: React.FC = () => {
       ws_req_type,
       quantity,
       date_created,
+      approve_step
     });
   };
 
@@ -120,6 +124,8 @@ const DeptReq: React.FC = () => {
                   requestType={selectedRequest.ws_req_type}
                   quantity={selectedRequest.quantity}
                   message={selectedRequest.message}
+                  requestStatus={selectedRequest.ws_req_stat}
+                  currentStep={selectedRequest.approve_step}
                 />
               )
             ) : (

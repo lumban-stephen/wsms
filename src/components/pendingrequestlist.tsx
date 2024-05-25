@@ -6,12 +6,12 @@ interface Request {
   ws_req_name: string;
   message: string;
   dept_name_fk: string;
-  ws_req_stat: string;
+  ws_req_stat: string; // Status property
   ws_req_type: string;
   quantity: number;
   date_created: string;
+  approve_step: number;
 }
-
 
 interface PendingRequestProps {
   request: Request; // Update prop type
@@ -19,11 +19,12 @@ interface PendingRequestProps {
     ws_req_id: string,
     ws_req_name: string,
     message: string,
-    dept_name_fk: string,
+    dept_name_fk: string, // typo fix
     ws_req_stat: string,
     ws_req_type: string,
     quantity: number,
-    date_created: string
+    date_created: string,
+    approve_step: number
   ) => void;
 }
 
@@ -32,7 +33,21 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
   onViewClick,
 }) => {
   const handleViewClick = () => {
-    onViewClick(request.ws_req_id, request.ws_req_name, request.message, request.dept_name_fk, request.ws_req_stat, request.ws_req_type, request.quantity, request.date_created);
+    onViewClick(request.ws_req_id, request.ws_req_name, request.message, request.dept_name_fk, request.ws_req_stat, request.ws_req_type, request.quantity, request.date_created, request.approve_step);
+  };
+
+  const getStatusColor = () => {
+    switch (request.ws_req_stat.toLowerCase()) {
+      case 'rejected':
+      case 'cancelled':
+        return 'error.main'; // Red color from Material UI theme
+      case 'approved':
+        return 'success.main'; // Green color from Material UI theme
+      case 'waiting':
+        return 'warning.main'; // Yellow color from Material UI theme
+      default:
+        return 'text.secondary'; // Default gray color
+    }
   };
 
   return (
@@ -51,7 +66,9 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
         <Typography variant="h6">{request.ws_req_name}</Typography>
         <Typography variant="body2">{request.date_created}</Typography>
         <Typography variant="body2">Request Type: {request.ws_req_type}</Typography>
-        <Typography variant="body2">Status: {request.ws_req_stat}</Typography>
+        <Typography variant="body2" color={getStatusColor()}>
+          Status: {request.ws_req_stat}
+        </Typography>
       </div>
       <Button variant="contained" color="primary" onClick={handleViewClick}>
         View
@@ -70,7 +87,8 @@ interface PendingRequestListProps {
     ws_req_stat: string,
     ws_req_type: string,
     quantity: number,
-    date_created: string
+    date_created: string,
+    approve_step: number
   ) => void;
 }
 
