@@ -51,7 +51,7 @@ router.put('/approve/:requestId', async (req, res) => {
       UPDATE ws_requests
       SET approve_step = LEAST($2, 4)  -- Limit to 4 steps
       WHERE ws_req_id = $1
-      RETURNING *;  -- Optionally return updated data
+      RETURNING ws_req_id;  -- Optionally return updated data
     `;
 
     const updateResult = await pool.query(updateRequestQuery, [requestId, updatedStep]);
@@ -60,8 +60,6 @@ router.put('/approve/:requestId', async (req, res) => {
       return res.status(404).json({ message: 'Request not found' });
     }
 
-    // Optionally handle the updated data (if returned)
-    // const updatedRequest = updateResult.rows[0];
     console.log(updateResult);
 
     res.json({ message: 'Request approval step updated successfully' });
@@ -93,6 +91,45 @@ router.post('/rejectreq/:requestId', async (req, res) => {
   } catch (error) {
     console.error('Error rejecting request backend:', error);
     res.status(500).json({ message: 'backend Failed to reject request' });
+  }
+});
+
+router.put('/updatestatus/:requestId', async (req, res) => {
+  const requestId = req.params.requestId;
+
+  // Validate parameters
+  if (!requestId) {
+    return res.status(400).json({ message: 'Invalid request parameters' });
+  }
+
+  try {
+    // Update approval step using a parameterized query
+    const updateRequestQuery = `
+      UPDATE ws_requests
+      SET ws_req_stat = 'approved'
+      WHERE ws_req_id = $1
+    `;
+
+    const updateResult = await pool.query(updateRequestQuery, [requestId]);
+
+    if (updateResult.rowCount === 0) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    console.log(updateResult);
+
+    res.json({ message: 'Request status updated successfully' });
+  } catch (error) {
+    console.error('Error approving status update:', error);
+
+    // Check for specific error types (e.g., database errors)
+    if (error.code) {
+      // Handle database errors
+      res.status(500).json({ message: 'Database error occurred during approval. Please try again later.' });
+    } else {
+      // Generic error handling
+      res.status(500).json({ message: 'Failed to approve request.' });
+    }
   }
 });
 

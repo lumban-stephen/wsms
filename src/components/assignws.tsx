@@ -8,9 +8,10 @@ interface AssignWSProps {
   onClose: () => void;
   workingScholars?: WorkingScholar[]; // Optional workingScholars prop
   departmentId?: number;
+  requestId?: number;
 }
 
-const AssignWS: React.FC<AssignWSProps> = ({ open, onClose, workingScholars, departmentId }) => {
+const AssignWS: React.FC<AssignWSProps> = ({ open, onClose, workingScholars, departmentId, requestId }) => {
 
 
 const handleAssignDepartment = async (selectedScholarIds: number[], departmentId: number) => {  
@@ -44,8 +45,8 @@ const handleAssignDepartment = async (selectedScholarIds: number[], departmentId
             workingScholars.length > 0 ? (
               <WorkingScholarTable
                 workingScholars={workingScholars}
-                onAssignDepartment={handleAssignDepartment}
                 departmentId={departmentId} // Pass the departments data here
+                request={requestId}
               />
             ) : (
               <Typography variant="body2">No working scholars available.</Typography>
@@ -53,7 +54,6 @@ const handleAssignDepartment = async (selectedScholarIds: number[], departmentId
           ) : (
             <Typography variant="body2">Loading working scholars...</Typography>
           )}
-          <Button>Save</Button>
         </Box>
       </Modal>
     </div>

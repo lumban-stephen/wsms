@@ -13,26 +13,28 @@ import {
   Checkbox,
 } from '@mui/material';
 import { WorkingScholar, Department } from '../utils/interfaces';
+import { useNavigate } from 'react-router-dom';
 
 interface WorkingScholarTableProps {
   workingScholars: WorkingScholar[] | undefined;
   departmentId?: number;
-  onAssignDepartment: (scholarIds: number[], departmentId: number) => void;
   selectedScholar?: WorkingScholar | null; // Optional selected scholar for highlighting
   onConfirmAssignment?: () => void; // Optional confirmation function (if implemented)
   onCancelAssignment?: () => void; // Optional cancel function (if implemented)
+  request?: number;
 }
 
 const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
   workingScholars,
   departmentId,
-  onAssignDepartment,
   selectedScholar,
   onConfirmAssignment,
   onCancelAssignment,
+  request,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedScholars, setSelectedScholars] = useState<number[]>([]); 
+  const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -40,11 +42,6 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleAssignDepartment = (scholarIds: number[], departmentId: number) => {
-    onAssignDepartment(scholarIds, departmentId);
-    handleClose();
   };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, scholarId: number) => {
@@ -67,11 +64,17 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
       return;
     }
   
-    // Get the chosen department ID (replace with actual logic)
-    const chosenDepartmentId = 1; // Replace with actual logic to get the chosen department
+    // Check if departmentId is defined before using it
+    if (!departmentId) {
+      console.error('Department ID is not available. Cannot assign scholars.');
+      return; // Or display an error message to the user
+    }
+  
+    const chosenDepartmentId = departmentId;// Replace with actual logic to get the chosen department
   
     try {
       // Call the function to assign scholars to department
+      console.log(`Selected scholars (IDs: ${selectedScholars.join(', ')}) will be assigned to the department: ${chosenDepartmentId}`);
       await assignScholarsToDepartment(selectedScholars, chosenDepartmentId);
   
       // Reset selected scholars after successful assignment
@@ -83,6 +86,13 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
       }
   
       console.log('Scholars assigned successfully!');
+
+      if (request) {
+        await updateRequestStatus(request); // Call the update function
+        console.log('Request status updated to approved.');
+      } else {
+        console.warn('Request ID not provided. Skipping request status update.');
+      }
     } catch (error) {
       console.error('Error assigning scholars:', error);
       // Handle error message to the user (e.g., display an error toast)
@@ -106,6 +116,27 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
     } catch (error) {
       console.error('Error assigning scholars:', error);
       // Handle error message to the user (e.g., display an error toast)
+    }
+  };
+
+  const updateRequestStatus = async (requestId: number) => {
+    try {
+      const response = await fetch(`http://localhost:3000/requests/updatestatus/${requestId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ws_req_stat: 'approved' }), // Update status to "approved"
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update request status: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json(); // Optional: handle response data
+      console.log('Request status updated:', data);
+      navigate('/approver');
+    } catch (error) {
+      console.error('Error updating request status:', error);
+      // Handle error message to the user (e.g., display an error alert)
     }
   };
   
@@ -154,8 +185,12 @@ const WorkingScholarTable: React.FC<WorkingScholarTableProps> = ({
           ))}
         </TableBody>
       </Table>
-      {onConfirmAssignment && (
-        <Button variant="contained" color="primary" onClick={handleConfirmAssignment}>
+      {selectedScholars.length > 0 ? (
+        <Button variant="outlined" color="primary" onClick={handleConfirmAssignment}>
+          Assign Selected Scholars
+        </Button>
+      ):(
+        <Button variant="outlined" color="primary" disabled>
           Assign Selected Scholars
         </Button>
       )}

@@ -97,7 +97,9 @@ const ApproveReq: React.FC<ApproveReqProps> = ({ onClose, requestDetails, open }
   
         const data = await response.json(); // Parse the response data (optional)
         console.log('Approval successful:', data); // Log the response data (optional)
-  
+        
+        const approvedRequestId = data?.ws_req_id; // Use optional chaining for potential missing ID
+
         setIsLoading(false); // Set loading state to false after successful response
         handleNext(); // Call handleNext only after successful response
       } catch (error) {
@@ -188,6 +190,7 @@ const ApproveReq: React.FC<ApproveReqProps> = ({ onClose, requestDetails, open }
         onClose={handleCloseAssignWSModal}
         workingScholars={workingScholars}
         departmentId={requestDetails?.dept_name_fk}
+        requestId={requestDetails?.ws_req_id}
       />
       </Box>
     </Modal>

@@ -153,7 +153,7 @@ const Approver: React.FC = () => {
     if (!selectedDeptRequest) return;
 
     try {
-      const response = await fetch(`/api/dept-requests/${selectedDeptRequest.ws_req_id}`, {
+      const response = await fetch(`http://localhost:3000/requests/rejectreq/${selectedDeptRequest.ws_req_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ws_req_stat: 'rejected' }),
