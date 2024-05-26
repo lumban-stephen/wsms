@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../components/navbarStyles.css';
 import Logo from '../components/uclmLogo';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
-import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid } from '@mui/material';
+import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid, CircularProgress, Skeleton } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import { jwtDecode } from 'jwt-decode';
 import { User } from '../utils/interfaces';
@@ -24,9 +24,16 @@ const NavBarWS: React.FC<NavBarProps> = ({ activeTab }) => {
     setAnchorEl(null);
   };
   
+  const [loading, setLoading] = useState(false);
   const handleLogout = () => {
+    setLoading(true); // Set loading state to true when logout process starts
     localStorage.removeItem('token'); // Clear token from localStorage
-    navigate('/'); // Redirect to login page
+
+    // Simulate a delay for demonstration purposes (replace with actual logout process)
+    setTimeout(() => {
+      setLoading(false); // Set loading state to false when logout process is completed
+      navigate('/'); // Redirect to login page
+    }, 1000);
   };
 //Profile Menu End
 
@@ -88,11 +95,22 @@ const NavBarWS: React.FC<NavBarProps> = ({ activeTab }) => {
         </Button>
 
         <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem onClick={handleLogout}>{loading ? <Skeleton width={80} height={40} /> : 'Logout'}</MenuItem>
         </Menu>
       </Box>
-      {/* Profile Section End */}
+      {loading && (
+                  <CircularProgress
+                    size={50}
+                    sx={{
+                      color: 'primary.main',
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      marginTop: '-12px',
+                      marginLeft: '-12px',
+                    }}
+                  />
+                )}
     </Box>
   );
 };

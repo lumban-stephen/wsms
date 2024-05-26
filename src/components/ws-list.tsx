@@ -1,18 +1,19 @@
 import { Box, Typography, Button, TableHead, TableRow, TableCell, TableContainer, Table, Paper, TableBody } from "@mui/material";
 import { useState } from "react";
 import ApplicantModal from "./applicant-modal";
-import { Applicant } from "../utils/interfaces";
+import { Applicant, WS } from "../utils/interfaces";
 
 interface WsListProps {
-  scholars: Applicant[];
-  setScholars: (scholar: Applicant[]) => void;
-  handleViewScholar: (applicant: Applicant) => void;
+  scholars: WS[];
+  setScholars: (scholar: WS[]) => void;
+  handleViewScholar: (applicant: WS) => void;
 }
 
 const WsList: React.FC<WsListProps> = ({ scholars, setScholars, handleViewScholar }) => {
-  const [selectedScholar, setSelectedScholar] = useState<Applicant | null>(null);
+  const [selectedScholar, setSelectedScholar] = useState<WS | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  
   const handleCloseModal = () => {
     setSelectedScholar(null);
     setIsModalOpen(false);
@@ -30,8 +31,8 @@ const WsList: React.FC<WsListProps> = ({ scholars, setScholars, handleViewSchola
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Course</TableCell>
-              <TableCell>Department</TableCell>
               <TableCell>Contact</TableCell>
+              <TableCell>Department</TableCell>
               <TableCell>Registration Date</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
@@ -44,8 +45,8 @@ const WsList: React.FC<WsListProps> = ({ scholars, setScholars, handleViewSchola
                   <TableRow key={scholar.applicant_id}>
                     <TableCell>{scholar.full_name}</TableCell>
                     <TableCell>{scholar.course}</TableCell>
-                    <TableCell>{scholar.dept}</TableCell>
                     <TableCell>{scholar.contact}</TableCell>
+                    <TableCell>{scholar.department_name}</TableCell>
                     <TableCell>{new Date().toLocaleDateString()}</TableCell>
                     <TableCell>{scholar.status}</TableCell>
                     <TableCell>

@@ -115,12 +115,12 @@ router.get('/dept-profile/:departmentId/working-scholars', async (req, res) => {
   try {
     const workingScholars = await pool.query(
       `SELECT w.ws_id, w.dept_fk, n.fname || ' ' || n.lname AS name, 
-           a.address, a.school_name, 
-           a.fb, a.contact
-      FROM working_scholars w
-      INNER JOIN applicants a ON w.applicant_fk = a.applicant_id
-      INNER JOIN names n ON a.name_fk = n.name_id
-      WHERE w.dept_fk = $1`,
+               a.address, a.school_name, 
+               a.fb, a.contact, a.status, w.applicant_fk
+       FROM working_scholars w
+       INNER JOIN applicants a ON w.applicant_fk = a.applicant_id
+       INNER JOIN names n ON a.name_fk = n.name_id
+       WHERE w.dept_fk = $1 AND a.status = 'accepted'`,
       [departmentId]
     );
 

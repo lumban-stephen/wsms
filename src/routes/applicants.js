@@ -44,7 +44,7 @@ router.get('/maintain-applicants', async (req, res) => {
         const insertResult = await client.query(insertQuery, [applicant_fk]);
   
         if (insertResult.rowCount === 1) {
-          const updateQuery = 'UPDATE applicants SET status = \'accepted\' WHERE applicant_id = $1';
+          const updateQuery = 'UPDATE applicants SET status = "accepted" WHERE applicant_id = $1';
           const updateResult = await client.query(updateQuery, [applicant_fk]);
   
           if (updateResult.rowCount === 1) {

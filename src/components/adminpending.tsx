@@ -14,10 +14,9 @@ interface Request {
   approve_step?: number;
 }
 
-
 interface PendingRequestProps {
-  request: Request; // Update prop type
-  onViewClick: ( request: Request  ) => void;
+  request: Request;
+  onViewClick: (request: Request) => void;
 }
 
 const PendingRequestAdmin: React.FC<PendingRequestProps> = ({
@@ -29,8 +28,24 @@ const PendingRequestAdmin: React.FC<PendingRequestProps> = ({
   const handleViewClick = () => {
     onViewClick(request);
     setIsModalOpen(true); // Open modal
-    console.log(request.quantity)
   };
+
+  let statusColor: string;
+
+  switch (request.ws_req_stat) {
+    case 'waiting':
+      statusColor = 'rgba(255, 125, 80, 0.90)';
+      break;
+    case 'rejected':
+      statusColor = 'red';
+      break;
+    case 'approved':
+      statusColor = 'green';
+      break;
+    default:
+      statusColor = 'inherit';
+      break;
+  }
 
   return (
     <Box
@@ -48,7 +63,9 @@ const PendingRequestAdmin: React.FC<PendingRequestProps> = ({
         <Typography variant="h6">{request.ws_req_name}</Typography>
         <Typography variant="body2">{request.date_created}</Typography>
         <Typography variant="body2">Request Type: {request.ws_req_type}</Typography>
-        <Typography variant="body2">Status: {request.ws_req_stat}</Typography>
+        <Typography variant="body2">
+          Status: <span style={{ color: statusColor }}>{request.ws_req_stat}</span>
+        </Typography>
       </div>
       <Button variant="contained" color="primary" onClick={handleViewClick}>
         View
@@ -66,7 +83,7 @@ const PendingRequestAdmin: React.FC<PendingRequestProps> = ({
 
 interface AdminPendingListProps {
   requests: Request[];
-  onViewClick: ( request: Request  ) => void;
+  onViewClick: (request: Request) => void;
 }
 
 const AdminPending: React.FC<AdminPendingListProps> = ({

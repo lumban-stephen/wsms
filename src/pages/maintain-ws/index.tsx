@@ -2,17 +2,18 @@ import { Paper, Typography, Box, Grid, Container, Button, Avatar, Divider, Menu 
 import NavBar from '../../components/navbar';
 import React, { useState, useEffect } from 'react';
 import ApplicantList from '../../components/applicant-list';
-import { Applicant } from '../../utils/interfaces';
+import { Applicant, WS } from '../../utils/interfaces';
 import ApplicantModal from '../../components/applicant-modal';
 import WsList from '../../components/ws-list';
 import WsModal from '../../components/ws-modal';
 import NavBarAdmin from '../../components/navbar-admin';
 
 const MaintainWS: React.FC = () => {
-  const [scholars, setScholars] = useState<Applicant[]>([]);
+  const [scholars, setScholars] = useState<WS[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedScholar, setSelectedScholar] = useState<Applicant | null>(null);
+
 
   useEffect(() => {
     const fetchScholars = async () => {

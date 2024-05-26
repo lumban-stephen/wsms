@@ -12,6 +12,7 @@ import {
   Avatar,
 } from '@mui/material';
 import { deepOrange } from '@mui/material/colors';
+import { useNavigate } from 'react-router-dom';
 
 interface WsModalProps {
   isOpen: boolean;
@@ -28,10 +29,33 @@ const WsModal: React.FC<WsModalProps> = ({
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [updatedWorkingScholar, setUpdatedWorkingScholar] = useState<Applicant>(workingScholar);
+  const navigate = useNavigate();
 
-  const handleUpdateInfo = () => {
-    setIsEditMode(true);
-    // Add logic to enable editing of fields
+  const handleResign = async () => {
+    try {
+      const updatedWs = { ...workingScholar, status: 'Retired' };
+      const response = await fetch('http://localhost:3000/ws/retire', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ applicant_fk: updatedWs.applicant_id }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Response:', data);
+        alert(data.message);
+        onClose(); // Close the modal after updating
+      } else {
+        const errorData = await response.json();
+        console.log('Error:', errorData);
+        alert(errorData.message);
+        navigate('/maintain-ws');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while processing the request.');
+    }
   };
 
   const register = () => {
@@ -152,10 +176,10 @@ const WsModal: React.FC<WsModalProps> = ({
             <Button
               variant="contained"
               color="primary"
-              onClick={handleUpdateInfo}
-              disabled={workingScholar.status === 'Suspended'}
+              onClick={handleResign}
+              disabled={workingScholar.status === 'Retired'}
             >
-              {workingScholar.status === 'Suspended' ? 'Suspended' : 'Update Info'}
+              {workingScholar.status === 'Retired' ? 'Retired' : 'Retire'}
             </Button>
             <Button
               variant="outlined"

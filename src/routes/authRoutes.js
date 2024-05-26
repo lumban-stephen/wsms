@@ -196,12 +196,12 @@ router.post('/register', async (req, res) => {
 
 router.post('/registerstaffadmin', async (req, res) => {
   try {
-      const { email, password, firstName, lastName, contactNumber, userType } = req.body;
-      console.log(req.body);
-  
-      if (!email || !password || !firstName || !lastName || !contactNumber || !userType) {
-        return res.status(400).json({ error: 'Missing required fields' });
-      }
+    const { email, password, firstName, lastName, contactNumber, userType, department } = req.body;
+    console.log(req.body);
+
+    if (!email || !password || !firstName || !lastName || !contactNumber || !userType || !department) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -215,15 +215,14 @@ router.post('/registerstaffadmin', async (req, res) => {
     const nameId = namesResult.rows[0].name_id;
 
     // Insert data into the user_details table
-    const userDetailsQuery = 'INSERT INTO user_details (name_fk, address, contact) VALUES ($1, $2, $3) RETURNING userdetail_id';
-    const userDetailsValues = [nameId, null, contactNumber]; // Set address to null for now
+    const userDetailsQuery = 'INSERT INTO user_details (name_fk, contact) VALUES ($1, $2) RETURNING userdetail_id';
+    const userDetailsValues = [nameId, contactNumber];
     const userDetailsResult = await pool.query(userDetailsQuery, userDetailsValues);
     const userDetailId = userDetailsResult.rows[0].userdetail_id;
 
     // Insert data into the users table
     const usersQuery = 'INSERT INTO users (userdetail_fk, username, password, user_type, dept_fk) VALUES ($1, $2, $3, $4, $5)';
-    const usersValues = [userDetailId, email, hashedPassword, userType, null]; // Set dept_fk to null for now
-
+    const usersValues = [userDetailId, email, hashedPassword, userType, department];
     await pool.query(usersQuery, usersValues);
 
     // Commit the transaction

@@ -1,7 +1,7 @@
 import { Box, Typography, Button, TableHead, TableRow, TableCell, TableContainer, Table, Paper, TableBody } from "@mui/material";
 import { useState } from "react";
 import ApplicantModal from "./applicant-modal";
-import { Applicant } from "../utils/interfaces";
+import { Applicant, WS } from "../utils/interfaces";
 
 interface ApplicantListProps {
   applicants: Applicant[];
@@ -10,7 +10,7 @@ interface ApplicantListProps {
 }
 
 const ApplicantList: React.FC<ApplicantListProps> = ({ applicants, setApplicants, handleViewApplicant }) => {
-  const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
+  const [selectedApplicant, setSelectedApplicant] = useState<WS | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCloseModal = () => {

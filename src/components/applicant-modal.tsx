@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Applicant } from '../utils/interfaces';
+import { Applicant, WS } from '../utils/interfaces';
 import {
   Modal,
   Box,
@@ -18,8 +18,8 @@ import { deepOrange } from '@mui/material/colors';
 interface ApplicantModalProps {
   isOpen: boolean;
   onClose: () => void;
-  applicant: Applicant;
-  onApplicantUpdate: (updatedApplicant: Applicant) => void; // Callback for applicant update
+  applicant: WS;
+  onApplicantUpdate: (updatedApplicant: WS) => void; // Callback for applicant update
 }
 
 const ApplicantModal: React.FC<ApplicantModalProps> = ({
@@ -40,7 +40,7 @@ const ApplicantModal: React.FC<ApplicantModalProps> = ({
 
   const handleApprove = async () => {
     try {
-      const response = await fetch('http://localhost:3000/applicants/maintain-applicants', {
+      const response = await fetch('http://localhost:3000/applicants/approve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ applicant_fk: applicant.applicant_id }), // Replace with your logic to get applicant ID

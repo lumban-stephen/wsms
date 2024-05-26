@@ -6,6 +6,7 @@ import { Typography } from '@mui/material';
 import NavBarStaff from '../../components/navbar-staff';
 import { jwtDecode } from 'jwt-decode';
 import { User } from '../../utils/user';
+import { useNavigate } from 'react-router-dom';
 
 interface Request {
   ws_req_id: string;
@@ -37,6 +38,7 @@ const DeptReq: React.FC = () => {
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [userDept, setUserDept] = useState<number>(); // Store user's department
   const [username, setUsername] = useState<string>('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Retrieve department from token data (modify based on your token structure)
@@ -66,6 +68,7 @@ const DeptReq: React.FC = () => {
       const data = await response.json();
       if (response.ok) {
         setRequests(data);
+        navigate('/deptreq')
       } else {
         console.error('Error fetching requests:', data);
         // Handle errors appropriately

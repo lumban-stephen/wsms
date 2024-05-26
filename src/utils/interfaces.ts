@@ -15,8 +15,24 @@ export interface Applicant {
     address: string;
     school_name: string;
     fbAccount: string;
-    dept?: string;
+    department_name: string;
     isRegistered: boolean;
+}
+
+export interface WS {
+  applicant_id: number;
+  full_name: string;
+  course: string;
+  age: number;
+  gender: Gender;
+  contact: number;
+  registrationDate: Date;
+  status: string;
+  address: string;
+  school_name: string;
+  fbAccount: string;
+  department_name: string;
+  isRegistered: boolean;
 }
 
 export interface WorkingScholar {

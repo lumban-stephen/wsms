@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../components/navbarStyles.css';
 import Logo from './uclmLogo'
-import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid } from '@mui/material';
+import { Box, Divider, Avatar, Button, Menu, MenuItem, Grid, Skeleton, CircularProgress } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import { jwtDecode } from 'jwt-decode';
 import { User } from '../utils/user';
@@ -15,6 +15,7 @@ interface NavBarProps {
 const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
     //Profile Menu Start
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -23,10 +24,17 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
         setAnchorEl(null);
     };
 
+    const [loading, setLoading] = useState(false);
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Clear token from localStorage
+      setLoading(true); // Set loading state to true when logout process starts
+      localStorage.removeItem('token'); // Clear token from localStorage
+  
+      // Simulate a delay for demonstration purposes (replace with actual logout process)
+      setTimeout(() => {
+        setLoading(false); // Set loading state to false when logout process is completed
         navigate('/'); // Redirect to login page
-      };
+      }, 1000);
+    };
     //Profile Menu End
 
       // Username State
@@ -62,7 +70,7 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
           <Grid container direction="row" justifyContent="center" alignItems="center" sx={{ flex: 1 }}>
             <Button
               sx={{ color: 'white' }}
-              variant={activeTab === 'WorkingScholars' ? 'contained' : 'outlined'}
+              variant={activeTab === 'Departments' ? 'contained' : 'outlined'}
               onClick={() => navigate('/deptreq')}>
               Departments
             </Button>
@@ -89,15 +97,27 @@ const NavBarStaff: React.FC<NavBarProps>= ({activeTab}) =>{
                     </Avatar>
                     <Button
                         sx={{ marginRight: 8, color: 'white' }}
-                        onClick={handleLogout}
+                        onClick={handleClick}
                     >
                         {username}  {/* Display username if available */}
                     </Button>
-        <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
+                    <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
+                      <MenuItem onClick={handleLogout}>{loading ? <Skeleton width={80} height={40} /> : 'Logout'}</MenuItem>
+                    </Menu>
                 </Box>
+                {loading && (
+                  <CircularProgress
+                    size={50}
+                    sx={{
+                      color: 'primary.main',
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      marginTop: '-12px',
+                      marginLeft: '-12px',
+                    }}
+                  />
+                )}
             </Box>
     );
 }

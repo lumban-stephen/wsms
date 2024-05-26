@@ -60,18 +60,40 @@ router.get('/maintain-applicants', async (req, res) => {
 router.get('/maintain-ws', async (req, res) => {
   try {
     const query = `
-      SELECT a.*, CONCAT(n.fname, ' ', n.lname) AS full_name
-      FROM applicants a
-      INNER JOIN names n ON a.name_fk = n.name_id
-      WHERE a.status = 'accepted'  -- Filter for accepted applicants
+      SELECT
+        a.applicant_id,
+        CONCAT(n.fname, ' ', n.lname) AS full_name,
+        d.department_name,
+        ws.isRegistered,
+        a.address,
+        a.course,
+        a.contact,
+        a.gender,
+        a.age,
+        a.school_name,
+        a.status
+      FROM
+        applicants a
+        LEFT JOIN working_scholars ws ON a.applicant_id = ws.applicant_fk
+        LEFT JOIN names n ON a.name_fk = n.name_id
+        LEFT JOIN departments d ON ws.dept_fk = d.department_id
+      WHERE
+        a.status = 'accepted'
     `;
+
     const { rows } = await pool.query(query);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No accepted applicants found.' });
+    }
+
     res.json(rows);
   } catch (error) {
-    console.error('Error fetching applicants:', error);
-    res.status(500).json({ error: 'An error occurred while fetching applicants' });
+    console.error('Error fetching accepted applicants:', error);
+    res.status(500).json({ error: 'An error occurred while fetching accepted applicants' });
   }
 });
+
 
 router.post('/maintain-ws', async (req, res) => {
   try {
@@ -116,7 +138,7 @@ router.get('/working-scholars/unassigned', async (req, res) => {
        a.course,
        a.age,
        ws.applicant_fk,
-       ws.dept_fk
+       a.dept_fk
       FROM working_scholars AS ws
       INNER JOIN applicants AS a ON ws.applicant_fk = a.applicant_id
       INNER JOIN names AS n ON a.name_fk = n.name_id;
@@ -171,6 +193,50 @@ router.post('/suspend', async (req, res) => {
     }
 
     res.json({ message: 'Applicant successfully suspended.' });
+  } catch (error) {
+    console.error('Error suspending working scholar:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.post('/retire', async (req, res) => {
+  try {
+    const { applicant_fk } = req.body;
+
+    if (!applicant_fk) {
+      return res.status(400).json({ message: 'Missing applicant ID' });
+    }
+
+    // 1. Find working scholar record (optional, based on your needs)
+    const findScholarQuery = `
+      SELECT *
+      FROM working_scholars
+      WHERE applicant_fk = $1
+    `;
+
+    const { rows: scholarRows } = await pool.query(findScholarQuery, [applicant_fk]);
+
+    // 2. Update applicant status (assuming scholar record found)
+    const updateApplicantQuery = `
+      UPDATE applicants
+      SET status = 'retired'
+      WHERE applicant_id = $1
+    `;
+
+    await pool.query(updateApplicantQuery, [applicant_fk]);
+
+    // 3. Update isRegistered if scholar record found
+    if (scholarRows.length > 0) {
+      const updateScholarQuery = `
+        UPDATE working_scholars
+        SET isregistered = false
+        WHERE applicant_fk = $1
+      `;
+
+      await pool.query(updateScholarQuery, [applicant_fk]);
+    }
+
+    res.json({ message: 'Applicant successfully retired.' });
   } catch (error) {
     console.error('Error suspending working scholar:', error);
     res.status(500).json({ message: 'Internal server error' });

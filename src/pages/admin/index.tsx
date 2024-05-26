@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import NavBarAdmin from '../../components/navbar-admin';
+import { useNavigate } from 'react-router-dom';
 
 type Department = {
   department_id: number;
@@ -26,7 +27,8 @@ export default function Admin() {
   const [userType, setUserType] = React.useState('');
   const [departments, setDepartments] = React.useState<Department[] | null>();
   const [selectedDepartment, setSelectedDepartment] = React.useState('');
-
+  const navigate = useNavigate();
+  
   React.useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -41,7 +43,7 @@ export default function Admin() {
     fetchDepartments();
   }, []);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const HandleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const email = formData.get('email');
@@ -49,6 +51,7 @@ export default function Admin() {
     const firstName = formData.get('firstName');
     const lastName = formData.get('lastName');
     const contactNumber = formData.get('contactNumber');
+    const dept = formData.get('dept');
 
     if (!email || !password || !firstName || !lastName || !contactNumber || !userType || !selectedDepartment) {
       console.error('Missing required fields');
@@ -78,6 +81,7 @@ export default function Admin() {
         const data = await response.json();
         console.log(data.message);
         // Handle successful registration
+        navigate('/dashboard')
       } else {
         const error = await response.json();
         console.error(error.error);
@@ -105,7 +109,7 @@ export default function Admin() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" onSubmit={HandleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -173,6 +177,8 @@ export default function Admin() {
               </Grid>
               <Grid item xs={12}>
                 <Select
+                  name='dept'
+                  id='dept'
                   value={selectedDepartment}
                   onChange={(e) => setSelectedDepartment(e.target.value)}
                   fullWidth
